@@ -14,8 +14,20 @@ namespace PlattformChallenge.Models
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            modelBuilder.Entity<Language>()
-                .HasKey(l => new { l.C_Id, l.DevelopmentLanguage });
+
+
+            modelBuilder.Entity<LanguageChallenge>().HasKey(t => new { t.Language_Id, t.C_Id });
+
+            modelBuilder.Entity<LanguageChallenge>()
+                .HasOne(lc => lc.Language)
+                .WithMany(l => l.LanguageChallenges)
+                .HasForeignKey(lc => lc.Language_Id);
+
+            modelBuilder.Entity<LanguageChallenge>()
+                 .HasOne(lc => lc.Challenge)
+                 .WithMany(c => c.LanguageChallenges)
+                 .HasForeignKey(lc => lc.C_Id);
+
 
             modelBuilder.Entity<Participation>()
                 .HasKey(p => new { p.C_Id, p.P_Id });
@@ -34,12 +46,7 @@ namespace PlattformChallenge.Models
                 .HasOne(c => c.Company)
                 .WithMany(i =>i.Challenges)
                 .HasForeignKey(c => c.Com_ID);
-
-            modelBuilder.Entity<Language>()
-                .HasOne(l => l.Challenge)
-                .WithMany(c => c.Languages)
-                .HasForeignKey(l => l.C_Id);
-
+                    
             modelBuilder.Entity<Participation>()
                 .HasOne(pa => pa.Solution)
                 .WithOne(s => s.Participation)

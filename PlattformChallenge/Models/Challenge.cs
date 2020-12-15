@@ -9,28 +9,27 @@ namespace PlattformChallenge.Models
 {
     public class Challenge
     {
-        [Key]
-        public int C_Id { get; set; }
-
+        
+        [Required]
         public int Bonus { get; set; }
-
+        [Required]
         public string Title { get; set; }
-
+        [Required]
         public string  Content  { get; set; }
-
-        public  DateTime Release_Date { get; set; }
-
+        [Required]
+        public DateTime Release_Date { get; set; }
+        [Required]
         public int Max_Participant { get; set; }
 
         public int Winner { get; set; }
 
         public int Best_Solution { get; set; }
-        
+        [Required]
         public int Com_ID { get; set; }
 
         public List<Participation> Participations { get; set; }
 
-        public List<Language> Languages { get; set; }
+        public List<LanguageChallenge> LanguageChallenges { get; set; }
 
         public Company Company { get; set; }
 

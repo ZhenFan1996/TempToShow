@@ -9,6 +9,8 @@ namespace PlattformChallenge.Models
     public class UserAccount
     {
         [Key]
+        public int User_Id { get; set; }
+
         public string Email { get; set; }
 
         public string Passwort { get; set; }

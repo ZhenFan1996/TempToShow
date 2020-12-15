@@ -7,11 +7,10 @@ namespace PlattformChallenge.Models
 {
     public class Language
     {
-
-        public int C_Id { get; set; }
+        public int Language_Id;
 
         public string DevelopmentLanguage { get; set; }
 
-        public Challenge Challenge;
+        public List<LanguageChallenge> LanguageChallenges { get; set; }
     }
 }

@@ -8,8 +8,7 @@ namespace PlattformChallenge.Models
 {
     public class Company : UserAccount
     {
-        [Key]
-        public int Comp_Id { get; set; }
+       
 
         public string Name { get; set; }
 
