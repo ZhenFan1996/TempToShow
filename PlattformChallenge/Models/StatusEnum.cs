@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Models
 {
-    public enum AccountTyp
+    public enum StatusEnum
     {
-
-        Programmer,
-        Company
+        Receive,
+        InProcessing,
+        Rated
     }
 }

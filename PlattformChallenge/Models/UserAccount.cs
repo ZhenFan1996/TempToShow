@@ -10,11 +10,19 @@ namespace PlattformChallenge.Models
     {
         [Key]
         public int User_Id { get; set; }
-
+        
+        [DataType(DataType.EmailAddress)]
+        [Required]
+        
         public string Email { get; set; }
 
-        public string Passwort { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
 
+        [Required]
         public AccountTyp AccountTyp { get; set; }
-    }   
+    }
+
+
 }

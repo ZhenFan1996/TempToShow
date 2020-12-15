@@ -13,7 +13,7 @@ namespace PlattformChallenge.Models
         [Required]
         public string URL { get; set; }
         [Required]
-        public string Status { get; set; }
+        public StatusEnum Status { get; set; }
         [Required]
         public DateTime Submit_Date { get; set; }
         

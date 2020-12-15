@@ -9,7 +9,10 @@ namespace PlattformChallenge.Models
 {
     public class Challenge
     {
-        
+
+        [Key]
+        public int C_Id { get; set; }
+
         [Required]
         public int Bonus { get; set; }
         [Required]

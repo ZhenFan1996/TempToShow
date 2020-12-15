@@ -15,8 +15,27 @@ namespace PlattformChallenge.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            modelBuilder.Entity<LanguageChallenge>()
+                .HasKey(t => new { t.Language_Id, t.C_Id });
 
-            modelBuilder.Entity<LanguageChallenge>().HasKey(t => new { t.Language_Id, t.C_Id });
+            modelBuilder.Entity<UserAccount>()
+                .Property(u => u.AccountTyp)
+                .HasConversion(
+                v => v.ToString(),
+                v => (AccountTyp)Enum.Parse(typeof(AccountTyp),v));
+
+            modelBuilder.Entity<Solution>()
+            .Property(s => s.Status)
+            .HasConversion(
+            v => v.ToString(),
+            v => (StatusEnum)Enum.Parse(typeof(StatusEnum), v));
+
+            modelBuilder.Entity<UserAccount>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<UserAccount>()
+                .HasDiscriminator(u => u.AccountTyp);
 
             modelBuilder.Entity<LanguageChallenge>()
                 .HasOne(lc => lc.Language)
@@ -27,7 +46,6 @@ namespace PlattformChallenge.Models
                  .HasOne(lc => lc.Challenge)
                  .WithMany(c => c.LanguageChallenges)
                  .HasForeignKey(lc => lc.C_Id);
-
 
             modelBuilder.Entity<Participation>()
                 .HasKey(p => new { p.C_Id, p.P_Id });
