@@ -12,6 +12,12 @@ namespace PlattformChallenge.Models
 
         public int P_Id { get; set; }
 
-        public int S_Id { get; set; }   
+        public int S_Id { get; set; }
+
+        public Challenge Challenge { get; set; }
+
+        public Programmer Programmer { get; set; }
+
+        public Solution Solution { get; set; }
     }
 }

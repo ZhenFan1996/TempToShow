@@ -13,6 +13,40 @@ namespace PlattformChallenge.Models
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<Language>()
+                .HasKey(l => new { l.C_Id, l.DevelopmentLanguage });
+
+            modelBuilder.Entity<Participation>()
+                .HasKey(p => new { p.C_Id, p.P_Id });
+
+            modelBuilder.Entity<Participation>()
+                .HasOne(pa => pa.Programmer)
+                .WithMany(p => p.Participations)
+                .HasForeignKey(pa =>pa.P_Id);
+
+            modelBuilder.Entity<Participation>()
+                .HasOne(pa => pa.Challenge)
+                .WithMany(c => c.Participations)
+                .HasForeignKey(pa => pa.C_Id);
+
+            modelBuilder.Entity<Challenge>()
+                .HasOne(c => c.Company)
+                .WithMany(i =>i.Challenges)
+                .HasForeignKey(c => c.Com_ID);
+
+            modelBuilder.Entity<Language>()
+                .HasOne(l => l.Challenge)
+                .WithMany(c => c.Languages)
+                .HasForeignKey(l => l.C_Id);
+
+            modelBuilder.Entity<Participation>()
+                .HasOne(pa => pa.Solution)
+                .WithOne(s => s.Participation)
+                .HasForeignKey<Participation>(pa => pa.S_Id);
+
+        }
+
         public DbSet<UserAccount> UserAccounts { get; set; }
 
         public DbSet<Programmer> Programmers { get; set; }

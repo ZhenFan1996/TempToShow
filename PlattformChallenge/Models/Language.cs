@@ -11,5 +11,7 @@ namespace PlattformChallenge.Models
         public int C_Id { get; set; }
 
         public string DevelopmentLanguage { get; set; }
+
+        public Challenge Challenge;
     }
 }
