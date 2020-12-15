@@ -7,7 +7,7 @@ namespace PlattformChallenge.Models
 {
     public enum AccountTyp
     {
-
+        None,
         Programmer,
         Company
     }

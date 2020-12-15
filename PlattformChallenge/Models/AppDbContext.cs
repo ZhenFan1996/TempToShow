@@ -36,6 +36,7 @@ namespace PlattformChallenge.Models
 
             modelBuilder.Entity<UserAccount>()
                 .HasDiscriminator(u => u.AccountTyp)
+                .HasValue<UserAccount>(AccountTyp.None)
                 .HasValue<Programmer>(AccountTyp.Programmer)
                 .HasValue<Company>(AccountTyp.Company);
 
