@@ -35,7 +35,9 @@ namespace PlattformChallenge.Models
                 .IsUnique();
 
             modelBuilder.Entity<UserAccount>()
-                .HasDiscriminator(u => u.AccountTyp);
+                .HasDiscriminator(u => u.AccountTyp)
+                .HasValue<Programmer>(AccountTyp.Programmer)
+                .HasValue<Company>(AccountTyp.Company);
 
             modelBuilder.Entity<LanguageChallenge>()
                 .HasOne(lc => lc.Language)
