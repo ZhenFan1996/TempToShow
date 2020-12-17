@@ -26,9 +26,6 @@ namespace PlattformChallenge.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Best_SolutionS_Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("Bonus")
                         .HasColumnType("int");
 
@@ -49,16 +46,9 @@ namespace PlattformChallenge.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WinnerUser_Id")
-                        .HasColumnType("int");
-
                     b.HasKey("C_Id");
 
-                    b.HasIndex("Best_SolutionS_Id");
-
                     b.HasIndex("Com_ID");
-
-                    b.HasIndex("WinnerUser_Id");
 
                     b.ToTable("Challenges");
                 });
@@ -100,6 +90,9 @@ namespace PlattformChallenge.Migrations
 
                     b.Property<int>("P_Id")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsWinner")
+                        .HasColumnType("bit");
 
                     b.HasKey("C_Id", "P_Id");
 
@@ -209,19 +202,11 @@ namespace PlattformChallenge.Migrations
 
             modelBuilder.Entity("PlattformChallenge.Models.Challenge", b =>
                 {
-                    b.HasOne("PlattformChallenge.Models.Solution", "Best_Solution")
-                        .WithMany()
-                        .HasForeignKey("Best_SolutionS_Id");
-
                     b.HasOne("PlattformChallenge.Models.Company", "Company")
                         .WithMany("Challenges")
                         .HasForeignKey("Com_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PlattformChallenge.Models.Programmer", "Winner")
-                        .WithMany()
-                        .HasForeignKey("WinnerUser_Id");
                 });
 
             modelBuilder.Entity("PlattformChallenge.Models.LanguageChallenge", b =>

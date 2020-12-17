@@ -17,5 +17,7 @@ namespace PlattformChallenge.Models
         public Programmer Programmer { get; set; }
 
         public Solution Solution { get; set; }
+
+        public bool IsWinner { get; set; }
     }
 }

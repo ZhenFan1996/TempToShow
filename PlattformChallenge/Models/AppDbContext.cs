@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PlattformChallenge.Models;
 
 namespace PlattformChallenge.Models
 {
@@ -92,5 +93,7 @@ namespace PlattformChallenge.Models
         public DbSet<Language> Languages { get; set; }
 
         public DbSet<Solution> Solutions { get; set; }
+
+        public DbSet<PlattformChallenge.Models.LanguageChallenge> LanguageChallenge { get; set; }
     }
 }

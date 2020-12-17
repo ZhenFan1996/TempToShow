@@ -7,13 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201217161124_InitialMigration.cs" />
+    <Compile Remove="Migrations\20201217161124_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201217163724_WinnerNullable.cs" />
+    <Compile Remove="Migrations\20201217163724_WinnerNullable.Designer.cs" />
+    <Compile Remove="Migrations\20201217172809_Winner.cs" />
+    <Compile Remove="Migrations\20201217172809_Winner.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
 
 </Project>

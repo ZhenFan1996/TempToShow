@@ -24,10 +24,6 @@ namespace PlattformChallenge.Models
         [Required]
         public int Max_Participant { get; set; }
 
-        public Programmer Winner { get; set; }
-
-        public  Solution Best_Solution { get; set; }
-
         [Required]
         public int Com_ID { get; set; }
 
