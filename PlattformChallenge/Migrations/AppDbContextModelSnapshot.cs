@@ -26,6 +26,9 @@ namespace PlattformChallenge.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("Best_Solution_Id")
+                        .HasColumnType("int");
+
                     b.Property<int>("Bonus")
                         .HasColumnType("int");
 
@@ -45,6 +48,9 @@ namespace PlattformChallenge.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Winner_Id")
+                        .HasColumnType("int");
 
                     b.HasKey("C_Id");
 
@@ -91,12 +97,16 @@ namespace PlattformChallenge.Migrations
                     b.Property<int>("P_Id")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsWinner")
-                        .HasColumnType("bit");
+                    b.Property<int?>("S_Id")
+                        .HasColumnType("int");
 
                     b.HasKey("C_Id", "P_Id");
 
                     b.HasIndex("P_Id");
+
+                    b.HasIndex("S_Id")
+                        .IsUnique()
+                        .HasFilter("[S_Id] IS NOT NULL");
 
                     b.ToTable("Participations");
                 });
@@ -107,12 +117,6 @@ namespace PlattformChallenge.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("C_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("P_ID")
-                        .HasColumnType("int");
 
                     b.Property<int>("Point")
                         .HasColumnType("int");
@@ -129,9 +133,6 @@ namespace PlattformChallenge.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("S_Id");
-
-                    b.HasIndex("P_ID", "C_ID")
-                        .IsUnique();
 
                     b.ToTable("Solutions");
                 });
@@ -235,17 +236,12 @@ namespace PlattformChallenge.Migrations
                     b.HasOne("PlattformChallenge.Models.Programmer", "Programmer")
                         .WithMany("Participations")
                         .HasForeignKey("P_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Solution", b =>
-                {
-                    b.HasOne("PlattformChallenge.Models.Participation", "Participation")
-                        .WithOne("Solution")
-                        .HasForeignKey("PlattformChallenge.Models.Solution", "P_ID", "C_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("PlattformChallenge.Models.Solution", "Solution")
+                        .WithOne("Participation")
+                        .HasForeignKey("PlattformChallenge.Models.Participation", "S_Id");
                 });
 #pragma warning restore 612, 618
         }

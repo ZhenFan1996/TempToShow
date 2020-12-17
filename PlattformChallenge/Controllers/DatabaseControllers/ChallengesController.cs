@@ -56,7 +56,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID")] Challenge challenge)
+        public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID")] Challenge challenge)
+        public async Task<IActionResult> Edit(int id, [Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
         {
             if (id != challenge.C_Id)
             {

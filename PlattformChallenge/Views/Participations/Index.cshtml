@@ -1,4 +1,4 @@
-@model IEnumerable<PlattformChallenge.Models.Participation>
+﻿@model IEnumerable<PlattformChallenge.Models.Participation>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Programmer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsWinner)
+                @Html.DisplayNameFor(model => model.Solution)
             </th>
             <th></th>
         </tr>
@@ -28,13 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Challenge.C_Id)
+                @Html.DisplayFor(modelItem => item.Challenge.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Programmer.User_Id)
+                @Html.DisplayFor(modelItem => item.Programmer.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsWinner)
+                @Html.DisplayFor(modelItem => item.Solution.URL)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

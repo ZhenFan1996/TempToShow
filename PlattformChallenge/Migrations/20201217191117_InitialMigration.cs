@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PlattformChallenge.Migrations
@@ -18,6 +18,22 @@ namespace PlattformChallenge.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Languages", x => x.Language_Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Solutions",
+                columns: table => new
+                {
+                    S_Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    URL = table.Column<string>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
+                    Submit_Date = table.Column<DateTime>(nullable: false),
+                    Point = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Solutions", x => x.S_Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +67,9 @@ namespace PlattformChallenge.Migrations
                     Content = table.Column<string>(nullable: false),
                     Release_Date = table.Column<DateTime>(nullable: false),
                     Max_Participant = table.Column<int>(nullable: false),
-                    Com_ID = table.Column<int>(nullable: false)
+                    Com_ID = table.Column<int>(nullable: false),
+                    Winner_Id = table.Column<int>(nullable: true),
+                    Best_Solution_Id = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,7 +112,7 @@ namespace PlattformChallenge.Migrations
                 {
                     C_Id = table.Column<int>(nullable: false),
                     P_Id = table.Column<int>(nullable: false),
-                    IsWinner = table.Column<bool>(nullable: true)
+                    S_Id = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -109,32 +127,13 @@ namespace PlattformChallenge.Migrations
                         name: "FK_Participations_UserAccounts_P_Id",
                         column: x => x.P_Id,
                         principalTable: "UserAccounts",
-                        principalColumn: "User_Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Solutions",
-                columns: table => new
-                {
-                    S_Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    URL = table.Column<string>(nullable: false),
-                    Status = table.Column<string>(nullable: false),
-                    Submit_Date = table.Column<DateTime>(nullable: false),
-                    C_ID = table.Column<int>(nullable: false),
-                    P_ID = table.Column<int>(nullable: false),
-                    Point = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Solutions", x => x.S_Id);
+                        principalColumn: "User_Id");
                     table.ForeignKey(
-                        name: "FK_Solutions_Participations_P_ID_C_ID",
-                        columns: x => new { x.P_ID, x.C_ID },
-                        principalTable: "Participations",
-                        principalColumns: new[] { "C_Id", "P_Id" },
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Participations_Solutions_S_Id",
+                        column: x => x.S_Id,
+                        principalTable: "Solutions",
+                        principalColumn: "S_Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -153,10 +152,11 @@ namespace PlattformChallenge.Migrations
                 column: "P_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Solutions_P_ID_C_ID",
-                table: "Solutions",
-                columns: new[] { "P_ID", "C_ID" },
-                unique: true);
+                name: "IX_Participations_S_Id",
+                table: "Participations",
+                column: "S_Id",
+                unique: true,
+                filter: "[S_Id] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAccounts_Email",
@@ -177,16 +177,16 @@ namespace PlattformChallenge.Migrations
                 name: "LanguageChallenge");
 
             migrationBuilder.DropTable(
-                name: "Solutions");
+                name: "Participations");
 
             migrationBuilder.DropTable(
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Participations");
+                name: "Challenges");
 
             migrationBuilder.DropTable(
-                name: "Challenges");
+                name: "Solutions");
 
             migrationBuilder.DropTable(
                 name: "UserAccounts");

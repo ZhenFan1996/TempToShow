@@ -33,6 +33,10 @@ namespace PlattformChallenge.Models
 
         public Company Company { get; set; }
 
+        public int? Winner_Id { get; set; }
+
+        public int? Best_Solution_Id { get; set; }
+
     }
 
     

@@ -21,8 +21,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // GET: Solutions
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Solutions.Include(s => s.Participation);
-            return View(await appDbContext.ToListAsync());
+            return View(await _context.Solutions.ToListAsync());
         }
 
         // GET: Solutions/Details/5
@@ -34,7 +33,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             }
 
             var solution = await _context.Solutions
-                .Include(s => s.Participation)
                 .FirstOrDefaultAsync(m => m.S_Id == id);
             if (solution == null)
             {
@@ -47,7 +45,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // GET: Solutions/Create
         public IActionResult Create()
         {
-            ViewData["P_ID"] = new SelectList(_context.Participations, "C_Id", "C_Id");
             return View();
         }
 
@@ -56,7 +53,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("S_Id,URL,Status,Submit_Date,C_ID,P_ID,Point")] Solution solution)
+        public async Task<IActionResult> Create([Bind("S_Id,URL,Status,Submit_Date,Point")] Solution solution)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +61,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["P_ID"] = new SelectList(_context.Participations, "C_Id", "C_Id", solution.P_ID);
             return View(solution);
         }
 
@@ -81,7 +77,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             {
                 return NotFound();
             }
-            ViewData["P_ID"] = new SelectList(_context.Participations, "C_Id", "C_Id", solution.P_ID);
             return View(solution);
         }
 
@@ -90,7 +85,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("S_Id,URL,Status,Submit_Date,C_ID,P_ID,Point")] Solution solution)
+        public async Task<IActionResult> Edit(int id, [Bind("S_Id,URL,Status,Submit_Date,Point")] Solution solution)
         {
             if (id != solution.S_Id)
             {
@@ -117,7 +112,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["P_ID"] = new SelectList(_context.Participations, "C_Id", "C_Id", solution.P_ID);
             return View(solution);
         }
 
@@ -130,7 +124,6 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             }
 
             var solution = await _context.Solutions
-                .Include(s => s.Participation)
                 .FirstOrDefaultAsync(m => m.S_Id == id);
             if (solution == null)
             {

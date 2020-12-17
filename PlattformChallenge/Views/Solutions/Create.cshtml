@@ -1,4 +1,4 @@
-@model PlattformChallenge.Models.Solution
+﻿@model PlattformChallenge.Models.Solution
 
 @{
     ViewData["Title"] = "Create";
@@ -19,25 +19,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control">
-                    <option value="Received">Received</option>
-                    <option value="InProcessing">InProcessing</option>
-                    <option value="Rated">Rated</option>
-                </select>
+                <select asp-for="Status" class="form-control"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Submit_Date" class="control-label"></label>
                 <input asp-for="Submit_Date" class="form-control" />
                 <span asp-validation-for="Submit_Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="C_ID" class="control-label"></label>
-                <select asp-for="C_ID" class ="form-control" asp-items="ViewBag.C_ID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="P_ID" class="control-label"></label>
-                <select asp-for="P_ID" class ="form-control" asp-items="ViewBag.P_ID"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Point" class="control-label"></label>

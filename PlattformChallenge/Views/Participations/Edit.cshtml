@@ -14,10 +14,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="C_Id" />
             <input type="hidden" asp-for="P_Id" />
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsWinner" /> @Html.DisplayNameFor(model => model.IsWinner)
-                </label>
+            <div class="form-group">
+                <label asp-for="S_Id" class="control-label"></label>
+                <select asp-for="S_Id" class="form-control" asp-items="ViewBag.S_Id"></select>
+                <span asp-validation-for="S_Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

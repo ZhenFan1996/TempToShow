@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +21,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // GET: Participations
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Participations.Include(p => p.Challenge).Include(p => p.Programmer);
+            var appDbContext = _context.Participations.Include(p => p.Challenge).Include(p => p.Programmer).Include(p => p.Solution);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -36,6 +36,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             var participation = await _context.Participations
                 .Include(p => p.Challenge)
                 .Include(p => p.Programmer)
+                .Include(p => p.Solution)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
             if (participation == null)
             {
@@ -50,6 +51,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         {
             ViewData["C_Id"] = new SelectList(_context.Challenges, "C_Id", "Content");
             ViewData["P_Id"] = new SelectList(_context.Programmers, "User_Id", "Email");
+            ViewData["S_Id"] = new SelectList(_context.Solutions, "S_Id", "URL");
             return View();
         }
 
@@ -58,7 +60,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("C_Id,P_Id,IsWinner")] Participation participation)
+        public async Task<IActionResult> Create([Bind("C_Id,P_Id,S_Id")] Participation participation)
         {
             if (ModelState.IsValid)
             {
@@ -68,24 +70,26 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             }
             ViewData["C_Id"] = new SelectList(_context.Challenges, "C_Id", "Content", participation.C_Id);
             ViewData["P_Id"] = new SelectList(_context.Programmers, "User_Id", "Email", participation.P_Id);
+            ViewData["S_Id"] = new SelectList(_context.Solutions, "S_Id", "URL", participation.S_Id);
             return View(participation);
         }
 
         // GET: Participations/Edit/5
-        public async Task<IActionResult> Edit(int? C_Id,int? P_Id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (C_Id == null || P_Id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var participation = await _context.Participations.FindAsync(C_Id);
+            var participation = await _context.Participations.FindAsync(id);
             if (participation == null)
             {
                 return NotFound();
             }
             ViewData["C_Id"] = new SelectList(_context.Challenges, "C_Id", "Content", participation.C_Id);
             ViewData["P_Id"] = new SelectList(_context.Programmers, "User_Id", "Email", participation.P_Id);
+            ViewData["S_Id"] = new SelectList(_context.Solutions, "S_Id", "URL", participation.S_Id);
             return View(participation);
         }
 
@@ -94,7 +98,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("C_Id,P_Id,IsWinner")] Participation participation)
+        public async Task<IActionResult> Edit(int id, [Bind("C_Id,P_Id,S_Id")] Participation participation)
         {
             if (id != participation.C_Id)
             {
@@ -123,6 +127,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             }
             ViewData["C_Id"] = new SelectList(_context.Challenges, "C_Id", "Content", participation.C_Id);
             ViewData["P_Id"] = new SelectList(_context.Programmers, "User_Id", "Email", participation.P_Id);
+            ViewData["S_Id"] = new SelectList(_context.Solutions, "S_Id", "URL", participation.S_Id);
             return View(participation);
         }
 
@@ -137,6 +142,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             var participation = await _context.Participations
                 .Include(p => p.Challenge)
                 .Include(p => p.Programmer)
+                .Include(p => p.Solution)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
             if (participation == null)
             {

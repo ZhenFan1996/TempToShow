@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Models;
 
-namespace PlattformChallenge.Controllers.DatabaseControllers
+namespace PlattformChallenge.Controllers
 {
     public class UserAccountsController : Controller
     {

@@ -61,7 +61,8 @@ namespace PlattformChallenge.Models
             modelBuilder.Entity<Participation>()
                 .HasOne(pa => pa.Programmer)
                 .WithMany(p => p.Participations)
-                .HasForeignKey(pa =>pa.P_Id);
+                .HasForeignKey(pa =>pa.P_Id)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Participation>()
                 .HasOne(pa => pa.Challenge)
@@ -73,10 +74,10 @@ namespace PlattformChallenge.Models
                 .WithMany(i =>i.Challenges)
                 .HasForeignKey(c => c.Com_ID);
                     
-            modelBuilder.Entity<Solution>()
-                .HasOne(s => s.Participation)
-                .WithOne(p => p.Solution)
-                .HasForeignKey<Solution>(s => new { s.P_ID,s.C_ID});
+            modelBuilder.Entity<Participation>()
+                .HasOne(p => p.Solution)
+                .WithOne(s => s.Participation)
+                .HasForeignKey<Participation>(pa => pa.S_Id);
 
         }
 

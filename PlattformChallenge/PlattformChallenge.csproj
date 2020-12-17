@@ -13,6 +13,12 @@
     <Compile Remove="Migrations\20201217163724_WinnerNullable.Designer.cs" />
     <Compile Remove="Migrations\20201217172809_Winner.cs" />
     <Compile Remove="Migrations\20201217172809_Winner.Designer.cs" />
+    <Compile Remove="Migrations\20201217173045_InitialMigration.cs" />
+    <Compile Remove="Migrations\20201217173045_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201217185938_ChangeParticipation.cs" />
+    <Compile Remove="Migrations\20201217185938_ChangeParticipation.Designer.cs" />
+    <Compile Remove="Migrations\20201217190958_InitialMigration.cs" />
+    <Compile Remove="Migrations\20201217190958_InitialMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +31,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
