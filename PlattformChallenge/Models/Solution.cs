@@ -16,7 +16,11 @@ namespace PlattformChallenge.Models
         public StatusEnum Status { get; set; }
         [Required]
         public DateTime Submit_Date { get; set; }
-        
+
+        public int C_ID { get; set; }
+
+        public int P_ID { get; set; }
+
         public int Point { get; set; }
 
         public Participation Participation { get; set; }

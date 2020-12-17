@@ -72,10 +72,10 @@ namespace PlattformChallenge.Models
                 .WithMany(i =>i.Challenges)
                 .HasForeignKey(c => c.Com_ID);
                     
-            modelBuilder.Entity<Participation>()
-                .HasOne(pa => pa.Solution)
-                .WithOne(s => s.Participation)
-                .HasForeignKey<Participation>(pa => pa.S_Id);
+            modelBuilder.Entity<Solution>()
+                .HasOne(s => s.Participation)
+                .WithOne(p => p.Solution)
+                .HasForeignKey<Solution>(s => new { s.P_ID,s.C_ID});
 
         }
 
