@@ -35,6 +35,10 @@ namespace PlattformChallenge.Models
                 .IsUnique();
 
             modelBuilder.Entity<UserAccount>()
+              .HasIndex(u => u.User_Id)
+              .IsUnique();
+
+            modelBuilder.Entity<UserAccount>()
                 .HasDiscriminator(u => u.AccountTyp)
                 .HasValue<UserAccount>(AccountTyp.None)
                 .HasValue<Programmer>(AccountTyp.Programmer)
