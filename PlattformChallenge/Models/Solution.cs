@@ -17,7 +17,7 @@ namespace PlattformChallenge.Models
         [Required]
         public DateTime Submit_Date { get; set; }
 
-        public int Point { get; set; }
+        public int? Point { get; set; }
 
         public Participation Participation { get; set; }
     }

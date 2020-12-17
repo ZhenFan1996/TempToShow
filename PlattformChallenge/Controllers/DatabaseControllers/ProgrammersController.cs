@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,22 +9,22 @@ using PlattformChallenge.Models;
 
 namespace PlattformChallenge.Controllers.DatabaseControllers
 {
-    public class SolutionsController : Controller
+    public class ProgrammersController : Controller
     {
         private readonly AppDbContext _context;
 
-        public SolutionsController(AppDbContext context)
+        public ProgrammersController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Solutions
+        // GET: Programmers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Solutions.ToListAsync());
+            return View(await _context.Programmers.ToListAsync());
         }
 
-        // GET: Solutions/Details/5
+        // GET: Programmers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +32,39 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 return NotFound();
             }
 
-            var solution = await _context.Solutions
-                .FirstOrDefaultAsync(m => m.S_Id == id);
-            if (solution == null)
+            var programmer = await _context.Programmers
+                .FirstOrDefaultAsync(m => m.User_Id == id);
+            if (programmer == null)
             {
                 return NotFound();
             }
 
-            return View(solution);
+            return View(programmer);
         }
 
-        // GET: Solutions/Create
+        // GET: Programmers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Solutions/Create
+        // POST: Programmers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("S_Id,URL,Status,Submit_Date,Point")] Solution solution)
+        public async Task<IActionResult> Create([Bind("Firstname,Surname,User_Id,Email,Password,AccountTyp")] Programmer programmer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(solution);
+                _context.Add(programmer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(solution);
+            return View(programmer);
         }
 
-        // GET: Solutions/Edit/5
+        // GET: Programmers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 return NotFound();
             }
 
-            var solution = await _context.Solutions.FindAsync(id);
-            if (solution == null)
+            var programmer = await _context.Programmers.FindAsync(id);
+            if (programmer == null)
             {
                 return NotFound();
             }
-            return View(solution);
+            return View(programmer);
         }
 
-        // POST: Solutions/Edit/5
+        // POST: Programmers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("S_Id,URL,Status,Submit_Date,Point")] Solution solution)
+        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Surname,User_Id,Email,Password,AccountTyp")] Programmer programmer)
         {
-            if (id != solution.S_Id)
+            if (id != programmer.User_Id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
             {
                 try
                 {
-                    _context.Update(solution);
+                    _context.Update(programmer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SolutionExists(solution.S_Id))
+                    if (!ProgrammerExists(programmer.User_Id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(solution);
+            return View(programmer);
         }
 
-        // GET: Solutions/Delete/5
+        // GET: Programmers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,30 +123,30 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 return NotFound();
             }
 
-            var solution = await _context.Solutions
-                .FirstOrDefaultAsync(m => m.S_Id == id);
-            if (solution == null)
+            var programmer = await _context.Programmers
+                .FirstOrDefaultAsync(m => m.User_Id == id);
+            if (programmer == null)
             {
                 return NotFound();
             }
 
-            return View(solution);
+            return View(programmer);
         }
 
-        // POST: Solutions/Delete/5
+        // POST: Programmers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var solution = await _context.Solutions.FindAsync(id);
-            _context.Solutions.Remove(solution);
+            var programmer = await _context.Programmers.FindAsync(id);
+            _context.Programmers.Remove(programmer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SolutionExists(int id)
+        private bool ProgrammerExists(int id)
         {
-            return _context.Solutions.Any(e => e.S_Id == id);
+            return _context.Programmers.Any(e => e.User_Id == id);
         }
     }
 }

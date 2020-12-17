@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,9 +26,9 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         }
 
         // GET: Participations/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? C_Id, int? P_Id)
         {
-            if (id == null)
+            if (C_Id == null||P_Id == null)
             {
                 return NotFound();
             }
@@ -37,7 +37,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 .Include(p => p.Challenge)
                 .Include(p => p.Programmer)
                 .Include(p => p.Solution)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
+                .FirstOrDefaultAsync(m => (m.C_Id == C_Id)&&(m.P_Id ==P_Id));
             if (participation == null)
             {
                 return NotFound();
@@ -75,14 +75,14 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         }
 
         // GET: Participations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? C_Id,int? P_Id)
         {
-            if (id == null)
+            if (C_Id == null ||P_Id == null)
             {
-                return NotFound();
+              return NotFound();
             }
 
-            var participation = await _context.Participations.FindAsync(id);
+            var participation = await _context.Participations.FindAsync(C_Id,P_Id);
             if (participation == null)
             {
                 return NotFound();
@@ -98,9 +98,9 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("C_Id,P_Id,S_Id")] Participation participation)
+        public async Task<IActionResult> Edit(int? C_Id, int? P_Id,[Bind("C_Id,P_Id,S_Id")] Participation participation)
         {
-            if (id != participation.C_Id)
+            if (C_Id != participation.C_Id||P_Id !=participation.P_Id)
             {
                 return NotFound();
             }
@@ -132,9 +132,9 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
         }
 
         // GET: Participations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? C_Id,int? P_Id)
         {
-            if (id == null)
+            if (C_Id == null ||P_Id == null)
             {
                 return NotFound();
             }
@@ -143,7 +143,7 @@ namespace PlattformChallenge.Controllers.DatabaseControllers
                 .Include(p => p.Challenge)
                 .Include(p => p.Programmer)
                 .Include(p => p.Solution)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
+                .FirstOrDefaultAsync(m => (m.C_Id == C_Id)&(m.P_Id==P_Id));
             if (participation == null)
             {
                 return NotFound();

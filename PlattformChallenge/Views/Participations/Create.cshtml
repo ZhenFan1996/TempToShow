@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.Models.Participation
+@model PlattformChallenge.Models.Participation
 
 @{
     ViewData["Title"] = "Create";
@@ -22,7 +22,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="S_Id" class="control-label"></label>
-                <select asp-for="S_Id" class ="form-control" asp-items="ViewBag.S_Id"></select>
+                <select asp-for="S_Id" class ="form-control" asp-items="ViewBag.S_Id">
+                    <option value=""></option>
+
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
