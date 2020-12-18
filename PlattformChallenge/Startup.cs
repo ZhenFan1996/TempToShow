@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using PlattformChallenge.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace PlattformChallenge
 {
@@ -29,10 +30,8 @@ namespace PlattformChallenge
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
             );
-
-            services.AddControllersWithViews();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

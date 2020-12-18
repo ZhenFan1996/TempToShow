@@ -16,7 +16,7 @@ namespace PlattformChallenge.Models
 
         public Challenge Challenge { get; set; }
 
-        public Programmer Programmer { get; set; }
+        public PlatformUser Programmer { get; set; }
 
         public Solution Solution { get; set; }
 

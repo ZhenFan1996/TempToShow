@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Models;
 
 namespace PlattformChallenge.Models
 {
-    public class AppDbContext :DbContext
+    public class AppDbContext :IdentityDbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
@@ -16,14 +17,10 @@ namespace PlattformChallenge.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<LanguageChallenge>()
                 .HasKey(t => new { t.Language_Id, t.C_Id });
-
-            modelBuilder.Entity<UserAccount>()
-                .Property(u => u.AccountTyp)
-                .HasConversion(
-                v => v.ToString(),
-                v => (AccountTyp)Enum.Parse(typeof(AccountTyp),v));
 
             modelBuilder.Entity<Solution>()
             .Property(s => s.Status)
@@ -31,19 +28,6 @@ namespace PlattformChallenge.Models
             v => v.ToString(),
             v => (StatusEnum)Enum.Parse(typeof(StatusEnum), v));
 
-            modelBuilder.Entity<UserAccount>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
-
-            modelBuilder.Entity<UserAccount>()
-              .HasIndex(u => u.User_Id)
-              .IsUnique();
-
-            modelBuilder.Entity<UserAccount>()
-                .HasDiscriminator(u => u.AccountTyp)
-                .HasValue<UserAccount>(AccountTyp.None)
-                .HasValue<Programmer>(AccountTyp.Programmer)
-                .HasValue<Company>(AccountTyp.Company);
 
             modelBuilder.Entity<LanguageChallenge>()
                 .HasOne(lc => lc.Language)
@@ -80,12 +64,6 @@ namespace PlattformChallenge.Models
                 .HasForeignKey<Participation>(pa => pa.S_Id);
 
         }
-
-        public DbSet<UserAccount> UserAccounts { get; set; }
-
-        public DbSet<Programmer> Programmers { get; set; }
-
-        public DbSet<Company> Companies { get; set; }
 
         public DbSet<Challenge> Challenges { get; set; }
 

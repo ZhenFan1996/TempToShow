@@ -31,7 +31,7 @@ namespace PlattformChallenge.Models
 
         public List<LanguageChallenge> LanguageChallenges { get; set; }
 
-        public Company Company { get; set; }
+        public PlatformUser Company { get; set; }
 
         public int? Winner_Id { get; set; }
 
