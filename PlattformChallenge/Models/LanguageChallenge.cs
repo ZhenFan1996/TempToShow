@@ -8,9 +8,9 @@ namespace PlattformChallenge.Models
     public class LanguageChallenge
     {
 
-        public int Language_Id { get; set; }
+        public string Language_Id { get; set; }
 
-        public int C_Id { get; set; }
+        public string C_Id { get; set; }
 
         public Language Language { get; set; }
 

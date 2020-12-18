@@ -9,7 +9,7 @@ namespace PlattformChallenge.Models
     public class Solution
     {
         [Key]
-        public int S_Id { get; set; }
+        public string S_Id { get; set; }
         [Required]
         public string URL { get; set; }
         [Required]

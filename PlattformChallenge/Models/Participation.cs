@@ -8,11 +8,11 @@ namespace PlattformChallenge.Models
     public class Participation
     {
 
-        public int C_Id { get; set; }
+        public string C_Id { get; set; }
 
-        public int P_Id { get; set; }
+        public string P_Id { get; set; }
 
-        public int? S_Id { get; set; }
+        public string S_Id { get; set; }
 
         public Challenge Challenge { get; set; }
 

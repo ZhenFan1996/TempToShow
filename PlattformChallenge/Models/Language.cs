@@ -10,7 +10,7 @@ namespace PlattformChallenge.Models
     {
 
         [Key]
-        public int Language_Id { get; set; }
+        public string Language_Id { get; set; }
 
         public string DevelopmentLanguage { get; set; }
 

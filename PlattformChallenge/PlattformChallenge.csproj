@@ -19,6 +19,12 @@
     <Compile Remove="Migrations\20201217185938_ChangeParticipation.Designer.cs" />
     <Compile Remove="Migrations\20201217190958_InitialMigration.cs" />
     <Compile Remove="Migrations\20201217190958_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201217191117_InitialMigration.cs" />
+    <Compile Remove="Migrations\20201217191117_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201217220247_Change.cs" />
+    <Compile Remove="Migrations\20201217220247_Change.Designer.cs" />
+    <Compile Remove="Migrations\20201218213809_ChangeToIdentity.cs" />
+    <Compile Remove="Migrations\20201218213809_ChangeToIdentity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +38,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
