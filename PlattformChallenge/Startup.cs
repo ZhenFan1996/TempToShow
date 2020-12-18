@@ -30,7 +30,9 @@ namespace PlattformChallenge
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
             );
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<PlatformUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,10 +49,10 @@ namespace PlattformChallenge
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {

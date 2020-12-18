@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Controllers
 {
-    public class LoginController : Controller
+    public class AccountController : Controller
     {
-        public IActionResult Index()
-        {
+
+        [HttpGet]
+        public IActionResult Regiseter() {
+
             return View();
         }
     }
