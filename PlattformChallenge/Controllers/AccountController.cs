@@ -37,24 +37,28 @@ namespace PlattformChallenge.Controllers
 
                 var user = new PlatformUser
                 {
-                    UserName = model.Name,
-                    Email = model.Email
+                    Name = model.Name,
+                    Email = model.Email,
+                    UserName = model.Email
                 };
-
                 var result1 = await _userManager.CreateAsync(user, model.Password);
-                var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
-
-                if (result1.Succeeded && result2.Succeeded) {
+                if (result1.Succeeded) {
                     await _signInManager.SignInAsync(user,isPersistent: false);
-                    return RedirectToAction("index", "home");
+                    var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
+                    if (result2.Succeeded) {
+                        return RedirectToAction("index", "home");
+                    }
+                    else {
+                        foreach (var error in result2.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }                  
                 }
                 foreach (var error in result1.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                foreach (var error in result2.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+              
              
             }
             return View(model);

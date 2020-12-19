@@ -30,7 +30,12 @@ namespace PlattformChallenge
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
             );
-            services.AddIdentity<PlatformUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<PlatformUser, IdentityRole>(options => {
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<AppDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
