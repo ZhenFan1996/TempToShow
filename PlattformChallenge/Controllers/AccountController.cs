@@ -43,7 +43,7 @@ namespace PlattformChallenge.Controllers
                 };
                 var result1 = await _userManager.CreateAsync(user, model.Password);
                 if (result1.Succeeded) {
-                    await _signInManager.SignInAsync(user,isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded) {
                         return RedirectToAction("index", "home");
@@ -53,16 +53,22 @@ namespace PlattformChallenge.Controllers
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
-                    }                  
+                    }
                 }
                 foreach (var error in result1.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-              
-             
+
+
             }
             return View(model);
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("index", "home");
         }
                      
           private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)

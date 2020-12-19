@@ -9,6 +9,8 @@
 </head>
 <body>
     <header>
+        @using Microsoft.AspNetCore.Identity
+        @inject SignInManager<PlatformUser> SignInMananger
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
@@ -25,19 +27,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Challenges" asp-action="Index">Challenge</a>
                         </li>
+
+                        @if (SignInMananger.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="account" asp-action="logout" method="post">
+                                    <a type="submit" style="width:auto" class="nav-link" btn btn-link py-0>Sign out   @User.Identity.Name</a>
+                                </form>
+                            </li>
+                        }
+                        
+                        else
+                        {
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="SignIn">Sign in</a>
+                        </li>
+                       
+                        }
+
+
+
 
                         @*<li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>*@
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>*@
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
+        @using Microsoft.AspNetCore.Identity
+        @inject SignInManager<PlatformUser> SignInMananger
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -45,7 +70,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Challenge Plattform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> - 
+            &copy; 2020 - Challenge Plattform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
             A Teamproject of <a href="https://kit.edu"> KIT <img src="~/images/kit.JPG" alt="" style="width:80px;height:40px"></a>.
         </div>
     </footer>
