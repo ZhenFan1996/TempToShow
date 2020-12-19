@@ -11,13 +11,15 @@ namespace PlattformChallenge.ViewModels
         [Required]
         public string Email { get; set; }
 
+        public string Name { get; set; }
+
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string  Password { get; set; }
       
         [Required]
         [DataType(DataType.Password)]
-        [Compare("Passwird",ErrorMessage = "The passwords are not inconsistent!")]
+        [Compare("Password",ErrorMessage = "The passwords are not inconsistent!")]
         public string ConfirmPassword { get; set; }
 
         public string RoleName { get; set; }

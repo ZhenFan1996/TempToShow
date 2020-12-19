@@ -11,7 +11,7 @@ namespace PlattformChallenge.Models
     {
 
         [Key]
-        public int C_Id { get; set; }
+        public string C_Id { get; set; }
 
         [Required]
         public int Bonus { get; set; }
@@ -25,7 +25,7 @@ namespace PlattformChallenge.Models
         public int Max_Participant { get; set; }
 
         [Required]
-        public int Com_ID { get; set; }
+        public string Com_ID { get; set; }
 
         public List<Participation> Participations { get; set; }
 
@@ -33,9 +33,9 @@ namespace PlattformChallenge.Models
 
         public PlatformUser Company { get; set; }
 
-        public int? Winner_Id { get; set; }
+        public string Winner_Id { get; set; }
 
-        public int? Best_Solution_Id { get; set; }
+        public string Best_Solution_Id { get; set; }
 
     }
 
