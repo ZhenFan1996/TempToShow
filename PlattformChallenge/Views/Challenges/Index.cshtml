@@ -1,0 +1,73 @@
+﻿@*@model IEnumerable<PlattformChallenge.Models.Challenge>*@
+@model IEnumerable<Challenge>
+@{
+    ViewData["Title"] = "Current Challenges";
+}
+
+<h1>Current Challenges</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                Title
+                @*@Html.DisplayNameFor(model => model.Title)*@
+            </th>
+            <th>
+                Bonus
+            </th>
+            <th>
+                Company
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Quota
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+
+            <td>
+                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+            </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Release_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Max_Participant)
+            </td>
+
+            @*<td>
+            @Html.DisplayFor(modelItem => item.Winner_Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Best_Solution_Id)
+        </td>*@
+            @*<td>
+                <a asp-action="Edit" asp-route-id="@item.C_Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.C_Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.C_Id">Delete</a>
+            </td>*@
+        </tr>
+        }
+    </tbody>
+</table>

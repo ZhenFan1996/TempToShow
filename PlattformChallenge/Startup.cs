@@ -36,6 +36,7 @@ namespace PlattformChallenge
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<AppDbContext>();
+            services.AddScoped < IChallengeRepo,SQLChallengeRepo> ();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

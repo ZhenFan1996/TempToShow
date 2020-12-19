@@ -19,7 +19,7 @@ namespace PlattformChallenge.ViewModels
       
         [Required]
         [DataType(DataType.Password)]
-        [Compare("Password",ErrorMessage = "The passwords are not inconsistent!")]
+        [Compare("Password",ErrorMessage = "The passwords are not consistent!")]
         public string ConfirmPassword { get; set; }
 
         public string RoleName { get; set; }

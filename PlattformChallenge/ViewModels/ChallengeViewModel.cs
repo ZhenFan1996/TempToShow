@@ -1,29 +1,30 @@
+﻿using PlattformChallenge.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
-namespace PlattformChallenge.Models
+namespace PlattformChallenge.ViewModels
 {
-    public class Challenge
+    public class ChallengeViewModel
+
     {
         [Key]
         public string C_Id { get; set; }
-
         [Required]
+        [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Bonus { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
-        public string  Content  { get; set; }
+        public string Content { get; set; }
+        
         [Required]
-        [Display(Name = "Date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
+
         [Required]
-        [Display(Name = "Quota")]
+ 
         public int Max_Participant { get; set; }
 
         [Required]
@@ -35,14 +36,7 @@ namespace PlattformChallenge.Models
 
         public PlatformUser Company { get; set; }
 
-        [Display(Name = "Winner")]
-        public string Winner_Id { get; set; }
-
-        [Display(Name = "Best Solution")]
-        public string Best_Solution_Id { get; set; }
+        public IEnumerable<Challenge> Challenges { get; set; }
 
     }
-
-    
-
 }
