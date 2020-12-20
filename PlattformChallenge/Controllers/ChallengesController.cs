@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace PlattformChallenge.Controllers
         }
 
         // GET: Challenges
+      [Authorize(Roles ="Company")]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Challenges.Include(c => c.Company
