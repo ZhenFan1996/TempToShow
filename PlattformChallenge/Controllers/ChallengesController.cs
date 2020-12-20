@@ -21,7 +21,8 @@ namespace PlattformChallenge.Controllers
         // GET: Challenges
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Challenges.Include(c => c.Company);
+            var appDbContext = _context.Challenges.Include(c => c.Company
+            ).Where(c => c.Release_Date <= DateTime.UtcNow);
             return View(await appDbContext.ToListAsync());
         }
 
