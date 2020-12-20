@@ -44,9 +44,9 @@ namespace PlattformChallenge.Controllers
                 };
                 var result1 = await _userManager.CreateAsync(user, model.Password);
                 if (result1.Succeeded) {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded) {
+                        await _signInManager.SignInAsync(user,false);
                         return RedirectToAction("index", "home");
                     }
                     else {

@@ -79,7 +79,7 @@ namespace PlattformChallenge.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
+        public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
