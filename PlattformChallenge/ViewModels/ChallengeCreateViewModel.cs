@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.ViewModels
 {
-    public class ChallengeViewModel
+    public class ChallengeCreateViewModel
 
     {
         [Key]
         public string C_Id { get; set; }
         [Required]
+        public string Title { get; set; }
+        [Required]
         [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Bonus { get; set; }
-        [Required]
-        public string Title { get; set; }
+     
         [Required]
         public string Content { get; set; }
         
@@ -27,16 +28,7 @@ namespace PlattformChallenge.ViewModels
  
         public int Max_Participant { get; set; }
 
-        [Required]
-        public string Com_ID { get; set; }
-
-        public List<Participation> Participations { get; set; }
-
         public List<LanguageChallenge> LanguageChallenges { get; set; }
-
-        public PlatformUser Company { get; set; }
-
-        public IEnumerable<Challenge> Challenges { get; set; }
 
     }
 }

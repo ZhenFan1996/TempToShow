@@ -13,6 +13,7 @@ namespace PlattformChallenge.Models
         public string C_Id { get; set; }
 
         [Required]
+
         public int Bonus { get; set; }
         [Required]
         public string Title { get; set; }

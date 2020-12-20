@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Models;
+using PlattformChallenge.ViewModels;
 
 namespace PlattformChallenge.Controllers
 {
@@ -20,11 +22,11 @@ namespace PlattformChallenge.Controllers
         }
 
         // GET: Challenges
-      [Authorize(Roles ="Company")]
+
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Challenges.Include(c => c.Company
-            ).Where(c => c.Release_Date <= DateTime.UtcNow);
+            ).Where(c => c.Release_Date <= DateTime.Now);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -48,29 +50,65 @@ namespace PlattformChallenge.Controllers
         }
 
         // GET: Challenges/Create
+        [Authorize(Roles = "Company")]
         public IActionResult Create()
         {
-            ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id");
             return View();
         }
+
+
+
 
         // POST: Challenges/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        challenge.C_Id = Guid.NewGuid().ToString();
+        //        _context.Add(challenge);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
+        //    return View(challenge);
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
+        [Authorize(Roles = "Company")]
+        public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                challenge.C_Id = Guid.NewGuid().ToString();
-                _context.Add(challenge);
+                Challenge newChallenge = new Challenge
+                {
+                    C_Id = Guid.NewGuid().ToString(),
+                    Title = model.Title,
+                    Bonus = model.Bonus,
+                    Content = model.Content,
+                    Release_Date = model.Release_Date,
+                    Max_Participant = model.Max_Participant,
+                    Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+
+            };
+                _context.Add(newChallenge);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = newChallenge.C_Id});
             }
-            ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
-            return View(challenge);
-        }
+
+            return View("Index");
+            }
+          
+     
+
+
+
+
 
         // GET: Challenges/Edit/5
         public async Task<IActionResult> Edit(string id)
