@@ -87,17 +87,19 @@ namespace PlattformChallenge.Controllers
         }
          #endregion
 
-
-
-
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
-                     
+
+        public  IActionResult AccessDenied() {
+
+            return View();
+        }
+
+
           private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)
             {
                 var alreadyExists = await roleManager.RoleExistsAsync(Rolename);
@@ -105,4 +107,6 @@ namespace PlattformChallenge.Controllers
                 await roleManager.CreateAsync(new IdentityRole(Rolename));
             }
     }
+
+
 }
