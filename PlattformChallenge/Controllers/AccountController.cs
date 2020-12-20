@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
+using System.Security.Claims;
 
 namespace PlattformChallenge.Controllers
 {
@@ -95,7 +96,10 @@ namespace PlattformChallenge.Controllers
         }
 
         public  IActionResult AccessDenied() {
-
+            var roles = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+            ViewBag.CurrentRole = roles.FirstOrDefault();           
             return View();
         }
 
