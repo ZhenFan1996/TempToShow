@@ -57,9 +57,7 @@ namespace PlattformChallenge.Controllers
                 }
                 foreach (var error in result1.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
-
-
+                }         
             }
             return View(model);
 
