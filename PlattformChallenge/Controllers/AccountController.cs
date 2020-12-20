@@ -64,6 +64,35 @@ namespace PlattformChallenge.Controllers
             return View(model);
 
         }
+
+        #region login
+        [HttpGet]
+        public IActionResult LogIn()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LogInViewModel logInViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(logInViewModel.Email, logInViewModel.Password, logInViewModel.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError(string.Empty, "Error to login, please try again");
+                
+            }
+            return View(logInViewModel);
+        }
+         #endregion
+
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
