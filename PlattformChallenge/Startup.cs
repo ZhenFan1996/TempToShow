@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using PlattformChallenge.Models;
 using Microsoft.AspNetCore.Identity;
+using PlattformChallenge.Core.Interfaces;
+using PlattformChallenge.Infrastructure;
 
 namespace PlattformChallenge
 {
@@ -49,6 +51,7 @@ namespace PlattformChallenge
                 options.SlidingExpiration = true;
             });
 
+            services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Core.Interfaces
 {
-    interface IRepository<TEntity,TPrimaryKey> where TEntity:class
+    interface IRepository<TEntity> where TEntity:class
     {
 
         Task<List<TEntity>> GetAllListAsync();

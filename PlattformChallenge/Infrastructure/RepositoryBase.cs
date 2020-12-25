@@ -8,7 +8,7 @@ using PlattformChallenge.Core.Interfaces;
 
 namespace PlattformChallenge.Infrastructure
 {
-    public class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey> where TEntity : class
+    public class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected readonly AppDbContext _dbcontext;
 
