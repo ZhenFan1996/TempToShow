@@ -19,6 +19,16 @@ namespace PlattformChallenge.Infrastructure
             this._dbcontext = dbContext;
         }
 
+        public IQueryable<TEntity> GetAll()
+        {
+            return Table.AsQueryable();
+        }
+
+        public List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate)
+        {
+            return GetAll().Where(predicate).ToList();
+        }
+
         public async Task<List<TEntity>> GetAllListAsync()
         {
             return await Table.AsQueryable().ToListAsync();
@@ -55,11 +65,12 @@ namespace PlattformChallenge.Infrastructure
             return entity;
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public async Task<TEntity> DeleteAsync(TEntity entity)
         {
             AttachIfNot(entity);
             Table.Remove(entity);
             await _dbcontext.SaveChangesAsync();
+            return entity;
         }
 
         public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate)

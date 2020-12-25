@@ -14,6 +14,7 @@ using PlattformChallenge.Models;
 using Microsoft.AspNetCore.Identity;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Infrastructure;
+using PlattformChallenge.Core.Model;
 
 namespace PlattformChallenge
 {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
 using System.Security.Claims;
+using PlattformChallenge.Core.Model;
 
 namespace PlattformChallenge.Controllers
 {

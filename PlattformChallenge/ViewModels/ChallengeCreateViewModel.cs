@@ -1,4 +1,5 @@
-﻿using PlattformChallenge.Models;
+using PlattformChallenge.Core.Model;
+using PlattformChallenge.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

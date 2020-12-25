@@ -73,6 +73,6 @@ namespace PlattformChallenge.Infrastructure
 
         public DbSet<Solution> Solutions { get; set; }
 
-        public DbSet<PlattformChallenge.Models.LanguageChallenge> LanguageChallenge { get; set; }
+        public DbSet<LanguageChallenge> LanguageChallenge { get; set; }
     }
 }

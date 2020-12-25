@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Core.Interfaces
 {
-    interface IRepository<TEntity> where TEntity:class
+       public interface IRepository<TEntity> where TEntity:class
     {
+        IQueryable<TEntity> GetAll();
+
+        List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate);
 
         Task<List<TEntity>> GetAllListAsync();
 
@@ -19,7 +22,7 @@ namespace PlattformChallenge.Core.Interfaces
 
         Task<TEntity> UpdateAsync(TEntity entity);
 
-        Task DeleteAsync(TEntity entity);
+        Task<TEntity> DeleteAsync(TEntity entity);
 
         Task DeleteAsync(Expression<Func<TEntity,bool>> predicate);
     }

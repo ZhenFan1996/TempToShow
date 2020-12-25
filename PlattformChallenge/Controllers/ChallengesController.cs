@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PlattformChallenge.Core.Interfaces;
+using PlattformChallenge.Core.Model;
+using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
 
@@ -14,21 +18,26 @@ namespace PlattformChallenge.Controllers
 {
     public class ChallengesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IRepository<Challenge> _repository;
+        private readonly IRepository<PlatformUser> _pRepository;
 
-        public ChallengesController(AppDbContext context)
+        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository)
         {
-            _context = context;
+            _repository = repository;
+            _pRepository = pRepository;
         }
 
         // GET: Challenges
 
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Challenges.Include(c => c.Company
+
+            var appDbContect = _repository.GetAll().Include(c => c.Company
             ).Where(c => c.Release_Date <= DateTime.Now);
-            return View(await appDbContext.ToListAsync());
+            return View(await appDbContect.ToListAsync());
         }
+
+
 
         // GET: Challenges/Details/5
         public async Task<IActionResult> Details(string id)
@@ -38,7 +47,7 @@ namespace PlattformChallenge.Controllers
                 return NotFound();
             }
 
-            var challenge = await _context.Challenges
+            var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
             if (challenge == null)
@@ -96,20 +105,13 @@ namespace PlattformChallenge.Controllers
                     Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier)
 
             };
-                _context.Add(newChallenge);
-                await _context.SaveChangesAsync();
+                await _repository.InsertAsync(newChallenge);
                 return RedirectToAction("Details", new { id = newChallenge.C_Id});
             }
 
             return View("Index");
             }
-          
-     
-
-
-
-
-
+           
         // GET: Challenges/Edit/5
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
@@ -119,12 +121,12 @@ namespace PlattformChallenge.Controllers
                 return NotFound();
             }
 
-            var challenge = await _context.Challenges.FindAsync(id);
+            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
             if (challenge == null)
             {
                 return NotFound();
             }
-            ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
+            ViewData["Com_ID"] = new SelectList(_pRepository.GetAll(), "Id", "Id", challenge.Com_ID);
             return View(challenge);
         }
 
@@ -145,8 +147,7 @@ namespace PlattformChallenge.Controllers
             {
                 try
                 {
-                    _context.Update(challenge);
-                    await _context.SaveChangesAsync();
+                    await _repository.UpdateAsync(challenge);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -161,7 +162,7 @@ namespace PlattformChallenge.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
+            ViewData["Com_ID"] = new SelectList(_pRepository.GetAll(), "Id", "Id", challenge.Com_ID);
             return View(challenge);
         }
 
@@ -174,7 +175,7 @@ namespace PlattformChallenge.Controllers
                 return NotFound();
             }
 
-            var challenge = await _context.Challenges
+            var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
             if (challenge == null)
@@ -191,15 +192,15 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var challenge = await _context.Challenges.FindAsync(id);
-            _context.Challenges.Remove(challenge);
-            await _context.SaveChangesAsync();
+
+            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
+            challenge = await _repository.DeleteAsync(challenge);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ChallengeExists(string id)
         {
-            return _context.Challenges.Any(e => e.C_Id == id);
+            return _repository.GetAll().Any(e => e.C_Id == id);
         }
     }
 }
