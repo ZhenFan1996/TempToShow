@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+namespace PlattformChallenge.Core.Model
 
-namespace PlattformChallenge.Models
 {
     public class Solution
     {

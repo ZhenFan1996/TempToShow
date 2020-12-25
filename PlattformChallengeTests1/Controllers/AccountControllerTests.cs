@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlattformChallenge.Controllers;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace PlattformChallenge.Controllers.Tests
         [TestMethod()]
         public void LogoutTest()
         {
-
+            
         }
     }
 }

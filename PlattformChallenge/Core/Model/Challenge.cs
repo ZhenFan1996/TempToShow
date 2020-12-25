@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace PlattformChallenge.Models
+namespace PlattformChallenge.Core.Model
 {
     public class Challenge
     {

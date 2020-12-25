@@ -50,6 +50,7 @@ namespace PlattformChallenge.Controllers
         }
 
         // GET: Challenges/Create
+        [Authorize(Roles ="Company")]
         public IActionResult Create()
         {
             return View();
@@ -79,6 +80,7 @@ namespace PlattformChallenge.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
             if (ModelState.IsValid)
