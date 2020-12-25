@@ -3,16 +3,15 @@ using PlattformChallenge.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Moq;
+using PlattformChallenge;
+
 
 namespace PlattformChallenge.Controllers.Tests
 {
     [TestClass()]
-    public class AccountControllerTests
+    public class ChallengeControllerShould
     {
-        [TestMethod()]
-        public void LogoutTest()
-        {
-            
-        }
+       private readonly Mock<Irepo>
     }
 }
