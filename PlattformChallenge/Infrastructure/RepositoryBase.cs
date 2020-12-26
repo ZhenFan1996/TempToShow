@@ -39,6 +39,15 @@ namespace PlattformChallenge.Infrastructure
             return await Table.AsQueryable().Where(predicate).ToListAsync();
         }
 
+
+
+        public  TEntity FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
+        {
+            var entity =  Table.AsQueryable().FirstOrDefault(predicate);
+
+            return entity;
+
+        }
         public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var entity = await Table.AsQueryable().FirstOrDefaultAsync(predicate);

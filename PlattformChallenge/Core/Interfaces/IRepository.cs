@@ -16,6 +16,8 @@ namespace PlattformChallenge.Core.Interfaces
 
         Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity,bool>> predicate);
 
+        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> predicate);
+
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity,bool>> predicate);
 
         Task<TEntity> InsertAsync(TEntity entity);
