@@ -56,13 +56,11 @@ namespace PlattformChallenge.Infrastructure
             
         }
 
-        public async Task<TEntity> InsertAsync(TEntity toInsert)
+        public async Task InsertAsync(TEntity toInsert)
         {
             var entity = await Table.AddAsync(toInsert);
 
             await _dbcontext.SaveChangesAsync();
-
-            return entity.Entity;
 
          }
 

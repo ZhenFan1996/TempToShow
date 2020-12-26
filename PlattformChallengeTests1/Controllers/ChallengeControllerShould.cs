@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace PlattformChallenge.Controllers.Tests
 {
@@ -28,34 +31,37 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository = new Mock<IRepository<Challenge>>();
             _mockPRpository = new Mock<IRepository<PlatformUser>>();
             _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object);
-            var mock = new Mock<ControllerContext>();
-            mock.Setup(p => p.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)).Returns("1");
-            _sut.ControllerContext = mock.Object;
+            var mock = new Mock<HttpContext>();
+            var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
+
+            mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
+            _sut.ControllerContext = context ;
          }
 
-        [Fact]
-
-        public async Task demo() {
-
-            Assert.True(1 == 1);
-        }
-
 
         [Fact]
-        public async Task CreateTest() {
-       
+        public async Task CreateChallengeTest() {
+              Challenge savedChallenge = null;
+            _mockRepository.Setup(m => m.InsertAsync(It.IsAny<Challenge>()))
+                .Returns(Task.CompletedTask)
+                .Callback<Challenge>(c => savedChallenge =c);
    
             var challenge = new ChallengeCreateViewModel()
             {
-                C_Id = Guid.NewGuid().ToString(),
                 Title = "aaaa",
                 Bonus = 2,
-                Content = "aaaa",
+                Content = "wuwuwuwuwu",
                 Release_Date = DateTime.Now,
                 Max_Participant = 8,
             };
-
+           
           var result= await _sut.Create(challenge);
+            Assert.Equal(challenge.Title, savedChallenge.Title);
+            Assert.Equal(challenge.Bonus, savedChallenge.Bonus);
+            Assert.Equal(challenge.Content, savedChallenge.Content);
+            Assert.Equal(challenge.Release_Date, savedChallenge.Release_Date);
+            Assert.Equal(challenge.Max_Participant, savedChallenge.Max_Participant);
+            Assert.Equal("1", savedChallenge.Com_ID);
 
         }
     }

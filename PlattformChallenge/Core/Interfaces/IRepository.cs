@@ -20,7 +20,7 @@ namespace PlattformChallenge.Core.Interfaces
 
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity,bool>> predicate);
 
-        Task<TEntity> InsertAsync(TEntity entity);
+        Task InsertAsync(TEntity entity);
 
         Task<TEntity> UpdateAsync(TEntity entity);
 
