@@ -33,7 +33,6 @@ namespace PlattformChallenge.Controllers.Tests
             _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object);
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
-
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
             _sut.ControllerContext = context ;
          }
@@ -65,4 +64,5 @@ namespace PlattformChallenge.Controllers.Tests
 
         }
     }
+
 }
