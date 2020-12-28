@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using PlattformChallenge.ViewModels;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace PlattformChallengeTests.Controllers
 {
@@ -51,7 +53,6 @@ namespace PlattformChallengeTests.Controllers
 
         [Fact]
         public async Task InVaildModelState() {
-
             _sut.ModelState.AddModelError("key","error Test");
             RegisterViewModel model = new RegisterViewModel() {
                 Name = "Zhen",
@@ -67,7 +68,63 @@ namespace PlattformChallengeTests.Controllers
             
         }
 
+        [Fact]
+        public async Task FailedCreateAsync() {
+            RegisterViewModel model = new RegisterViewModel()
+            {
+                Name = "Zhen",
+                Email = "ubumh@student.kit.edu",
+                Password = "a123456",
+                RoleName = "Programmer"
+            };
+            _userManager.Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
+                        .ReturnsAsync(IdentityResult.Failed(new IdentityError[] {
+                            new IdentityError(){
+                                Description = "test error1" },
+                            new IdentityError(){
+                                Description = "test error2"}
+        }));
+            await _sut.Register(model);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("test error1", allErrors.ElementAt(0).ErrorMessage);
+            Assert.Equal("test error2", allErrors.ElementAt(1).ErrorMessage);
+            _userManager.Verify(x => x.AddToRoleAsync(It.IsAny<PlatformUser>(), It.Is<string>(s => s.Equals(model.RoleName))), Times.Never);
+            _signInManager.Verify(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null), Times.Never);
+        }
 
+        [Fact]
+        public async Task FailedAddToRoleAsync()
+        {
+            PlatformUser userForUserManager = null;
+            string toCheckPassword = null;
+            RegisterViewModel model = new RegisterViewModel()
+            {
+                Name = "Zhen",
+                Email = "ubumh@student.kit.edu",
+                Password = "a123456",
+                RoleName = "Programmer"
+            };
+            _userManager.Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
+                  .ReturnsAsync(IdentityResult.Success).Callback<PlatformUser, string>((x, y) => {
+                   userForUserManager = x; ;
+                  toCheckPassword = y;
+       });
+            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<PlatformUser>(), It.Is<string>(s => s.Equals(model.RoleName))))
+             .ReturnsAsync(IdentityResult.Failed(new IdentityError[] {
+                            new IdentityError(){
+                                Description = "test error1" },
+                            new IdentityError(){
+                                Description = "test error2"}}));
+            await _sut.Register(model);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("test error1", allErrors.ElementAt(0).ErrorMessage);
+            Assert.Equal("test error2", allErrors.ElementAt(1).ErrorMessage);
+            _signInManager.Verify(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null), Times.Never);
+            Assert.Equal(userForUserManager.Name, model.Name);
+            Assert.Equal(userForUserManager.Email, model.Email);
+            Assert.Equal(userForUserManager.UserName, model.Email);
+            Assert.Equal(toCheckPassword, model.Password);
+        }
 
         [Fact]
         public async Task SaveUserInfoAndReturnViewAsync()
@@ -83,8 +140,7 @@ namespace PlattformChallengeTests.Controllers
                 Password = "a123456",
                 RoleName = "Programmer"
             };
-            _userManager
-                .Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
+            _userManager.Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success).Callback<PlatformUser, string>((x, y) => {
                     userForUserManager = x; ;
                     toCheckPassword = y;
@@ -94,7 +150,8 @@ namespace PlattformChallengeTests.Controllers
                     userForRoleManager = x;
                     rollName = y;
                 });
-            _signInManager.Setup(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null)).Returns(Task.CompletedTask);
+            _signInManager.Setup(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null))
+                .Returns(Task.CompletedTask);
             await _sut.Register(model);
 
             Assert.Equal(userForRoleManager, userForUserManager);
@@ -105,6 +162,9 @@ namespace PlattformChallengeTests.Controllers
             Assert.Equal(toCheckPassword, model.Password);
 
         }
+
+
+
 
         private static Mock<UserManager<PlatformUser>> MockUserManager<TUser>(List<PlatformUser> ls) 
         {
