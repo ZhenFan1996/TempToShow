@@ -48,7 +48,7 @@ namespace PlattformChallenge.Controllers
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded) {
                         await _signInManager.SignInAsync(user,false);
-                        return RedirectToAction("index", "home");
+                        return RedirectToAction("Index", "Home");
                     }
                     else {
                         foreach (var error in result2.Errors)
@@ -93,7 +93,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("index", "home");
+            return RedirectToAction("Index", "Home");
         }
 
         public  IActionResult AccessDenied() {
