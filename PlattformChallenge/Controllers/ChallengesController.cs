@@ -42,9 +42,12 @@ namespace PlattformChallenge.Controllers
         // GET: Challenges/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            ErrorViewModel errorViewModel = new ErrorViewModel();
             if (id == null)
             {
-                return NotFound();
+                errorViewModel.RequestId = "invalid challenge id value for details";
+                return View("Error", errorViewModel);
+                //return NotFound();
             }
 
             var challenge = await _repository.GetAll()
@@ -52,14 +55,15 @@ namespace PlattformChallenge.Controllers
                 .FirstOrDefaultAsync(m => m.C_Id == id);
             if (challenge == null)
             {
-                return NotFound();
+                errorViewModel.RequestId = "there's no challenge with this id, please check again";
+                return View("Error", errorViewModel);
             }
 
             return View(challenge);
         }
 
         // GET: Challenges/Create
-        [Authorize(Roles ="Company")]
+        [Authorize(Roles = "Company")]
         public IActionResult Create()
         {
             return View();
@@ -111,7 +115,7 @@ namespace PlattformChallenge.Controllers
 
             return View("Index");
             }
-           
+        
         // GET: Challenges/Edit/5
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)

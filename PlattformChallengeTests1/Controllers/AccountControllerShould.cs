@@ -40,6 +40,10 @@ namespace PlattformChallengeTests.Controllers
             _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object);
         }
 
+        //
+        // Summary:
+        // [TestCase-ID: 1-1] Test if the view of register is the expected type.
+        //
         [Fact]
         public void ReturnViewForRegister()
         {
