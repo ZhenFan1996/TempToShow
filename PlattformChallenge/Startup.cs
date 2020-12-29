@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Core.Model;
+using PlattformChallenge.Data;
 
 namespace PlattformChallenge
 {
@@ -74,7 +75,7 @@ namespace PlattformChallenge
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-           
+            app.UseDataInitializer();
 
             app.UseEndpoints(endpoints =>
             {

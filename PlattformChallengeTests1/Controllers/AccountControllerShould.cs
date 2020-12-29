@@ -155,7 +155,7 @@ namespace PlattformChallengeTests.Controllers
             _userManager.Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success).Callback<PlatformUser, string>((x, y) =>
                 {
-                    userForUserManager = x; ;
+                    userForUserManager = x; 
                     toCheckPassword = y;
                 });
             _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<PlatformUser>(), It.Is<string>(s => s.Equals(model.RoleName))))

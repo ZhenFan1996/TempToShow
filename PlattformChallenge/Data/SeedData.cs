@@ -1,0 +1,89 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using PlattformChallenge.Core.Model;
+using PlattformChallenge.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+namespace PlattformChallenge.Data
+{
+    public static class SeedData
+    {
+        public static IApplicationBuilder UseDataInitializer( this IApplicationBuilder builder)
+        {
+            using (var scope = builder.ApplicationServices.CreateScope())
+            {
+                var dbcontext = scope.ServiceProvider.GetService<AppDbContext>();
+                var roleMangaer = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+
+                dbcontext.Database.Migrate();
+                if (!dbcontext.Languages.Any()) {
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "1",
+                        DevelopmentLanguage = "Java"
+
+                    });
+
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "2",
+                        DevelopmentLanguage = "C#"
+
+                    });
+
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "3",
+                        DevelopmentLanguage = "Pyhthon"
+
+                    });
+
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "4",
+                        DevelopmentLanguage = "C++"
+
+                    });
+
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "5",
+                        DevelopmentLanguage = "JavaScript"
+
+                    });
+
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "6",
+                        DevelopmentLanguage = "Go"
+
+                    });
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "7",
+                        DevelopmentLanguage = "Swift"
+
+                    });
+
+                }
+
+                if (!dbcontext.Roles.Any()) {
+
+                    roleMangaer.CreateAsync(new IdentityRole("Programmer"));
+
+                    roleMangaer.CreateAsync(new IdentityRole("Company"));
+
+
+
+                }
+
+                return builder;
+            }
+        }
+    }
+}
+

@@ -20,11 +20,15 @@ namespace PlattformChallenge.Controllers
     {
         private readonly IRepository<Challenge> _repository;
         private readonly IRepository<PlatformUser> _pRepository;
+        private readonly IRepository<Language> _lRepository;
+        private readonly IRepository<LanguageChallenge> _lcRepository;
 
-        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository)
+        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository)
         {
             _repository = repository;
             _pRepository = pRepository;
+            _lRepository = lRepository;
+            _lcRepository = lcRepository;
         }
 
         // GET: Challenges
