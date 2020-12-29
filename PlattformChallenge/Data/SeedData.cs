@@ -12,7 +12,7 @@ namespace PlattformChallenge.Data
 {
     public static class SeedData
     {
-        public static IApplicationBuilder UseDataInitializer( this IApplicationBuilder builder)
+        public static  object UseDataInitializerAsync( this IApplicationBuilder builder)
         {
             using (var scope = builder.ApplicationServices.CreateScope())
             {
@@ -73,14 +73,14 @@ namespace PlattformChallenge.Data
 
                 if (!dbcontext.Roles.Any()) {
 
-                    roleMangaer.CreateAsync(new IdentityRole("Programmer"));
+                    var IdentityResult1 = roleMangaer.CreateAsync(new IdentityRole("Programmer")).GetAwaiter().GetResult();
 
-                    roleMangaer.CreateAsync(new IdentityRole("Company"));
+                    var IdentityResult2 = roleMangaer.CreateAsync(new IdentityRole("Company")).GetAwaiter().GetResult();
 
 
 
                 }
-
+                 dbcontext.SaveChanges();
                 return builder;
             }
         }

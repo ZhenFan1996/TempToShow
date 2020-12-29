@@ -48,15 +48,17 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository.Setup(m => m.InsertAsync(It.IsAny<Challenge>()))
                 .Returns(Task.CompletedTask)
                 .Callback<Challenge>(c => savedChallenge =c);
-   
-            var challenge = new ChallengeCreateViewModel()
-            {
+
+
+            var challenge = new ChallengeCreateViewModel(_mockLRepository.Object) {
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
                 Release_Date = DateTime.Now,
                 Max_Participant = 8,
+
             };
+
            
           var result= await _sut.Create(challenge);
             Assert.Equal(challenge.Title, savedChallenge.Title);

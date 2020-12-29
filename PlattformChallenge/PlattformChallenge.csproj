@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -23,6 +23,8 @@
     <Compile Remove="Migrations\20201217191117_InitialMigration.Designer.cs" />
     <Compile Remove="Migrations\20201217220247_Change.cs" />
     <Compile Remove="Migrations\20201217220247_Change.Designer.cs" />
+    <Compile Remove="Migrations\20201229221806_SeedData.cs" />
+    <Compile Remove="Migrations\20201229221806_SeedData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

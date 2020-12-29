@@ -37,19 +37,6 @@
                 <span asp-validation-for="Max_Participant" class="text-danger"></span>
             </div>
 
-            <div class="card-body">
-                @foreach (Language l in Model.Languages)
-            {
-
-            <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-            <label class="form-check-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
-            <input type="hidden" asp-for="@Model[i].UserId" />
-            <input type="hidden" asp-for="@Model[i].UserName" />
-
-            }
-
-
-            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
