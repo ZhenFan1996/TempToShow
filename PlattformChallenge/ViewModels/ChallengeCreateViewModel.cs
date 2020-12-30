@@ -12,13 +12,6 @@ namespace PlattformChallenge.ViewModels
     public class ChallengeCreateViewModel
 
     {
-        private readonly IRepository<Language> _languages;
-        public ChallengeCreateViewModel(IRepository<Language> languages)
-        {
-            _languages = languages;
-             Languages = languages.GetAllListAsync().Result;
-        }
-
         [Key]
         public string C_Id { get; set; }
         [Required]
@@ -26,20 +19,18 @@ namespace PlattformChallenge.ViewModels
         [Required]
         [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Bonus { get; set; }
-     
+
         [Required]
         public string Content { get; set; }
-        
+
         [Required]
         public DateTime Release_Date { get; set; }
 
         [Required]
- 
         public int Max_Participant { get; set; }
 
-        public List<Language> Languages { get; set; } 
+        public List<Language> Languages { get; set; }
 
-        public List<LanguageChallenge> LanguageChallenges { get; set; }
-
+        public bool[] IsSelected { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace PlattformChallenge.Data
                     dbcontext.Languages.Add(new Language()
                     {
                         Language_Id = "3",
-                        DevelopmentLanguage = "Pyhthon"
+                        DevelopmentLanguage = "Python"
 
                     });
 

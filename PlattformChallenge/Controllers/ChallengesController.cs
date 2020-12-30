@@ -53,20 +53,43 @@ namespace PlattformChallenge.Controllers
 
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
+
             if (challenge == null)
             {
                 return NotFound();
             }
+            var detail = new ChallengeDetailViewModel()
+            {
+                C_Id = challenge.C_Id,
+                Title = challenge.Title,
+                Bonus = challenge.Bonus,
+                Content = challenge.Content,
+                Release_Date = challenge.Release_Date,
+                Max_Participant = challenge.Max_Participant,
+                Company = challenge.Company,
+                Winner_Id = challenge.Winner_Id,
+                Best_Solution_Id = challenge.Best_Solution_Id
+            };
 
-            return View(challenge);
+            List<Language> l = new List<Language>();
+            foreach (LanguageChallenge lc in challenge.LanguageChallenges)
+            {
+                l.Add(_lRepository.FirstOrDefault(l => l.Language_Id == lc.Language_Id));
+            }  
+            detail.langugaes = l;
+            return View(detail);
         }
 
         // GET: Challenges/Create
         [Authorize(Roles ="Company")]
         public IActionResult Create()
         {
-            return View();
+            var model = new ChallengeCreateViewModel();
+            model.Languages = _lRepository.GetAllListAsync().Result;
+            model.IsSelected = new bool[model.Languages.Count];
+            return View(model);
         }
 
 
@@ -98,6 +121,8 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<Language> languages = _lRepository.GetAllListAsync().Result;
+
                 Challenge newChallenge = new Challenge
                 {
                     C_Id = Guid.NewGuid().ToString(),
@@ -106,10 +131,26 @@ namespace PlattformChallenge.Controllers
                     Content = model.Content,
                     Release_Date = model.Release_Date,
                     Max_Participant = model.Max_Participant,
-                    Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier),
 
-            };
+                };
                 await _repository.InsertAsync(newChallenge);
+                List<LanguageChallenge> lc = new List<LanguageChallenge>();
+                for (int i = 0; i < model.IsSelected.Count(); i++)
+                {
+                    if (model.IsSelected[i])
+                    {
+                        LanguageChallenge toAdd = new LanguageChallenge()
+                        {
+                            C_Id = newChallenge.C_Id,
+                            Language = languages.ElementAt(i),
+                            Language_Id = languages.ElementAt(i).Language_Id,
+                            Challenge = newChallenge                         
+                        };
+                        lc.Add(toAdd);
+                        await _lcRepository.InsertAsync(toAdd);
+                    }
+                }
                 return RedirectToAction("Details", new { id = newChallenge.C_Id});
             }
 
