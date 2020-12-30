@@ -143,9 +143,7 @@ namespace PlattformChallenge.Controllers
                         LanguageChallenge toAdd = new LanguageChallenge()
                         {
                             C_Id = newChallenge.C_Id,
-                            Language = languages.ElementAt(i),
-                            Language_Id = languages.ElementAt(i).Language_Id,
-                            Challenge = newChallenge                         
+                            Language_Id = languages.ElementAt(i).Language_Id,                 
                         };
                         lc.Add(toAdd);
                         await _lcRepository.InsertAsync(toAdd);
