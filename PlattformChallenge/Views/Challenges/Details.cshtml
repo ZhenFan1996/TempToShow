@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.Models.Challenge
+@model PlattformChallenge.ViewModels.ChallengeDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -46,6 +46,15 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Company.Name)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.langugaes)
+        </dt>
+        <dd class="col-sm-10">
+           @for (int i = 0; i < Model.langugaes.Count; i++) {
+             <span>  @Model.langugaes.ElementAt(i).DevelopmentLanguage </span>
+           }
         </dd>
 
         <dt class="col-sm-2">

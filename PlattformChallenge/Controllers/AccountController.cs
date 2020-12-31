@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
+using System.Security.Claims;
+using PlattformChallenge.Core.Model;
 
 namespace PlattformChallenge.Controllers
 {
@@ -24,9 +26,9 @@ namespace PlattformChallenge.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Register() {
-            await EnsureRolesAsync(_roleManager, "Programmer");
-            await EnsureRolesAsync(_roleManager, "Company");
+        public  IActionResult Register() {
+            //await EnsureRolesAsync(_roleManager, "Programmer");
+            //await EnsureRolesAsync(_roleManager, "Company");
             return View();
         }
 
@@ -43,10 +45,10 @@ namespace PlattformChallenge.Controllers
                 };
                 var result1 = await _userManager.CreateAsync(user, model.Password);
                 if (result1.Succeeded) {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded) {
-                        return RedirectToAction("index", "home");
+                        await _signInManager.SignInAsync(user,false);
+                        return RedirectToAction("Index", "Home");
                     }
                     else {
                         foreach (var error in result2.Errors)
@@ -57,9 +59,7 @@ namespace PlattformChallenge.Controllers
                 }
                 foreach (var error in result1.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
-
-
+                }         
             }
             return View(model);
 
@@ -89,22 +89,29 @@ namespace PlattformChallenge.Controllers
         }
          #endregion
 
-
-
-
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("index", "home");
+            return RedirectToAction("Index", "Home");
         }
-                     
-          private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)
-            {
-                var alreadyExists = await roleManager.RoleExistsAsync(Rolename);
-                if (alreadyExists) return;
-                await roleManager.CreateAsync(new IdentityRole(Rolename));
-            }
+
+        public  IActionResult AccessDenied() {
+            var roles = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+            ViewBag.CurrentRole = roles.FirstOrDefault();           
+            return View();
+        }
+
+
+          //private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)
+          //  {
+          //      var alreadyExists = await roleManager.RoleExistsAsync(Rolename);
+          //      if (alreadyExists) return;
+          //      await roleManager.CreateAsync(new IdentityRole(Rolename));
+          //  }
     }
+
+
 }

@@ -12,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using PlattformChallenge.Models;
 using Microsoft.AspNetCore.Identity;
+using PlattformChallenge.Core.Interfaces;
+using PlattformChallenge.Infrastructure;
+using PlattformChallenge.Core.Model;
+using PlattformChallenge.Data;
 
 namespace PlattformChallenge
 {
@@ -36,6 +40,20 @@ namespace PlattformChallenge
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<AppDbContext>();
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Account/LogIn";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+
+            services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -52,12 +70,13 @@ namespace PlattformChallenge
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseDataInitializerAsync();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-           
+
 
             app.UseEndpoints(endpoints =>
             {

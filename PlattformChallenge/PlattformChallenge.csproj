@@ -23,6 +23,8 @@
     <Compile Remove="Migrations\20201217191117_InitialMigration.Designer.cs" />
     <Compile Remove="Migrations\20201217220247_Change.cs" />
     <Compile Remove="Migrations\20201217220247_Change.Designer.cs" />
+    <Compile Remove="Migrations\20201229221806_SeedData.cs" />
+    <Compile Remove="Migrations\20201229221806_SeedData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +38,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

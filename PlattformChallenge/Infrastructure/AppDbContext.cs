@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PlattformChallenge.Models;
+using PlattformChallenge.Core.Model;
 
-namespace PlattformChallenge.Models
+namespace PlattformChallenge.Infrastructure
 {
     public class AppDbContext :IdentityDbContext
     {
@@ -73,6 +73,6 @@ namespace PlattformChallenge.Models
 
         public DbSet<Solution> Solutions { get; set; }
 
-        public DbSet<PlattformChallenge.Models.LanguageChallenge> LanguageChallenge { get; set; }
+        public DbSet<LanguageChallenge> LanguageChallenge { get; set; }
     }
 }

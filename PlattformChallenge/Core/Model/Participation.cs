@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PlattformChallenge.Models
+namespace PlattformChallenge.Core.Model
+
 {
     public class Participation
     {
