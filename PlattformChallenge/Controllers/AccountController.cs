@@ -26,9 +26,9 @@ namespace PlattformChallenge.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Register() {
-            await EnsureRolesAsync(_roleManager, "Programmer");
-            await EnsureRolesAsync(_roleManager, "Company");
+        public  IActionResult Register() {
+            //await EnsureRolesAsync(_roleManager, "Programmer");
+            //await EnsureRolesAsync(_roleManager, "Company");
             return View();
         }
 
@@ -105,12 +105,12 @@ namespace PlattformChallenge.Controllers
         }
 
 
-          private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)
-            {
-                var alreadyExists = await roleManager.RoleExistsAsync(Rolename);
-                if (alreadyExists) return;
-                await roleManager.CreateAsync(new IdentityRole(Rolename));
-            }
+          //private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager, string Rolename)
+          //  {
+          //      var alreadyExists = await roleManager.RoleExistsAsync(Rolename);
+          //      if (alreadyExists) return;
+          //      await roleManager.CreateAsync(new IdentityRole(Rolename));
+          //  }
     }
 
 

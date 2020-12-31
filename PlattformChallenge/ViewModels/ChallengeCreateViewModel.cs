@@ -1,3 +1,4 @@
+using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
 using System;
@@ -18,18 +19,18 @@ namespace PlattformChallenge.ViewModels
         [Required]
         [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Bonus { get; set; }
-     
+
         [Required]
         public string Content { get; set; }
-        
+
         [Required]
         public DateTime Release_Date { get; set; }
 
         [Required]
- 
         public int Max_Participant { get; set; }
 
-        public List<LanguageChallenge> LanguageChallenges { get; set; }
+        public List<Language> Languages { get; set; }
 
+        public bool[] IsSelected { get; set; }
     }
 }

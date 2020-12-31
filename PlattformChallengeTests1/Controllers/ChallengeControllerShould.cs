@@ -24,13 +24,17 @@ namespace PlattformChallenge.Controllers.Tests
     {
         private readonly Mock<IRepository<Challenge>> _mockRepository;
         private readonly Mock<IRepository<PlatformUser>> _mockPRpository;
+        private readonly Mock<IRepository<Language>> _mockLRepository;
+        private readonly Mock<IRepository<LanguageChallenge>> _mockLCRepository;
         private readonly ChallengesController _sut;
 
         public ChallengeControllerShould() {
 
             _mockRepository = new Mock<IRepository<Challenge>>();
             _mockPRpository = new Mock<IRepository<PlatformUser>>();
-            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object);
+            _mockLRepository = new Mock<IRepository<Language>>();
+            _mockLCRepository = new Mock<IRepository<LanguageChallenge>>();
+            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object,_mockLRepository.Object,_mockLCRepository.Object);
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
@@ -44,15 +48,17 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository.Setup(m => m.InsertAsync(It.IsAny<Challenge>()))
                 .Returns(Task.CompletedTask)
                 .Callback<Challenge>(c => savedChallenge =c);
-   
-            var challenge = new ChallengeCreateViewModel()
-            {
+
+
+            var challenge = new ChallengeCreateViewModel(_mockLRepository.Object) {
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
                 Release_Date = DateTime.Now,
                 Max_Participant = 8,
+
             };
+
            
           var result= await _sut.Create(challenge);
             Assert.Equal(challenge.Title, savedChallenge.Title);

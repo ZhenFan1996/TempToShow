@@ -50,9 +50,9 @@ namespace PlattformChallengeTests.Controllers
             _roleManager.Setup(r => r.RoleExistsAsync(It.Is<string>(s => s.Equals("Company") || s.Equals("Programmer"))))
                 .Returns(Task.FromResult(true));
 
-            Task<IActionResult> result = _sut.Register();
+            IActionResult result = _sut.Register();
 
-            Assert.IsType<ViewResult>(result.Result);
+            Assert.IsType<ViewResult>(result);
 
         }
 
@@ -159,7 +159,7 @@ namespace PlattformChallengeTests.Controllers
             _userManager.Setup(x => x.CreateAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success).Callback<PlatformUser, string>((x, y) =>
                 {
-                    userForUserManager = x; ;
+                    userForUserManager = x; 
                     toCheckPassword = y;
                 });
             _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<PlatformUser>(), It.Is<string>(s => s.Equals(model.RoleName))))
@@ -189,8 +189,8 @@ namespace PlattformChallengeTests.Controllers
         public void ReturnViewForLogIn()
         {
 
-            Task<IActionResult> result = _sut.Register();
-            Assert.IsType<ViewResult>(result.Result);
+            IActionResult result = _sut.Register();
+            Assert.IsType<ViewResult>(result);
         }
 
         [Fact]

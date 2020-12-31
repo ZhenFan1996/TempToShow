@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.Core.Model.Challenge
+@model PlattformChallenge.ViewModels.ChallengeDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -49,6 +49,15 @@
         </dd>
 
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.langugaes)
+        </dt>
+        <dd class="col-sm-10">
+           @for (int i = 0; i < Model.langugaes.Count; i++) {
+             <span>  @Model.langugaes.ElementAt(i).DevelopmentLanguage </span>
+           }
+        </dd>
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Winner_Id)
         </dt>
         <dd class="col-sm-10">
@@ -64,17 +73,17 @@
         </dd>
 
         @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Winner_Id)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Winner_Id)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Best_Solution_Id)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Best_Solution_Id)
-            </dd>*@
+            @Html.DisplayNameFor(model => model.Winner_Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Winner_Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Best_Solution_Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Best_Solution_Id)
+        </dd>*@
     </dl>
 </div>
 <div>
