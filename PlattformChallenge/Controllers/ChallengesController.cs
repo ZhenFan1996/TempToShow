@@ -47,7 +47,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Details(string id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
-            if (id == null)
+            if (id == null || id == "")
             {
                 errorViewModel.RequestId = "invalid challenge id value for details";
                 return View("Error", errorViewModel);
