@@ -32,7 +32,12 @@ namespace PlattformChallenge.Controllers
         }
 
         // GET: Challenges
-
+        //
+        // Summary:
+        //     Load the list of current active challenges and their titles, bonus, quota, and company.
+        // Returns:
+        //     A View with current  active challenges.
+        //
         public async Task<IActionResult> Index()
         {
 
@@ -91,27 +96,6 @@ namespace PlattformChallenge.Controllers
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);
         }
-
-
-
-
-        // POST: Challenges/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        challenge.C_Id = Guid.NewGuid().ToString();
-        //        _context.Add(challenge);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
-        //    return View(challenge);
-        //}
 
 
         [HttpPost]

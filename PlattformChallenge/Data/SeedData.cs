@@ -68,6 +68,12 @@ namespace PlattformChallenge.Data
                         DevelopmentLanguage = "Swift"
 
                     });
+                    dbcontext.Languages.Add(new Language()
+                    {
+                        Language_Id = "8",
+                        DevelopmentLanguage = "Other"
+
+                    });
 
                 }
 
