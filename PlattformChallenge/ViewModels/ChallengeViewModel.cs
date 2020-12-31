@@ -24,7 +24,7 @@ namespace PlattformChallenge.ViewModels
         public DateTime Release_Date { get; set; }
 
         [Required]
- 
+        [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Max_Participant { get; set; }
 
         [Required]
