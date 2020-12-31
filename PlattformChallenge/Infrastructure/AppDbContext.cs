@@ -74,5 +74,45 @@ namespace PlattformChallenge.Infrastructure
         public DbSet<Solution> Solutions { get; set; }
 
         public DbSet<LanguageChallenge> LanguageChallenge { get; set; }
+
+        public RepositoryBase<object> RepositoryBase
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Challenge Challenge
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Language Language
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public LanguageChallenge LanguageChallenge1
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Solution Solution
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }
