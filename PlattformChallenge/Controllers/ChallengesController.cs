@@ -31,19 +31,28 @@ namespace PlattformChallenge.Controllers
             _lcRepository = lcRepository;
         }
 
-        // GET: Challenges
+        //
+        // Summary:
+        //    Get the list of current active challenges
+        //
+        // Returns:
+        //    A view with list of current active challenges
 
         public async Task<IActionResult> Index()
         {
-
-            var appDbContect = _repository.GetAll().Include(c => c.Company
-            ).Where(c => c.Release_Date <= DateTime.Now);
-            return View(await appDbContect.ToListAsync());
+            var result = _repository.FindByAndToListAsync(c => c.Release_Date <= DateTime.Now, c => c.Company);
+            return View(result);
         }
 
-
-
-        // GET: Challenges/Details/5
+        //
+        // Summary:
+        //    Get detail information of a certain challenge which is assigned by challenge Id
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with all available information of given challenge
         public async Task<IActionResult> Details(string id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
@@ -54,10 +63,8 @@ namespace PlattformChallenge.Controllers
                 //return NotFound();
             }
 
-            var challenge = await _repository.GetAll()
-                .Include(c => c.Company)
-                .Include(c => c.LanguageChallenges)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
+            var challenge = await _repository
+                 .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
 
             if (challenge == null)
             {
@@ -86,7 +93,13 @@ namespace PlattformChallenge.Controllers
             return View(detail);
         }
 
-        // GET: Challenges/Create
+        //
+        // Summary:
+        //    Create a new challenge. Get the create form.
+        //    This method is only authorized to company user.
+        //
+        // Returns:
+        //    A view with form which must be filled out for creating challenge.
         [Authorize(Roles = "Company")]
         public IActionResult Create()
         {
@@ -96,28 +109,14 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-
-
-
-        // POST: Challenges/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        challenge.C_Id = Guid.NewGuid().ToString();
-        //        _context.Add(challenge);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["Com_ID"] = new SelectList(_context.Set<PlatformUser>(), "Id", "Id", challenge.Com_ID);
-        //    return View(challenge);
-        //}
-
-
+        //
+        // Summary:
+        //    Create a new challenge. Post the create form.
+        //    This method is only authorized to company user.
+        //
+        // Returns:
+        //    A view with all the given details at creating challenge, if the given information passed validation check.
+        //    A view with error message, if the given information didn't pass validation check.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -155,8 +154,9 @@ namespace PlattformChallenge.Controllers
                 }
                 return RedirectToAction("Details", new { id = newChallenge.C_Id});
             }
-
-            return View("Index");
+            //if modelstate is not valid
+            ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            return View(model);
             }
         
         // GET: Challenges/Edit/5
