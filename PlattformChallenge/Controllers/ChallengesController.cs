@@ -248,42 +248,48 @@ namespace PlattformChallenge.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        [ValidateAntiForgeryToken]
+
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipationConfirm(string id)
         {
             var ifAlreadyParti = await _particiRepository
                  .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
                  && m.C_Id == id);
-
+            ErrorViewModel errorViewModel = new ErrorViewModel();
             if (ifAlreadyParti == null)
             {
                 var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
-                return View(challenge);
+                if (challenge.Max_Participant > 0)
+                {
+                    return View(challenge);
+                }
+                else
+                {
+                    errorViewModel.RequestId = "Theres no place anymore";
+                    return View("Error", errorViewModel);
+                }
+                
             }
-            ErrorViewModel errorViewModel = new ErrorViewModel();
+           
             errorViewModel.RequestId = "You have already participated this challenge";
             return View("Error", errorViewModel);
               
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
-         
-                Participation newParti = new Participation()
+            var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
+            challenge.Max_Participant--;
+
+            Participation newParti = new Participation()
                 {
                     C_Id = id,
                     P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 };
                 await _particiRepository.InsertAsync(newParti);
-            
-
-            return RedirectToAction("Details", id);
+            return RedirectToAction("Details", new { id = newParti.C_Id });
         }
 
         private bool ChallengeExists(string id)
