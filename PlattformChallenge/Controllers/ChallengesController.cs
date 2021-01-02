@@ -248,7 +248,15 @@ namespace PlattformChallenge.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        //
+        // Summary:
+        //    Check if the prerequisites for participating a challenge fulfil.
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with participation conditions and confirmation button if prerequisites passed.
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipationConfirm(string id)
         {
@@ -264,7 +272,9 @@ namespace PlattformChallenge.Controllers
                     return View(challenge);
                 }
                 else
-                {
+                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
+                   // the button which links to this method will not be showed. e.g. this else-condition is not
+                   // supposed to be entered
                     errorViewModel.RequestId = "Theres no place anymore";
                     return View("Error", errorViewModel);
                 }
@@ -276,7 +286,15 @@ namespace PlattformChallenge.Controllers
               
         }
 
-
+        //
+        // Summary:
+        //    Add user and challenge to Participation in database and update quota of the challenge
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with participation confirmation
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
@@ -289,8 +307,11 @@ namespace PlattformChallenge.Controllers
                     P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 };
                 await _particiRepository.InsertAsync(newParti);
-            return RedirectToAction("Details", new { id = newParti.C_Id });
+            return View(challenge);
         }
+
+
+
 
         private bool ChallengeExists(string id)
         {

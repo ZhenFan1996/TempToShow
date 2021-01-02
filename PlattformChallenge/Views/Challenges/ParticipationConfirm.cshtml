@@ -1,6 +1,14 @@
 ﻿@model PlattformChallenge.Core.Model.Challenge
 
 
-<p>please confirm the conditions: your solution will be published if you win the prize. </p>
-<a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id">Yes I'm in!</a>
-<a asp-action="Index">No</a>
+<p>
+    <strong>
+        please confirm the conditions:
+        your solution will be published if you win the prize.
+    </strong>
+</p>
+
+@*@Html.ActionLink("Yes I'm in!", "ParticipateChallenge", "Challenges", Model.C_Id)*@
+<div><a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id">Yes I'm in!</a></div>
+@*@Html.ActionLink("No", "Index", "Challenges")*@
+<div><a asp-action="Index">No</a></div>
