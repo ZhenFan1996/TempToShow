@@ -22,13 +22,16 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<PlatformUser> _pRepository;
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
+        private readonly IRepository<Participation> _particiRepository;
 
-        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository)
+        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,
+            IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
         {
             _repository = repository;
             _pRepository = pRepository;
             _lRepository = lRepository;
             _lcRepository = lcRepository;
+            _particiRepository = particiRepository;
         }
 
         //
@@ -40,7 +43,7 @@ namespace PlattformChallenge.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = _repository.FindByAndToListAsync(c => c.Release_Date <= DateTime.Now, c => c.Company);
+            var result = await _repository.FindByAndToListAsync(c => c.Release_Date <= DateTime.Now, c => c.Company);
             return View(result);
         }
 
@@ -243,6 +246,44 @@ namespace PlattformChallenge.Controllers
             var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
             challenge = await _repository.DeleteAsync(challenge);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Programmer")]
+        public async Task<IActionResult> ParticipationConfirm(string id)
+        {
+            var ifAlreadyParti = await _particiRepository
+                 .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 && m.C_Id == id);
+
+            if (ifAlreadyParti == null)
+            {
+                var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
+                return View(challenge);
+            }
+            ErrorViewModel errorViewModel = new ErrorViewModel();
+            errorViewModel.RequestId = "You have already participated this challenge";
+            return View("Error", errorViewModel);
+              
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Programmer")]
+        public async Task<IActionResult> ParticipateChallenge(string id)
+        {
+         
+                Participation newParti = new Participation()
+                {
+                    C_Id = id,
+                    P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                };
+                await _particiRepository.InsertAsync(newParti);
+            
+
+            return RedirectToAction("Details", id);
         }
 
         private bool ChallengeExists(string id)
