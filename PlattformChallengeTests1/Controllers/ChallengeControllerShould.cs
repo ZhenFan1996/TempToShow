@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
 using PlattformChallenge.Models;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace PlattformChallenge.Controllers.Tests
 {
@@ -141,6 +142,30 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal("3", savedLc.ElementAt(1).Language_Id);
         }
 
+
+        [Fact]
+        public async Task InVaildModelStateForCreate()
+        {
+            _sut.ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true }
+            };
+            var result = await _sut.Create(challenge);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult) result;
+            Assert.Equal(challenge, value.Model);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("failed to create the challenge, please try again", allErrors.ElementAt(0).ErrorMessage);
+            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Never);
+            _mockRepository.Verify(l => l.InsertAsync(It.IsAny<Challenge>()), Times.Never);
+            _mockLCRepository.Verify(l => l.InsertAsync(It.IsAny<LanguageChallenge>()), Times.Never);
+        }
         //
         // Summary:
         //    [TestCase-ID: 10-1]
