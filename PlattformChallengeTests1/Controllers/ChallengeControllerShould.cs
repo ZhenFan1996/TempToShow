@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
 using PlattformChallenge.Models;
+using System.Linq.Expressions;
 
 namespace PlattformChallenge.Controllers.Tests
 {
@@ -103,9 +104,11 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal("3", savedLc.ElementAt(1).Language_Id);
         }
 
-
-
-
+        //
+        // Summary:
+        //    [TestCase-ID: 10-1]
+        //    Test the returned error view if given Id string for challenge details is empty 
+        //
         [Fact]
         public async void ReturnBadRequestNoIdForDetails()
         {
@@ -116,6 +119,78 @@ namespace PlattformChallenge.Controllers.Tests
             var errorInfo = errorvm.RequestId;
             Assert.Equal("Error", value.ViewName);
             Assert.Equal("invalid challenge id value for details", errorInfo);
+        }
+
+        //
+        // Summary:
+        //    [TestCase-ID: 10-2]
+        //    Test the returned error view if given Id string for challenge details doesn't match any challenge 
+        //
+        [Fact]
+        public async void ReturnBadRequestInvalidIdForDetails()
+
+        {
+            _mockRepository
+                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
+                .Returns(Task.FromResult<List<Challenge>>(null));
+            var result = await _sut.Details("1");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("there's no challenge with this id, please check again", errorInfo);
+
+        }
+
+        //
+        // Summary:
+        //    [TestCase-ID: 10-3]
+        //    Test if index() returns correct list of challenges 
+        //
+        [Fact]
+        public async Task ReturnVaildIndex()
+        {
+            var l = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "1abc",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "2cde",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+            IQueryable<Challenge> query = l.AsQueryable();
+            _mockRepository
+                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
+                .Returns(Task.FromResult(l));
+            var result = await _sut.Index();
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var savedChallengeList = (Task<List<Challenge>>)value.Model;
+            Assert.Equal("test title 1",savedChallengeList.Result.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", savedChallengeList.Result.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, savedChallengeList.Result.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", savedChallengeList.Result.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, savedChallengeList.Result.ElementAt<Challenge>(1).Max_Participant);
+            Assert.Equal(DateTime.Now.Day, savedChallengeList.Result.ElementAt<Challenge>(1).Release_Date.Day);
         }
     }
 }

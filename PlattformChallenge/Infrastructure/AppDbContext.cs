@@ -76,6 +76,6 @@ namespace PlattformChallenge.Infrastructure
         public DbSet<LanguageChallenge> LanguageChallenge { get; set; }
 
 
-        }
+        
     }
 }
