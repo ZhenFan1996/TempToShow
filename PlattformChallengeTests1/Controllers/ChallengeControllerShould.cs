@@ -47,6 +47,43 @@ namespace PlattformChallenge.Controllers.Tests
 
 
         [Fact]
+        public void ReturnViewForCreate()
+        {
+            _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
+            {
+
+                new Language(){
+                    Language_Id ="1",
+                    DevelopmentLanguage = "java"
+                },
+
+                 new Language(){
+                    Language_Id ="2",
+                    DevelopmentLanguage = "C++"
+                },
+                 new Language(){
+                     Language_Id = "3",
+                    DevelopmentLanguage = "C#"
+
+                 }
+            }));
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true }
+            };
+            var result = _sut.Create();
+            Assert.IsType<ViewResult>(result);
+
+
+        }
+
+
+        [Fact]
         public async Task CreateChallengeTest()
         {
             Challenge savedChallenge = null;
@@ -185,14 +222,26 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var savedChallengeList = (Task<List<Challenge>>)value.Model;
-            Assert.Equal("test title 1",savedChallengeList.Result.ElementAt<Challenge>(0).Title);
+            Assert.Equal("test title 1", savedChallengeList.Result.ElementAt<Challenge>(0).Title);
             Assert.Equal("1111", savedChallengeList.Result.ElementAt<Challenge>(0).Com_ID);
             Assert.Equal(200, savedChallengeList.Result.ElementAt<Challenge>(0).Bonus);
             Assert.Equal("2cde", savedChallengeList.Result.ElementAt<Challenge>(1).C_Id);
             Assert.Equal(18, savedChallengeList.Result.ElementAt<Challenge>(1).Max_Participant);
             Assert.Equal(DateTime.Now.Day, savedChallengeList.Result.ElementAt<Challenge>(1).Release_Date.Day);
         }
+
+
+
+
+
+
     }
+
+
+
+
+
+    
 }
 
 
