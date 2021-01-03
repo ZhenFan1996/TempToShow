@@ -1,4 +1,3 @@
-
 @*@model IEnumerable<PlattformChallenge.Core.Model.Challenge>*@
 @using PlattformChallenge.Core.Model
 @model IEnumerable<Challenge>
@@ -7,10 +6,14 @@
 }
 
 <h1>Current Challenges</h1>
-
+@if (ViewContext.HttpContext.User.IsInRole("Company"))
+{
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
+
+
 <table class="table">
     <thead>
         <tr>
@@ -37,39 +40,39 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
+            <tr>
 
-            <td>
-                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
-            </td>
-            @*<td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Release_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Max_Participant)
-            </td>
-
-            @*<td>
-                    @Html.DisplayFor(modelItem => item.Winner_Id)
+                <td>
+                    <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Bonus)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Best_Solution_Id)
-                </td>*@
-            @*<td>
-                    <a asp-action="Edit" asp-route-id="@item.C_Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.C_Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.C_Id">Delete</a>
-                </td>*@
-        </tr>
+                    @Html.DisplayFor(modelItem => item.Company.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Release_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Max_Participant)
+                </td>
+
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Winner_Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Best_Solution_Id)
+                    </td>*@
+                @*<td>
+                        <a asp-action="Edit" asp-route-id="@item.C_Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.C_Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.C_Id">Delete</a>
+                    </td>*@
+            </tr>
         }
     </tbody>
 </table>

@@ -22,47 +22,52 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<PlatformUser> _pRepository;
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
+        private readonly IRepository<Participation> _particiRepository;
 
-        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository)
+        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,
+            IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
         {
             _repository = repository;
             _pRepository = pRepository;
             _lRepository = lRepository;
             _lcRepository = lcRepository;
+            _particiRepository = particiRepository;
         }
 
-        // GET: Challenges
         //
         // Summary:
-        //     Load the list of current active challenges and their titles, bonus, quota, and company.
-        // Returns:
-        //     A View with current  active challenges.
+        //    Get the list of current active challenges
         //
+        // Returns:
+        //    A view with list of current active challenges
+
         public async Task<IActionResult> Index()
         {
-
-            var appDbContect = _repository.GetAll().Include(c => c.Company
-            ).Where(c => c.Release_Date <= DateTime.Now);
-            return View(await appDbContect.ToListAsync());
+            var result = await _repository.FindByAndToListAsync(c => c.Release_Date <= DateTime.Now, c => c.Company);
+            return View(result);
         }
 
-
-
-        // GET: Challenges/Details/5
+        //
+        // Summary:
+        //    Get detail information of a certain challenge which is assigned by challenge Id
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with all available information of given challenge
         public async Task<IActionResult> Details(string id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
-            if (id == null)
+            if (id == null || id == "")
             {
                 errorViewModel.RequestId = "invalid challenge id value for details";
                 return View("Error", errorViewModel);
                 //return NotFound();
             }
 
-            var challenge = await _repository.GetAll()
-                .Include(c => c.Company)
-                .Include(c => c.LanguageChallenges)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
+            var challenge = await _repository
+                 .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
 
             if (challenge == null)
             {
@@ -91,7 +96,13 @@ namespace PlattformChallenge.Controllers
             return View(detail);
         }
 
-        // GET: Challenges/Create
+        //
+        // Summary:
+        //    Create a new challenge. Get the create form.
+        //    This method is only authorized to company user.
+        //
+        // Returns:
+        //    A view with form which must be filled out for creating challenge.
         [Authorize(Roles = "Company")]
         public IActionResult Create()
         {
@@ -101,7 +112,14 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-
+        //
+        // Summary:
+        //    Create a new challenge. Post the create form.
+        //    This method is only authorized to company user.
+        //
+        // Returns:
+        //    A view with all the given details at creating challenge, if the given information passed validation check.
+        //    A view with error message, if the given information didn't pass validation check.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -139,8 +157,9 @@ namespace PlattformChallenge.Controllers
                 }
                 return RedirectToAction("Details", new { id = newChallenge.C_Id});
             }
-
-            return View("Index");
+            //if modelstate is not valid
+            ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            return View(model);
             }
         
         // GET: Challenges/Edit/5
@@ -228,6 +247,71 @@ namespace PlattformChallenge.Controllers
             challenge = await _repository.DeleteAsync(challenge);
             return RedirectToAction(nameof(Index));
         }
+
+        //
+        // Summary:
+        //    Check if the prerequisites for participating a challenge fulfil.
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with participation conditions and confirmation button if prerequisites passed.
+        [Authorize(Roles = "Programmer")]
+        public async Task<IActionResult> ParticipationConfirm(string id)
+        {
+            var ifAlreadyParti = await _particiRepository
+                 .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 && m.C_Id == id);
+            ErrorViewModel errorViewModel = new ErrorViewModel();
+            if (ifAlreadyParti == null)
+            {
+                var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
+                if (challenge.Max_Participant > 0)
+                {
+                    return View(challenge);
+                }
+                else
+                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
+                   // the button which links to this method will not be showed. e.g. this else-condition is not
+                   // supposed to be entered
+                    errorViewModel.RequestId = "Theres no place anymore";
+                    return View("Error", errorViewModel);
+                }
+                
+            }
+           
+            errorViewModel.RequestId = "You have already participated this challenge";
+            return View("Error", errorViewModel);
+              
+        }
+
+        //
+        // Summary:
+        //    Add user and challenge to Participation in database and update quota of the challenge
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with participation confirmation
+        [Authorize(Roles = "Programmer")]
+        public async Task<IActionResult> ParticipateChallenge(string id)
+        {
+            var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
+            challenge.Max_Participant--;
+
+            Participation newParti = new Participation()
+                {
+                    C_Id = id,
+                    P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                };
+                await _particiRepository.InsertAsync(newParti);
+            return View(challenge);
+        }
+
+
+
 
         private bool ChallengeExists(string id)
         {

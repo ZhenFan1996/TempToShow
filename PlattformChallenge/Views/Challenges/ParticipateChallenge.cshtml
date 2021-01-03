@@ -1,0 +1,15 @@
+﻿@model PlattformChallenge.Core.Model.Challenge
+@{
+    ViewData["Title"] = "Participation Suceed!";
+}
+
+<h1>You have been successfully enrolled to challenge: @Model.Title </h1>
+
+<div><a asp-action="Details" asp-route-id="@Model.C_Id">Go back to details of this challenge</a> </div>
+<div><a asp-action="Index" asp-route-id="@Model.C_Id">Go back to challenge list</a> </div>
+<div><a asp-action="">Go to my portal</a> </div>
+
+@*@Html.ActionLink("Go back to details of this challenge", "Details", "Challenges", Model.C_Id)
+    @Html.ActionLink("Go back to challenge list", "Index", "Challenges")*@
+@*@Html.ActionLink("Go to my portal, "Portal", "Account")*@
+

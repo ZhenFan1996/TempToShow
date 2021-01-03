@@ -26,6 +26,14 @@ namespace PlattformChallenge.Core.Interfaces
 
         Task<TEntity> DeleteAsync(TEntity entity);
 
+        IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+
+        Task<List<TEntity>> FindByAndToListAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+
+        Task<TEntity> IncludeAndFindOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+
         Task DeleteAsync(Expression<Func<TEntity,bool>> predicate);
+
+        bool Exists(Expression<Func<TEntity, bool>> predicate);
     }
 }
