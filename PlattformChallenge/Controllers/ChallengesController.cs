@@ -83,6 +83,7 @@ namespace PlattformChallenge.Controllers
                 Content = challenge.Content,
                 Release_Date = challenge.Release_Date,
                 Max_Participant = challenge.Max_Participant,
+                Available_Quota = GetAvailableQuota(challenge.C_Id),
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id
@@ -261,25 +262,24 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipationConfirm(string id)
         {
-            var ifAlreadyParti = await _particiRepository
-                 .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
-                 && m.C_Id == id);
+            var challenge = await _repository.IncludeAndFindOrDefaultAsync(c => c.C_Id == id);
             ErrorViewModel errorViewModel = new ErrorViewModel();
-            if (ifAlreadyParti == null)
+            if (GetAvailableQuota(id) <= 0)
             {
-                var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
-                if (challenge.Max_Participant > 0)
-                {
-                    return View(challenge);
-                }
-                else
                 { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
                   // the button which links to this method will not be showed. e.g. this else-condition is not
                   // supposed to be entered
                     errorViewModel.RequestId = "Theres no place anymore";
                     return View("Error", errorViewModel);
                 }
+            }
+            var ifAlreadyParti = await _particiRepository
+                 .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 && m.C_Id == id);
 
+            if (ifAlreadyParti == null)
+            {
+                return View(challenge);
             }
 
             errorViewModel.RequestId = "You have already participated this challenge";
@@ -300,7 +300,6 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
             var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
-            challenge.Max_Participant--;
 
             Participation newParti = new Participation()
             {
@@ -312,11 +311,16 @@ namespace PlattformChallenge.Controllers
         }
 
 
-
-
         private bool ChallengeExists(string id)
         {
             return _repository.GetAll().Any(e => e.C_Id == id);
+        }
+
+        private int GetAvailableQuota(string id)
+        {
+            Challenge challenge = _repository.FirstOrDefault(c => c.C_Id == id);
+            var partiList = _particiRepository.GetAllList(c => c.C_Id == id);
+            return challenge.Max_Participant - partiList.Count;
         }
     }
 }

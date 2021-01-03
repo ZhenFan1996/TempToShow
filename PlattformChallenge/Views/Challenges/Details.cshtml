@@ -42,6 +42,12 @@
             @Html.DisplayFor(model => model.Max_Participant)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Available_Quota)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Available_Quota)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Company)
         </dt>
         <dd class="col-sm-10">
@@ -64,8 +70,6 @@
         <dd class="col-sm-10">
             <div @{if (Model.Winner_Id == null) }>There is no winner yet </div>
         </dd>
-
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Best_Solution_Id)
         </dt>
@@ -74,18 +78,18 @@
         </dd>
     </dl>
 </div>
-@*TODO: 如果Quota等于0了，就不能再显示参与挑战按钮*@
+
 @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
 {
-    if (Model.Max_Participant > 0)
+    if (Model.Available_Quota > 0)
     {
         <a asp-action="ParticipationConfirm" asp-route-id="@Model.C_Id">I want to take part in this challenge!</a>
     }
     else
     {
         <p>You can't participate this challenge. There's no place anymore</p>
-        }
     }
+}
 <div>
     @if (ViewContext.HttpContext.User.IsInRole("Company"))
     {

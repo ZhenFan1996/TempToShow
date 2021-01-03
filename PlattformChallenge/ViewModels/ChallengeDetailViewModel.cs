@@ -21,9 +21,10 @@ namespace PlattformChallenge.ViewModels
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
         [Required]
-        [Display(Name = "Quota")]
+        [Display(Name = "Total Quota")]
         public int Max_Participant { get; set; }
-
+        [Display(Name = "Available Quota")]
+        public int Available_Quota { get; set; }
         [Required]
         public string Com_ID { get; set; }
 
