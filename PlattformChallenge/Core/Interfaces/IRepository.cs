@@ -1,3 +1,4 @@
+using PlattformChallenge.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,5 +36,7 @@ namespace PlattformChallenge.Core.Interfaces
         Task DeleteAsync(Expression<Func<TEntity,bool>> predicate);
 
         bool Exists(Expression<Func<TEntity, bool>> predicate);
+
+        Task<PaginatedList<TEntity>> FindByAndCreatePaginateAsync(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
     }
 }

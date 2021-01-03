@@ -28,8 +28,8 @@ namespace PlattformChallenge.ViewModels
         public string Com_ID { get; set; }
 
         public PlatformUser Company { get; set; }
-
-        public List<Language> langugaes { get; set; }
+        [Display(Name = "Languages")]
+        public List<Language> Languages { get; set; }
 
         [Display(Name = "Winner")]
         public string Winner_Id { get; set; }

@@ -1,6 +1,5 @@
-@*@model IEnumerable<PlattformChallenge.Core.Model.Challenge>*@
 @using PlattformChallenge.Core.Model
-@model IEnumerable<Challenge>
+@model PaginatedList<Challenge>
 @{
     ViewData["Title"] = "Current Challenges";
 }
@@ -8,9 +7,9 @@
 <h1>Current Challenges</h1>
 @if (ViewContext.HttpContext.User.IsInRole("Company"))
 {
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
 }
 
 
@@ -76,3 +75,20 @@
         }
     </tbody>
 </table>
+
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

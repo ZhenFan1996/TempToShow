@@ -24,8 +24,8 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
 
-        public ChallengesController(IRepository<Challenge> repository,IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository,IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
+        public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
         {
             _repository = repository;
             _pRepository = pRepository;
@@ -36,14 +36,15 @@ namespace PlattformChallenge.Controllers
 
         //
         // Summary:
-        //    Get the list of current active challenges
+        //    Get the list of current active challenges with paging function
         //
         // Returns:
         //    A view with list of current active challenges
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var result = await _repository.FindByAndToListAsync(c => c.Release_Date <= DateTime.Now, c => c.Company);
+            int pageSize = 3;//Temporary value, convenience for testing
+            var result = await _repository.FindByAndCreatePaginateAsync(pageNumber ?? 1, pageSize, c => c.Release_Date <= DateTime.Now, c => c.Company);
             return View(result);
         }
 
@@ -91,8 +92,8 @@ namespace PlattformChallenge.Controllers
             foreach (LanguageChallenge lc in challenge.LanguageChallenges)
             {
                 l.Add(_lRepository.FirstOrDefault(l => l.Language_Id == lc.Language_Id));
-            }  
-            detail.langugaes = l;
+            }
+            detail.Languages = l;
             return View(detail);
         }
 
@@ -149,19 +150,19 @@ namespace PlattformChallenge.Controllers
                         LanguageChallenge toAdd = new LanguageChallenge()
                         {
                             C_Id = newChallenge.C_Id,
-                            Language_Id = languages.ElementAt(i).Language_Id,                 
+                            Language_Id = languages.ElementAt(i).Language_Id,
                         };
                         lc.Add(toAdd);
                         await _lcRepository.InsertAsync(toAdd);
                     }
                 }
-                return RedirectToAction("Details", new { id = newChallenge.C_Id});
+                return RedirectToAction("Details", new { id = newChallenge.C_Id });
             }
             //if modelstate is not valid
             ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
             return View(model);
-            }
-        
+        }
+
         // GET: Challenges/Edit/5
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
@@ -273,17 +274,17 @@ namespace PlattformChallenge.Controllers
                 }
                 else
                 { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
-                   // the button which links to this method will not be showed. e.g. this else-condition is not
-                   // supposed to be entered
+                  // the button which links to this method will not be showed. e.g. this else-condition is not
+                  // supposed to be entered
                     errorViewModel.RequestId = "Theres no place anymore";
                     return View("Error", errorViewModel);
                 }
-                
+
             }
-           
+
             errorViewModel.RequestId = "You have already participated this challenge";
             return View("Error", errorViewModel);
-              
+
         }
 
         //
@@ -302,11 +303,11 @@ namespace PlattformChallenge.Controllers
             challenge.Max_Participant--;
 
             Participation newParti = new Participation()
-                {
-                    C_Id = id,
-                    P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                };
-                await _particiRepository.InsertAsync(newParti);
+            {
+                C_Id = id,
+                P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            };
+            await _particiRepository.InsertAsync(newParti);
             return View(challenge);
         }
 
