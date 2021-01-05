@@ -35,6 +35,8 @@ namespace PlattformChallenge.ViewModels
         [Display(Name = "Winner")]
         public string Winner_Id { get; set; }
 
+        public PlatformUser Winner { get; set; }
+
         [Display(Name = "Best Solution")]
         public string Best_Solution_Id { get; set; }
     }
