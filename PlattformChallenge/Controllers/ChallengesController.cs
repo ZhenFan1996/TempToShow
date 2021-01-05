@@ -43,9 +43,11 @@ namespace PlattformChallenge.Controllers
 
         public async Task<IActionResult> Index(int? pageNumber)
         {
+            var challenges = _repository
+                .GetAll()
+                .Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company);
             int pageSize = 3;//Temporary value, convenience for testing
-            var result = await _repository.FindByAndCreatePaginateAsync(pageNumber ?? 1, pageSize, c => c.Release_Date <= DateTime.Now, c => c.Company);
-            return View(result);
+            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
         }
 
         //
@@ -72,8 +74,7 @@ namespace PlattformChallenge.Controllers
                 .Include(c => c.Company)
                 .Include(c => c.LanguageChallenges)
                 .FirstOrDefaultAsync(m =>m.C_Id==id);
-            //var challenge = await _repository
-            //     .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
+
 
             if (challenge == null)
             {

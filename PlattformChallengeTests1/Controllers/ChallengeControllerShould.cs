@@ -259,20 +259,20 @@ namespace PlattformChallenge.Controllers.Tests
                 }
                 }
             };
-            IQueryable<Challenge> query = l.AsQueryable();
+            var query = l.AsQueryable().BuildMockDbSet();
             _mockRepository
-                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
-                .Returns(Task.FromResult(l));
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
             var result = await _sut.Index(null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
-            var savedChallengeList = (Task<List<Challenge>>)value.Model;
-            Assert.Equal("test title 1", savedChallengeList.Result.ElementAt<Challenge>(0).Title);
-            Assert.Equal("1111", savedChallengeList.Result.ElementAt<Challenge>(0).Com_ID);
-            Assert.Equal(200, savedChallengeList.Result.ElementAt<Challenge>(0).Bonus);
-            Assert.Equal("2cde", savedChallengeList.Result.ElementAt<Challenge>(1).C_Id);
-            Assert.Equal(18, savedChallengeList.Result.ElementAt<Challenge>(1).Max_Participant);
-            Assert.Equal(DateTime.Now.Day, savedChallengeList.Result.ElementAt<Challenge>(1).Release_Date.Day);
+            var savedChallengeList = value.Model as PaginatedList<Challenge> ;
+            Assert.Equal("test title 1", savedChallengeList.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", savedChallengeList.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, savedChallengeList.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", savedChallengeList.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, savedChallengeList.ElementAt<Challenge>(1).Max_Participant);
+            Assert.Equal(DateTime.Now.Day, savedChallengeList.ElementAt<Challenge>(1).Release_Date.Day);
         }
 
 
