@@ -56,8 +56,7 @@ namespace PlattformChallenge.Controllers
                            select c;
             if (!String.IsNullOrEmpty(searchString))
             {
-                challenges = challenges.Where(s => s.Title.Contains(searchString)
-                                       || s.Content.Contains(searchString));
+                challenges = challenges.Where(s => s.Title.Contains(searchString));
             }
             switch (sortOrder)
             {
