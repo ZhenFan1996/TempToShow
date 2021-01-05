@@ -79,7 +79,7 @@ namespace PlattformChallenge.Controllers
                     challenges = challenges.OrderByDescending(c => c.Release_Date);
                     break;
             }
-            int pageSize = 3;//Temporary value, convenience for testing
+            int pageSize = 10;//Temporary value, convenience for testing
             return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
         }
 
