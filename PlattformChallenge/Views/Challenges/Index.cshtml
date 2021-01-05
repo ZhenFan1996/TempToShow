@@ -22,16 +22,16 @@
                 @*@Html.DisplayNameFor(model => model.Title)*@
             </th>
             <th>
-                Bonus
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">Bonus</a>
             </th>
             <th>
                 Company
             </th>
             <th>
-                Date
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">Date</a>
             </th>
             <th>
-                Quota
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">Bonus</a>
             </th>
             <th></th>
         </tr>

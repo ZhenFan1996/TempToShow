@@ -41,11 +41,39 @@ namespace PlattformChallenge.Controllers
         // Returns:
         //    A view with list of current active challenges
 
-        public async Task<IActionResult> Index(int? pageNumber)
+
+        public async Task<IActionResult> Index(int? pageNumber,string sortOrder)
         {
-            var challenges = _repository
-                .GetAll()
-                .Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company);
+            ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
+            //var challenges = _repository
+            //    .GetAll()
+            //    .Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company);
+            //var chs = from s in _context.Students
+            var challenges = from c in _repository.GetAll()
+                           select c;
+            switch (sortOrder)
+            {
+                case "Bonus":
+                    challenges = challenges.OrderBy(c => c.Bonus);
+                    break;
+                case "bonus_desc":
+                    challenges = challenges.OrderByDescending(c => c.Bonus);
+                    break;
+                case "Date":
+                    challenges = challenges.OrderBy(c => c.Release_Date);
+                    break;
+                case "Quota":
+                    challenges = challenges.OrderBy(c => c.Max_Participant);
+                    break;
+                case "quota_desc":
+                    challenges = challenges.OrderByDescending(c => c.Max_Participant);
+                    break;
+                default:
+                    challenges = challenges.OrderByDescending(c => c.Release_Date);
+                    break;
+            }
             int pageSize = 3;//Temporary value, convenience for testing
             return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
         }
