@@ -115,31 +115,13 @@ namespace PlattformChallenge.Controllers.Tests
             Challenge savedChallenge = null;
             List<LanguageChallenge> savedLc = new List<LanguageChallenge>();
 
-            _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
-            {
-
-                new Language(){
-                    Language_Id ="1",
-                    DevelopmentLanguage = "java"
-                },
-
-                 new Language(){
-                    Language_Id ="2",
-                    DevelopmentLanguage = "C++"
-                },
-                 new Language(){
-                     Language_Id = "3",
-                    DevelopmentLanguage = "C#"
-
-                 }
-
-
-            }));
             _mockRepository.Setup(m => m.InsertAsync(It.IsAny<Challenge>()))
                 .Returns(Task.CompletedTask)
                 .Callback<Challenge>(c => savedChallenge = c);
 
-
+            _mockLCRepository.Setup(l => l.InsertAsync(It.IsAny<LanguageChallenge>()))
+                .Returns(Task.CompletedTask)
+                .Callback<LanguageChallenge>(s => savedLc.Add(s));
             var challenge = new ChallengeCreateViewModel() {
                 Title = "aaaa",
                 Bonus = 2,

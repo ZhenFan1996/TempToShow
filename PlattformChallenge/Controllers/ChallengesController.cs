@@ -305,8 +305,7 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
-            var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
-            challenge.Max_Participant--;
+            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);
 
             Participation newParti = new Participation()
             {
