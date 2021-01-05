@@ -67,8 +67,13 @@ namespace PlattformChallenge.Controllers
                 //return NotFound();
             }
 
-            var challenge = await _repository
-                 .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
+
+            var challenge = await _repository.GetAll()
+                .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
+                .FirstOrDefaultAsync(m =>m.C_Id==id);
+            //var challenge = await _repository
+            //     .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
 
             if (challenge == null)
             {

@@ -20,6 +20,7 @@ using System.Linq;
 using PlattformChallenge.Models;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MockQueryable.Moq;
 
 namespace PlattformChallenge.Controllers.Tests
 {
@@ -30,6 +31,8 @@ namespace PlattformChallenge.Controllers.Tests
         private readonly Mock<IRepository<PlatformUser>> _mockPRpository;
         private readonly Mock<IRepository<Language>> _mockLRepository;
         private readonly Mock<IRepository<LanguageChallenge>> _mockLCRepository;
+        private readonly Mock<IRepository<Participation>> _mockPaRepository;
+
         private readonly ChallengesController _sut;
 
         public ChallengeControllerShould()
@@ -39,7 +42,8 @@ namespace PlattformChallenge.Controllers.Tests
             _mockPRpository = new Mock<IRepository<PlatformUser>>();
             _mockLRepository = new Mock<IRepository<Language>>();
             _mockLCRepository = new Mock<IRepository<LanguageChallenge>>();
-            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object);
+            _mockPaRepository = new Mock<IRepository<Participation>>();
+            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object,_mockPaRepository.Object);
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
@@ -136,7 +140,7 @@ namespace PlattformChallenge.Controllers.Tests
                 .Callback<Challenge>(c => savedChallenge = c);
 
 
-            var challenge = new ChallengeCreateViewModel(_mockLRepository.Object) {
+            var challenge = new ChallengeCreateViewModel() {
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
@@ -209,9 +213,8 @@ namespace PlattformChallenge.Controllers.Tests
         public async void ReturnBadRequestInvalidIdForDetails()
 
         {
-            _mockRepository
-                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
-                .Returns(Task.FromResult<List<Challenge>>(null));
+            List<Challenge> challenges = new List<Challenge>();
+            _mockRepository.Setup(m => m.GetAll()).Returns(challenges.AsQueryable().BuildMockDbSet().Object);
             var result = await _sut.Details("1");
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
@@ -260,7 +263,7 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository
                 .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
                 .Returns(Task.FromResult(l));
-            var result = await _sut.Index();
+            var result = await _sut.Index(null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var savedChallengeList = (Task<List<Challenge>>)value.Model;
