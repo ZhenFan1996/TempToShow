@@ -43,8 +43,29 @@ namespace PlattformChallenge.Controllers.Tests
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
-            _sut.ControllerContext = context;
-        }
+            _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
+            {new Language()
+                    {
+                        Language_Id = "1",
+                        DevelopmentLanguage = "Java"
+
+                    },
+                    new Language()
+                    {
+                        Language_Id = "2",
+                        DevelopmentLanguage = "C++"
+
+                    },
+                       new Language()
+                    {
+                        Language_Id = "3",
+                        DevelopmentLanguage = "Other"
+
+                    }
+
+            }));
+            _sut.ControllerContext = context ;
+         }
 
 
         [Fact]
@@ -114,12 +135,8 @@ namespace PlattformChallenge.Controllers.Tests
                 .Returns(Task.CompletedTask)
                 .Callback<Challenge>(c => savedChallenge = c);
 
-            _mockLCRepository.Setup(lc => lc.InsertAsync(It.IsAny<LanguageChallenge>()))
-                .Returns(Task.CompletedTask)
-                .Callback<LanguageChallenge>(x => savedLc.Add(x));
 
-            var challenge = new ChallengeCreateViewModel()
-            {
+            var challenge = new ChallengeCreateViewModel(_mockLRepository.Object) {
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",

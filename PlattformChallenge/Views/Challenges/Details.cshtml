@@ -49,12 +49,13 @@
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.langugaes)
+            @Html.DisplayNameFor(model => model.Languages)
         </dt>
         <dd class="col-sm-10">
-           @for (int i = 0; i < Model.langugaes.Count; i++) {
-             <span>  @Model.langugaes.ElementAt(i).DevelopmentLanguage </span>
-           }
+            @for (int i = 0; i < Model.Languages.Count; i++)
+            {
+                <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
+            }
         </dd>
 
         <dt class="col-sm-2">
@@ -71,22 +72,24 @@
         <dd class="col-sm-10">
             <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
         </dd>
-
-        @*<dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Winner_Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Winner_Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Best_Solution_Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Best_Solution_Id)
-        </dd>*@
     </dl>
 </div>
+@*TODO: 如果Quota等于0了，就不能再显示参与挑战按钮*@
+@if (ViewContext.HttpContext.User.IsInRole("Programmer"))
+{
+    if (Model.Max_Participant > 0)
+    {
+        <a asp-action="ParticipationConfirm" asp-route-id="@Model.C_Id">I want to take part in this challenge!</a>
+    }
+    else
+    {
+        <p>You can't participate this challenge. There's no place anymore</p>
+        }
+    }
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.C_Id">Edit</a> |
+    @if (ViewContext.HttpContext.User.IsInRole("Company"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.C_Id">Edit</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

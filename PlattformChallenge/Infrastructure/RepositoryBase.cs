@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Core.Interfaces;
+using PlattformChallenge.Models;
 
 namespace PlattformChallenge.Infrastructure
 {
@@ -120,6 +121,15 @@ namespace PlattformChallenge.Infrastructure
         public bool Exists(Expression<Func<TEntity, bool>> predicate)
         {
             return GetAll().Any(predicate);
+        }
+
+        public async Task<PaginatedList<TEntity>> FindByAndCreatePaginateAsync(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = FindBy(predicate, includes);
+            var source = query.AsNoTracking();
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<TEntity>(items, count, pageIndex, pageSize);
         }
     }
 }  
