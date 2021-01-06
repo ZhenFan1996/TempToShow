@@ -32,10 +32,15 @@
                         @if (SignInMananger.IsSignedIn(User))
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Programmer" asp-action="Index">Portal</a>
+                            </li>
+                            
+                            <li class="nav-item">
                                 <form asp-controller="account" asp-action="logout" method="post">
                                     <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link  py-0>Sign out   @User.Identity.Name</button>
                                 </form>
                             </li>
+
                         }
                         
                         else
@@ -49,13 +54,6 @@
                         </li>
                        
                         }
-
-
-
-
-                        @*<li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>*@
                     </ul>
                 </div>
             </div>
