@@ -41,11 +41,46 @@ namespace PlattformChallenge.Controllers
         // Returns:
         //    A view with list of current active challenges
 
-        public async Task<IActionResult> Index(int? pageNumber)
+
+        public async Task<IActionResult> Index(int? pageNumber,string sortOrder, string searchString)
         {
-            int pageSize = 3;//Temporary value, convenience for testing
-            var result = await _repository.FindByAndCreatePaginateAsync(pageNumber ?? 1, pageSize, c => c.Release_Date <= DateTime.Now, c => c.Company);
-            return View(result);
+            ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
+            ViewData["CurrentFilter"] = searchString;
+            //var challenges = _repository
+            //    .GetAll()
+            //    .Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company);
+            //var chs = from s in _context.Students
+            var challenges = from c in _repository.GetAll()
+                           select c;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                challenges = challenges.Where(s => s.Title.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "Bonus":
+                    challenges = challenges.OrderBy(c => c.Bonus);
+                    break;
+                case "bonus_desc":
+                    challenges = challenges.OrderByDescending(c => c.Bonus);
+                    break;
+                case "Date":
+                    challenges = challenges.OrderBy(c => c.Release_Date);
+                    break;
+                case "Quota":
+                    challenges = challenges.OrderBy(c => c.Max_Participant);
+                    break;
+                case "quota_desc":
+                    challenges = challenges.OrderByDescending(c => c.Max_Participant);
+                    break;
+                default:
+                    challenges = challenges.OrderByDescending(c => c.Release_Date);
+                    break;
+            }
+            int pageSize = 10;//Temporary value, convenience for testing
+            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
         }
 
         //
@@ -67,8 +102,12 @@ namespace PlattformChallenge.Controllers
                 //return NotFound();
             }
 
-            var challenge = await _repository
-                 .IncludeAndFindOrDefaultAsync(m => m.C_Id == id, c => c.Company, c => c.LanguageChallenges);
+
+            var challenge = await _repository.GetAll()
+                .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
+                .FirstOrDefaultAsync(m =>m.C_Id==id);
+
 
             if (challenge == null)
             {

@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
 using PlattformChallenge.Models;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MockQueryable.Moq;
 
 namespace PlattformChallenge.Controllers.Tests
 {
@@ -29,6 +31,8 @@ namespace PlattformChallenge.Controllers.Tests
         private readonly Mock<IRepository<PlatformUser>> _mockPRpository;
         private readonly Mock<IRepository<Language>> _mockLRepository;
         private readonly Mock<IRepository<LanguageChallenge>> _mockLCRepository;
+        private readonly Mock<IRepository<Participation>> _mockPaRepository;
+
         private readonly ChallengesController _sut;
 
         public ChallengeControllerShould()
@@ -38,7 +42,8 @@ namespace PlattformChallenge.Controllers.Tests
             _mockPRpository = new Mock<IRepository<PlatformUser>>();
             _mockLRepository = new Mock<IRepository<Language>>();
             _mockLCRepository = new Mock<IRepository<LanguageChallenge>>();
-            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object);
+            _mockPaRepository = new Mock<IRepository<Participation>>();
+            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object,_mockPaRepository.Object);
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
@@ -68,11 +73,8 @@ namespace PlattformChallenge.Controllers.Tests
 
 
         [Fact]
-        public async Task CreateChallengeTest()
+        public void ReturnViewForCreate()
         {
-            Challenge savedChallenge = null;
-            List<LanguageChallenge> savedLc = new List<LanguageChallenge>();
-
             _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
             {
 
@@ -90,15 +92,37 @@ namespace PlattformChallenge.Controllers.Tests
                     DevelopmentLanguage = "C#"
 
                  }
-
-
             }));
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true }
+            };
+            var result = _sut.Create();
+            Assert.IsType<ViewResult>(result);
+
+
+        }
+
+
+        [Fact]
+        public async Task CreateChallengeTest()
+        {
+            Challenge savedChallenge = null;
+            List<LanguageChallenge> savedLc = new List<LanguageChallenge>();
+
             _mockRepository.Setup(m => m.InsertAsync(It.IsAny<Challenge>()))
                 .Returns(Task.CompletedTask)
                 .Callback<Challenge>(c => savedChallenge = c);
 
-
-            var challenge = new ChallengeCreateViewModel(_mockLRepository.Object) {
+            _mockLCRepository.Setup(l => l.InsertAsync(It.IsAny<LanguageChallenge>()))
+                .Returns(Task.CompletedTask)
+                .Callback<LanguageChallenge>(s => savedLc.Add(s));
+            var challenge = new ChallengeCreateViewModel() {
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
@@ -121,6 +145,30 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal("3", savedLc.ElementAt(1).Language_Id);
         }
 
+
+        [Fact]
+        public async Task InVaildModelStateForCreate()
+        {
+            _sut.ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true }
+            };
+            var result = await _sut.Create(challenge);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult) result;
+            Assert.Equal(challenge, value.Model);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("failed to create the challenge, please try again", allErrors.ElementAt(0).ErrorMessage);
+            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Never);
+            _mockRepository.Verify(l => l.InsertAsync(It.IsAny<Challenge>()), Times.Never);
+            _mockLCRepository.Verify(l => l.InsertAsync(It.IsAny<LanguageChallenge>()), Times.Never);
+        }
         //
         // Summary:
         //    [TestCase-ID: 10-1]
@@ -147,9 +195,8 @@ namespace PlattformChallenge.Controllers.Tests
         public async void ReturnBadRequestInvalidIdForDetails()
 
         {
-            _mockRepository
-                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
-                .Returns(Task.FromResult<List<Challenge>>(null));
+            List<Challenge> challenges = new List<Challenge>();
+            _mockRepository.Setup(m => m.GetAll()).Returns(challenges.AsQueryable().BuildMockDbSet().Object);
             var result = await _sut.Details("1");
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
@@ -194,22 +241,34 @@ namespace PlattformChallenge.Controllers.Tests
                 }
                 }
             };
-            IQueryable<Challenge> query = l.AsQueryable();
+            var query = l.AsQueryable().BuildMockDbSet();
             _mockRepository
-                .Setup(m => m.FindByAndToListAsync(It.IsAny<Expression<Func<Challenge, bool>>>(), It.IsAny<Expression<Func<Challenge, object>>[]>()))
-                .Returns(Task.FromResult(l));
-            var result = await _sut.Index();
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
-            var savedChallengeList = (Task<List<Challenge>>)value.Model;
-            Assert.Equal("test title 1",savedChallengeList.Result.ElementAt<Challenge>(0).Title);
-            Assert.Equal("1111", savedChallengeList.Result.ElementAt<Challenge>(0).Com_ID);
-            Assert.Equal(200, savedChallengeList.Result.ElementAt<Challenge>(0).Bonus);
-            Assert.Equal("2cde", savedChallengeList.Result.ElementAt<Challenge>(1).C_Id);
-            Assert.Equal(18, savedChallengeList.Result.ElementAt<Challenge>(1).Max_Participant);
-            Assert.Equal(DateTime.Now.Day, savedChallengeList.Result.ElementAt<Challenge>(1).Release_Date.Day);
+            var savedChallengeList = value.Model as PaginatedList<Challenge> ;
+            Assert.Equal("test title 1", savedChallengeList.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", savedChallengeList.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, savedChallengeList.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", savedChallengeList.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, savedChallengeList.ElementAt<Challenge>(1).Max_Participant);
+            Assert.Equal(DateTime.Now.Day, savedChallengeList.ElementAt<Challenge>(1).Release_Date.Day);
         }
+
+
+
+
+
+
     }
+
+
+
+
+
+    
 }
 
 
