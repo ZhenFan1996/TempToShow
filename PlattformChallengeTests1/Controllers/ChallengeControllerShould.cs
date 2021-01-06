@@ -71,7 +71,11 @@ namespace PlattformChallenge.Controllers.Tests
             _sut.ControllerContext = context ;
          }
 
-
+        //
+        // Summary:
+        //    [TestCase-ID: 10-6]
+        //    Test if the view of create is the expected type.
+        //
         [Fact]
         public void ReturnViewForCreate()
         {
@@ -108,7 +112,11 @@ namespace PlattformChallenge.Controllers.Tests
 
         }
 
-
+        //
+        // Summary:
+        //    [TestCase-ID: 10-5]
+        //    Test whether the new challenge is successfully created
+        //
         [Fact]
         public async Task CreateChallengeTest()
         {
@@ -144,8 +152,11 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal("1", savedLc.ElementAt(0).Language_Id);
             Assert.Equal("3", savedLc.ElementAt(1).Language_Id);
         }
-
-
+        //
+        // Summary:
+        //    [TestCase-ID: 10-4]
+        //    Test the returned error view if modelstate is invalid
+        //
         [Fact]
         public async Task InVaildModelStateForCreate()
         {
@@ -245,7 +256,7 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null);
+            var result = await _sut.Index(null,null,null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var savedChallengeList = value.Model as PaginatedList<Challenge> ;
