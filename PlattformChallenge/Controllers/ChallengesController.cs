@@ -89,6 +89,11 @@ namespace PlattformChallenge.Controllers
                 Best_Solution_Id = challenge.Best_Solution_Id
             };
 
+            if (detail.Winner_Id != null)
+            {
+                detail.Winner = _pRepository.FirstOrDefault(u => u.Id == challenge.Winner_Id);
+            }
+
             List<Language> l = new List<Language>();
             foreach (LanguageChallenge lc in challenge.LanguageChallenges)
             {
@@ -98,6 +103,7 @@ namespace PlattformChallenge.Controllers
             return View(detail);
         }
 
+        #region Create
         //
         // Summary:
         //    Create a new challenge. Get the create form.
@@ -163,47 +169,90 @@ namespace PlattformChallenge.Controllers
             ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
             return View(model);
         }
+        #endregion
 
+
+        #region Edit
+        //
+        // Summary:
+        //    Check prerequisites of editing challenge and provides information for edit form
+        //
+        // Parameter:
+        //    The Id string of a challenge
+        //
+        // Returns:
+        //    A view with a edit form if passed prerequisites; Else an error view with error message
         // GET: Challenges/Edit/5
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            ErrorViewModel errorViewModel = new ErrorViewModel();
+            //these three if-cases prevent someone tries to edit a challenge through giving id in route 
+            if (id == null || id == "")
             {
-                return NotFound();
+                errorViewModel.RequestId = "invalid challenge id value for editing";
+                return View("Error", errorViewModel);
             }
-
             var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
             if (challenge == null)
             {
-                return NotFound();
+                errorViewModel.RequestId = "there's no challenge with this id, please check again";
+                return View("Error", errorViewModel);
             }
-            ViewData["Com_ID"] = new SelectList(_pRepository.GetAll(), "Id", "Id", challenge.Com_ID);
-            return View(challenge);
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) != challenge.Com_ID)
+            {
+                errorViewModel.RequestId = "You can't edit challenge from other company";
+                return View("Error", errorViewModel);
+            }
+            ChallengeEditViewModel model = new ChallengeEditViewModel();
+            model.Challenge = challenge;
+            model.Languages = await _lRepository.GetAllListAsync();
+            model.IsSelected = new bool[model.Languages.Count];
+            List<LanguageChallenge> lc = new List<LanguageChallenge>();
+            lc = _lcRepository.GetAllList(l => l.C_Id == challenge.C_Id);
+            for (int i = 0; i < lc.Count; i++)
+            {
+                String lId = lc.ElementAt(i).Language_Id;
+                model.IsSelected[int.Parse(lId)] = true;
+            }
+            return View(model);
         }
 
-        // POST: Challenges/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //
+        // Summary:
+        //    Check if all given para are legal then update database
+        //
+        // Parameter:
+        //    A ChallengeEditViewModel with form information
+        //
+        // Returns:
+        ////    The detail view of edited challenge with updated information
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
-        public async Task<IActionResult> Edit(string id, [Bind("C_Id,Bonus,Title,Content,Release_Date,Max_Participant,Com_ID,Winner_Id,Best_Solution_Id")] Challenge challenge)
+        public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-            if (id != challenge.C_Id)
-            {
-                return NotFound();
-            }
+            
+            int bonus = getCurrentBonus(model.Challenge.C_Id);
 
             if (ModelState.IsValid)
             {
+                if (bonus > model.Challenge.Bonus)
+                {
+                    ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
+                    return View(model);
+                }
+                //TODO: Check if edited Quota is legal
+                //TODO: Update Language
                 try
                 {
-                    await _repository.UpdateAsync(challenge);
+                    await _repository.UpdateAsync(model.Challenge);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChallengeExists(challenge.C_Id))
+                    if (!ChallengeExists(model.Challenge.C_Id))
                     {
                         return NotFound();
                     }
@@ -212,11 +261,22 @@ namespace PlattformChallenge.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = model.Challenge.C_Id });
             }
-            ViewData["Com_ID"] = new SelectList(_pRepository.GetAll(), "Id", "Id", challenge.Com_ID);
-            return View(challenge);
+
+            //if modelstate is not valid
+            ModelState.AddModelError(string.Empty, "failed to edit the challenge, please try again");
+            return View(model);
         }
+
+        private int getCurrentBonus(string c_Id)
+        {
+            var current = _repository.FindBy(c => c.C_Id == c_Id);
+            return current.AsNoTracking().First().Bonus;
+        }
+        #endregion
+
+        #region delete
 
         // GET: Challenges/Delete/5
         [Authorize(Roles = "Company")]
@@ -249,7 +309,9 @@ namespace PlattformChallenge.Controllers
             challenge = await _repository.DeleteAsync(challenge);
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Participation
         //
         // Summary:
         //    Check if the prerequisites for participating a challenge fulfil.
@@ -310,6 +372,7 @@ namespace PlattformChallenge.Controllers
             return View(challenge);
         }
 
+        #endregion
 
         private bool ChallengeExists(string id)
         {
@@ -318,9 +381,9 @@ namespace PlattformChallenge.Controllers
 
         private int GetAvailableQuota(string id)
         {
-            Challenge challenge = _repository.FirstOrDefault(c => c.C_Id == id);
+            var challenge = _repository.FindBy(c => c.C_Id == id);
             var partiList = _particiRepository.GetAllList(c => c.C_Id == id);
-            return challenge.Max_Participant - partiList.Count;
+            return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
         }
     }
 }
