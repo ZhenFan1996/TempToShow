@@ -33,7 +33,7 @@
                         {
                             <li class="nav-item">
                                 <form asp-controller="account" asp-action="logout" method="post">
-                                    <button type="submit" style="width:auto" class="close btn-sm" aria-hidden="true" btn btn-link  py-0>Sign out   @User.Identity.Name</button>
+                                    <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link  py-0>Sign out   @User.Identity.Name</button>
                                 </form>
                             </li>
                         }
@@ -62,7 +62,6 @@
         </nav>
     </header>
     <div class="container">
-        @using Microsoft.AspNetCore.Identity
         @inject SignInManager<PlatformUser> SignInMananger
         <main role="main" class="pb-3">
             @RenderBody()
