@@ -48,12 +48,9 @@ namespace PlattformChallenge.Controllers
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
-            //var challenges = _repository
-            //    .GetAll()
-            //    .Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company);
-            //var chs = from s in _context.Students
-            var challenges = from c in _repository.GetAll()
-                           select c;
+            var challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company)
+                             select c;
             if (!String.IsNullOrEmpty(searchString))
             {
                 challenges = challenges.Where(s => s.Title.Contains(searchString));
@@ -167,7 +164,7 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<Language> languages = _lRepository.GetAllListAsync().Result;
+                List<Language> languages = await _lRepository.GetAllListAsync();
 
                 Challenge newChallenge = new Challenge
                 {

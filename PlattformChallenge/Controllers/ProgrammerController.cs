@@ -38,13 +38,22 @@ namespace PlattformChallenge.Controllers
                 Challenges = challenge,
                 Programmer = _currUser
             };
-
             return View(model);
         }
 
         public async Task<IActionResult> Cancel(string id) {
-            await _pRepository.DeleteAsync(p => p.C_Id == id);
-            return RedirectToAction("Index");
+            var p = await (from pc in _pRepository.GetAll()
+                    where pc.C_Id == id && pc.P_Id == _currUser.Id
+                    select pc).ToListAsync();
+            if (p.Count !=1)
+            {
+                return View();
+            }
+            else 
+            {
+                await _pRepository.DeleteAsync(p => p.C_Id == id);
+                return RedirectToAction("Index");
+            }
         }
     }
 }
