@@ -16,13 +16,13 @@
             <input type="hidden" asp-for="Challenge.C_Id" />
 
             <div class="form-group">
-                <label asp-for="Challenge.Title" class="control-label"></label>
+                <label asp-for="Challenge.Title" class="control-label">Title of your challenge</label>
                 <input asp-for="Challenge.Title" class="form-control" />
                 <span asp-validation-for="Challenge.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Challenge.Content" class="control-label"></label>
-                <input asp-for="Challenge.Content" class="form-control" />
+                <label asp-for="Challenge.Content" class="control-label">Discription for your challenge</label>
+                <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
                 <span asp-validation-for="Challenge.Content" class="text-danger"></span>
             </div>
             @*<div class="form-group">
@@ -33,12 +33,12 @@
             <input type="hidden" asp-for="Challenge.Release_Date" />
             <input type="hidden" asp-for="Challenge.Com_ID" />
             <div class="form-group">
-                <label asp-for="Challenge.Bonus" class="control-label"></label>
+                <label asp-for="Challenge.Bonus" class="control-label">Bonus for the best solution (in €)</label>
                 <input asp-for="Challenge.Bonus" class="form-control" />
                 <span asp-validation-for="Challenge.Bonus" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Challenge.Max_Participant" class="control-label"></label>
+                <label asp-for="Challenge.Max_Participant" class="control-label">Maximum Participants</label>
                 <input asp-for="Challenge.Max_Participant" class="form-control" />
                 <span asp-validation-for="Challenge.Max_Participant" class="text-danger"></span>
             </div>

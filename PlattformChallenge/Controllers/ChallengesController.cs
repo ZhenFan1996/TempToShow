@@ -270,7 +270,9 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
             
-            int bonus = getCurrentBonus(model.Challenge.C_Id);
+            int bonus = GetCurrentBonus(model.Challenge.C_Id);
+            var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
+            int alreadyParticiCount = partiList.Count;
 
             if (ModelState.IsValid)
             {
@@ -279,8 +281,16 @@ namespace PlattformChallenge.Controllers
                     ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
                     return View(model);
                 }
-                //TODO: Check if edited Quota is legal
+                if(alreadyParticiCount > model.Challenge.Max_Participant)
+                {
+                    ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
+                    return View(model);
+                }
+             
+
                 //TODO: Update Language
+                
+
                 try
                 {
                     await _repository.UpdateAsync(model.Challenge);
@@ -305,7 +315,7 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        private int getCurrentBonus(string c_Id)
+        private int GetCurrentBonus(string c_Id)
         {
             var current = _repository.FindBy(c => c.C_Id == c_Id);
             return current.AsNoTracking().First().Bonus;
