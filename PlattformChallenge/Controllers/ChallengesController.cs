@@ -42,7 +42,7 @@ namespace PlattformChallenge.Controllers
         //    A view with list of current active challenges
 
 
-        public async Task<IActionResult> Index(int? pageNumber,string sortOrder, string searchString)
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
@@ -77,7 +77,7 @@ namespace PlattformChallenge.Controllers
                     break;
             }
             int pageSize = 10;//Temporary value, convenience for testing
-            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
+            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         //
@@ -103,7 +103,7 @@ namespace PlattformChallenge.Controllers
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
                 .Include(c => c.LanguageChallenges)
-                .FirstOrDefaultAsync(m =>m.C_Id==id);
+                .FirstOrDefaultAsync(m => m.C_Id == id);
 
 
             if (challenge == null)
@@ -257,7 +257,7 @@ namespace PlattformChallenge.Controllers
 
         //
         // Summary:
-        //    Check if all given para are legal then update database
+        //    Check if all given para are legal, if yes then update database
         //
         // Parameter:
         //    A ChallengeEditViewModel with form information
@@ -269,7 +269,7 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-            
+
             int bonus = GetCurrentBonus(model.Challenge.C_Id);
             var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
             int alreadyParticiCount = partiList.Count;
@@ -281,20 +281,50 @@ namespace PlattformChallenge.Controllers
                     ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
                     return View(model);
                 }
-                if(alreadyParticiCount > model.Challenge.Max_Participant)
+                if (alreadyParticiCount > model.Challenge.Max_Participant)
                 {
                     ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
                     return View(model);
                 }
-             
 
-                //TODO: Update Language
-                
+
+                for (int i = 0; i < model.IsSelected.Count(); i++)
+                {
+                    List<Language> languages = await _lRepository.GetAllListAsync();
+                    //If user cancelled languages which have been selected
+                    if (!model.IsSelected[i])
+                    {
+                        string iStr = i.ToString();
+                        var toEdit = _lcRepository.FirstOrDefault(l => l.Language_Id == iStr
+                        && l.C_Id == model.Challenge.C_Id);
+                        if (toEdit != null)
+                        {
+                            await _lcRepository.DeleteAsync(toEdit);
+                        }
+                    }
+
+                    else
+                    {
+                        //Check if the selected language already selected before editing
+                        string iStr = i.ToString();
+                        var toAdd = _lcRepository.FirstOrDefault(l => l.Language_Id == iStr
+                        && l.C_Id == model.Challenge.C_Id);
+                        if (toAdd == null)
+                        {
+                            toAdd = new LanguageChallenge()
+                            {
+                                C_Id = model.Challenge.C_Id,
+                                Language_Id = languages.ElementAt(i).Language_Id,
+                            };
+                            await _lcRepository.InsertAsync(toAdd);
+                        }
+                    }
+                }
+
 
                 try
                 {
                     await _repository.UpdateAsync(model.Challenge);
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {

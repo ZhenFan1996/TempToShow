@@ -42,7 +42,7 @@
                 <input asp-for="Challenge.Max_Participant" class="form-control" />
                 <span asp-validation-for="Challenge.Max_Participant" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
             <label class="control-label">Languages : </label>
             @for (int i = 0; i < Model.Languages.Count; i++)
             {
@@ -52,8 +52,7 @@
                     <input type="hidden" asp-for="@Model.Languages.ElementAt(i).Language_Id" />
                 </span>
             }
-
-        </div>*@
+        </div>
             <div class="form-group">
                 <label asp-for="Challenge.Winner_Id" class="control-label"></label>
                 <input asp-for="Challenge.Winner_Id" class="form-control" />
