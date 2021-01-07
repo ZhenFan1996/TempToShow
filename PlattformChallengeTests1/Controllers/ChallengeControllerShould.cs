@@ -389,8 +389,66 @@ namespace PlattformChallenge.Controllers.Tests
 
         }
 
+        //
+        // Summary:
+        //    [TestCase-ID: 10-5]
+        //    Test if index() returns correct list of challenges afte challenges descending sorted by date
+        //
+        [Fact]
+        public async Task SortChallengesByDateIndex()
+        {
+            var l = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "1abc",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "2cde",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "3cde",
+                Title = "test title 3",
+                Bonus = 600,
+                Content = "test content 3",
+                Release_Date = DateTime.Now.AddDays(2),
+                Max_Participant = 118,
+                Com_ID = "3333",
+                Company = new PlatformUser(){
+                    Id = "test3.com"
+                }
+                },
+            };
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "", null);
+            PaginatedList<Challenge> sorted = null;
+            var value = result as ViewResult;
+            sorted = (PaginatedList<Challenge>)value.Model;
+            Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
+            Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
+            Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
 
-    }  
+        }
+    }
 }
 
 
