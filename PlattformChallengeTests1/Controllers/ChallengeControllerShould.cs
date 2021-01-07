@@ -245,7 +245,7 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null);
+            var result = await _sut.Index(null,null,null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var savedChallengeList = value.Model as PaginatedList<Challenge> ;
