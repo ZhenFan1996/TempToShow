@@ -44,7 +44,7 @@ namespace PlattformChallenge.Controllers
 
         public async Task<IActionResult> Index(int? pageNumber,string sortOrder, string searchString)
         {
-            ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "";
+            ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "Bonus";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
@@ -53,8 +53,10 @@ namespace PlattformChallenge.Controllers
                              select c;
             if (!String.IsNullOrEmpty(searchString))
             {
-                challenges = challenges.Where(s => s.Title.Contains(searchString));
+                challenges = challenges.Where(c => c.Title.Contains(searchString));
             }
+
+            
             switch (sortOrder)
             {
                 case "Bonus":
