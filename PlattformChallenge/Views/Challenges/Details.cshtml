@@ -93,45 +93,49 @@
         </dd>
     </dl>
 </div>
+<div class="container">
+    <div class="row">
+        @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
 
-@if (ViewContext.HttpContext.User.IsInRole("Programmer"))
-{
-    if (Model.Available_Quota > 0)
-    {
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#participate">
-     Take part in
-</button>
-<div class="modal fade" id="participate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+            if (Model.Available_Quota > 0)
+            {
                 
-                <h5 class="modal-title" id="exampleModalLabel">
-                    please confirm the conditions:
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
+                    Take part in
                 </button>
-            </div>
-            <div class="modal-body">
-               Your solution will be published if you win the prize.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">Yes I'm in!</a>
-            </div>
+
+                <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> please confirm the conditions:  </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Your solution will be published if you win the prize.
+                            </div>
+                            <div class="modal-footer">
+                                <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">Yes,I'm in!</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                   
+            }
+            else
+            {
+                <p>You can't participate this challenge. There's no place anymore</p>
+            }
+
+        <div>
+            @if (ViewContext.HttpContext.User.IsInRole("Company"))
+            {
+                <a   asp-action="Edit" asp-route-id="@Model.C_Id" class="btn btn-primary " >Edit</a>
+            }
         </div>
+        <div class="col-3">    <a asp-action="Index" class="btn btn-primary ">Back to List</a></div>
     </div>
-</div>}
-else
-{
-<p>You can't participate this challenge. There's no place anymore</p>
-}
-}
-<div>
-    @if (ViewContext.HttpContext.User.IsInRole("Company"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.C_Id">Edit</a>
-    }
 </div>
-<div>    <a asp-action="Index" class="btn btn-primary">Back to List</a></div>

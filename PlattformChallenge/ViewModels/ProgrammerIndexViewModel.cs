@@ -13,4 +13,5 @@ namespace PlattformChallenge.ViewModels
 
         public PlatformUser Programmer { get; set; }
     }
-}
+    }
+

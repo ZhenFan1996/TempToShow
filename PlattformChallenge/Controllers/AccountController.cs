@@ -26,14 +26,16 @@ namespace PlattformChallenge.Controllers
         }
 
         [HttpGet]
-        public  IActionResult Register() {
+        public IActionResult Register()
+        {
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
 
                 var user = new PlatformUser
                 {
@@ -42,22 +44,27 @@ namespace PlattformChallenge.Controllers
                     UserName = model.Email
                 };
                 var result1 = await _userManager.CreateAsync(user, model.Password);
-                if (result1.Succeeded) {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                if (result1.Succeeded)
+                {
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
-                    if (result2.Succeeded) {
-                        await _signInManager.SignInAsync(user,false);
+                    if (result2.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
                         return RedirectToAction("Index", "Home");
                     }
-                    else {
+                    else
+                    {
                         foreach (var error in result2.Errors)
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
                     }
                 }
-                foreach (var error in result1.Errors) {
+                foreach (var error in result1.Errors)
+                {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }         
+                }
             }
             return View(model);
 
@@ -81,11 +88,11 @@ namespace PlattformChallenge.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Error to login, please try again");
-                
+
             }
             return View(logInViewModel);
         }
-         #endregion
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -94,14 +101,53 @@ namespace PlattformChallenge.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public  IActionResult AccessDenied() {
+        public IActionResult AccessDenied()
+        {
             var roles = ((ClaimsIdentity)User.Identity).Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value);
-            ViewBag.CurrentRole = roles.FirstOrDefault();           
+            ViewBag.CurrentRole = roles.FirstOrDefault();
             return View();
         }
+
+
+        [HttpGet]
+        public IActionResult ChangePassword(string email)
+        {
+            if (email == null) {
+                ModelState.AddModelError("", "no email");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var checkOk= await _userManager.CheckPasswordAsync(user,model.Orginal);
+                if (!checkOk) {
+                    ModelState.AddModelError("","please check the orgin password");
+                    return View();
+                }
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        await _signInManager.SignOutAsync();
+                        return RedirectToAction("Index","Home");
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
     }
-
-
-}
+    }

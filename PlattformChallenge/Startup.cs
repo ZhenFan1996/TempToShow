@@ -39,7 +39,8 @@ namespace PlattformChallenge
                 options.Password.RequiredUniqueChars = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<AppDbContext>();
+            }).AddEntityFrameworkStores<AppDbContext>()
+            .AddTokenProvider<DataProtectorTokenProvider<PlatformUser>>(TokenOptions.DefaultProvider); 
 
 
             services.ConfigureApplicationCookie(options =>

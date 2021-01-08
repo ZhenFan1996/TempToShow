@@ -10,7 +10,7 @@
                         <li class="card-text"> Email: @Model.Programmer.Email</li>
                         <li class="card-text"> participated Challenges:@Model.Challenges.Count()</li>
                     </ul>
-                    <a href="#" class="btn btn-primary">Change Password</a>
+                    <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary">Change Password</a>
                 </div>
             </div>
 
@@ -41,7 +41,30 @@
                                 @Html.DisplayFor(modelItem => item.Release_Date)
                             </td>
                             <td>
-                                <a asp-action="Cancel" asp-route-id="@item.C_Id">Cancel</a>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#c">
+                                   Cancle
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">Yes</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
