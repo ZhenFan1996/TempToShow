@@ -271,7 +271,7 @@ namespace PlattformChallenge.Controllers.Tests
 
         //
         // Summary:
-        //    [TestCase-ID: 10-4]
+        //    [TestCase-ID: 7-1]
         //    Test if index() returns correct list of challenges afte challenges descending sorted by bonus
         //
         [Fact]
@@ -331,7 +331,7 @@ namespace PlattformChallenge.Controllers.Tests
 
         //
         // Summary:
-        //    [TestCase-ID: 10-5]
+        //    [TestCase-ID: 52-1]
         //    Test if index() returns correct list of challenges afte challenges descending sorted by quota
         //
         [Fact]
@@ -391,7 +391,7 @@ namespace PlattformChallenge.Controllers.Tests
 
         //
         // Summary:
-        //    [TestCase-ID: 10-5]
+        //    [TestCase-ID: 6-1]
         //    Test if index() returns correct list of challenges afte challenges descending sorted by date
         //
         [Fact]
@@ -448,6 +448,67 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
 
         }
+
+
+        //
+        // Summary:
+        //    [TestCase-ID: 53-1]
+        //    Test if index() returns correct list of challenges afte search by title with "2"
+        //
+        [Fact]
+        public async Task SearchChallengesByTitle()
+        {
+            var l = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "1abc",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "2cde",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "3cde",
+                Title = "test title 3",
+                Bonus = 600,
+                Content = "test content 3",
+                Release_Date = DateTime.Now.AddDays(2),
+                Max_Participant = 118,
+                Com_ID = "3333",
+                Company = new PlatformUser(){
+                    Id = "test3.com"
+                }
+                },
+            };
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, null, "2");
+            PaginatedList<Challenge> searched = null;
+            var value = result as ViewResult;
+            searched = (PaginatedList<Challenge>)value.Model;
+            Assert.Equal(l.ElementAt(1).C_Id, searched.ElementAt(0).C_Id);
+            Assert.Single(searched);
+        }
+
+
     }
 }
 
