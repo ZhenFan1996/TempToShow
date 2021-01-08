@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
@@ -357,33 +358,6 @@ namespace PlattformChallenge.Controllers
 
         #region Participation
 
-        private async Task<IActionResult> ParticipationConfirm(string id)
-        {
-            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-            ErrorViewModel errorViewModel = new ErrorViewModel();
-            if (GetAvailableQuota(id) <= 0)
-            {
-                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
-                  // the button which links to this method will not be showed. e.g. this else-condition is not
-                  // supposed to be entered
-                    errorViewModel.RequestId = "Theres no place anymore";
-                    return View("Error", errorViewModel);
-                }
-            }
-            var ifAlreadyParti = await _particiRepository
-                 .FirstOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
-                 && m.C_Id == id);
-
-            if (ifAlreadyParti == null)
-            {
-                return View(challenge);
-            }
-
-            errorViewModel.RequestId = "You have already participated this challenge";
-            return View("Error", errorViewModel);
-
-        }
-
         //
         // Summary:
         //    Add user and challenge to Participation in database and update quota of the challenge
@@ -397,14 +371,31 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
             var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);
+            ErrorViewModel errorViewModel = new ErrorViewModel();
 
+            if (GetAvailableQuota(id) <= 0)
+            {
+                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
+                  // the button which links to this method will not be showed. e.g. this else-condition is not
+                  // supposed to be entered
+                    errorViewModel.RequestId = "Theres no place anymore";
+                    return View("Error", errorViewModel);
+                }
+            }
             Participation newParti = new Participation()
             {
                 C_Id = id,
                 P_Id = User.FindFirstValue(ClaimTypes.NameIdentifier)
             };
-            await _particiRepository.InsertAsync(newParti);
-            return View(challenge);
+            try
+            {
+                await _particiRepository.InsertAsync(newParti);
+            }
+            catch (Exception ex)when(ex is SqlException ||ex is InvalidOperationException) {
+                errorViewModel.RequestId = "You have already participated this challenge";
+                return View("Error", errorViewModel);
+            }
+                return View(challenge);
         }
 
         #endregion
