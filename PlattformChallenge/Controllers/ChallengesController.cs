@@ -407,7 +407,7 @@ namespace PlattformChallenge.Controllers
 
         private int GetAvailableQuota(string id)
         {
-            var challenge = _repository.FindBy(c => c.C_Id == id);
+            var challenge = _repository.GetAll().Where(c => c.C_Id == id);
             var partiList = _particiRepository.GetAllList(c => c.C_Id == id);
             return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
         }

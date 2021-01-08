@@ -261,12 +261,12 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var savedChallengeList = value.Model as PaginatedList<Challenge>;
-            Assert.Equal("test title 1", savedChallengeList.ElementAt<Challenge>(0).Title);
-            Assert.Equal("1111", savedChallengeList.ElementAt<Challenge>(0).Com_ID);
-            Assert.Equal(200, savedChallengeList.ElementAt<Challenge>(0).Bonus);
-            Assert.Equal("2cde", savedChallengeList.ElementAt<Challenge>(1).C_Id);
-            Assert.Equal(18, savedChallengeList.ElementAt<Challenge>(1).Max_Participant);
-            Assert.Equal(DateTime.Now.Day, savedChallengeList.ElementAt<Challenge>(1).Release_Date.Day);
+            Assert.Equal("test title 1", savedChallengeList.ElementAt<Challenge>(1).Title);
+            Assert.Equal("1111", savedChallengeList.ElementAt<Challenge>(1).Com_ID);
+            Assert.Equal(200, savedChallengeList.ElementAt<Challenge>(1).Bonus);
+            Assert.Equal("2cde", savedChallengeList.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, savedChallengeList.ElementAt<Challenge>(0).Max_Participant);
+            Assert.Equal(DateTime.Now.Day, savedChallengeList.ElementAt<Challenge>(0).Release_Date.Day);
         }
 
         //
@@ -283,7 +283,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
+                Release_Date = DateTime.Now.AddDays(-6),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -295,7 +295,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(-4),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -307,7 +307,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now.AddDays(2),
+                Release_Date = DateTime.Now,
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -343,7 +343,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
+                Release_Date = DateTime.Now.AddDays(-5),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -355,7 +355,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(-3),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -367,7 +367,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now.AddDays(2),
+                Release_Date = DateTime.Now,
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -403,7 +403,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
+                Release_Date = DateTime.Now.AddDays(-5),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -415,7 +415,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(-3),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -427,7 +427,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now.AddDays(2),
+                Release_Date = DateTime.Now,
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -508,6 +508,56 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Single(searched);
         }
 
+        [Fact]
+        public async Task ReturnVaildParticipation() {
+            Participation toCheck = null;
+            _mockRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+                Task.FromResult(new Challenge()
+                {
+                    C_Id = "3cde",
+                    Title = "test title 3",
+                    Bonus = 600,
+                    Content = "test content 3",
+                    Release_Date = DateTime.Now.AddDays(2),
+                    Max_Participant = 118,
+                    Com_ID = "3333",
+                    Company = new PlatformUser()
+                    {
+                        Id = "test3.com"
+                    }
+                }
+                ));
+
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+                new List<Challenge>()
+                {  new Challenge()
+                {
+                    C_Id = "3cde",
+                    Title = "test title 3",
+                    Bonus = 600,
+                    Content = "test content 3",
+                    Release_Date = DateTime.Now.AddDays(2),
+                    Max_Participant = 118,
+                    Com_ID = "3333",
+                    Company = new PlatformUser()
+                    {
+                        Id = "test3.com"
+                    }
+                }
+                }.AsQueryable().BuildMockDbSet().Object
+                ); 
+            _mockPaRepository.Setup(m => m.InsertAsync(It.IsAny<Participation>()))
+                .Returns(Task.CompletedTask)
+                .Callback<Participation>(x => toCheck = x);
+
+            _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>() {
+            });
+            var result=await _sut.ParticipateChallenge("3cde");
+            Assert.Equal("3cde", toCheck.C_Id);
+            Assert.Equal("1", toCheck.P_Id);
+           
+
+        }
 
     }
 }
