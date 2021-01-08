@@ -60,11 +60,14 @@
         <dd class="col-sm-10">
             @for (int i = 0; i < Model.Languages.Count; i++)
             {
-            if (i < Model.Languages.Count - 1){
-            <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
-            }else{
-            <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
-            }
+                if (i < Model.Languages.Count - 1)
+                {
+                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
+                }
+                else
+                {
+                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
+                }
             }
         </dd>
 
@@ -72,11 +75,13 @@
             @Html.DisplayNameFor(model => model.Winner)
         </dt>
         <dd class="col-sm-10">
-            @if (Model.Winner_Id == null) {
-            <span> There is no winner yet </span>
+            @if (Model.Winner_Id == null)
+            {
+                <span> There is no winner yet </span>
             }
-            else{
-            <span>  @Model.Winner.Name</span>
+            else
+            {
+                <span>  @Model.Winner.Name</span>
             }
 
         </dd>
@@ -84,7 +89,7 @@
             @Html.DisplayNameFor(model => model.Best_Solution_Id)
         </dt>
         <dd class="col-sm-10">
-            <div @{if (Model.Best_Solution_Id==null) }>There is no best solution yet </div>
+            <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
         </dd>
     </dl>
 </div>
@@ -93,17 +98,40 @@
 {
     if (Model.Available_Quota > 0)
     {
-<a asp-action="ParticipationConfirm" asp-route-id="@Model.C_Id" class="btn btn-primary">I want to take part in this challenge!</a>
-    }
-    else
-    {
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#participate">
+     Take part in
+</button>
+<div class="modal fade" id="participate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h5 class="modal-title" id="exampleModalLabel">
+                    please confirm the conditions:
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               Your solution will be published if you win the prize.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">Yes I'm in!</a>
+            </div>
+        </div>
+    </div>
+</div>}
+else
+{
 <p>You can't participate this challenge. There's no place anymore</p>
-    }
+}
 }
 <div>
     @if (ViewContext.HttpContext.User.IsInRole("Company"))
     {
-    <a asp-action="Edit" asp-route-id="@Model.C_Id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.C_Id">Edit</a>
     }
 </div>
 <div>    <a asp-action="Index" class="btn btn-primary">Back to List</a></div>

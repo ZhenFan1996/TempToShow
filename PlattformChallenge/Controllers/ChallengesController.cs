@@ -130,12 +130,17 @@ namespace PlattformChallenge.Controllers
                 detail.Winner = _pRepository.FirstOrDefault(u => u.Id == challenge.Winner_Id);
             }
 
-            List<Language> l = new List<Language>();
-            foreach (LanguageChallenge lc in challenge.LanguageChallenges)
-            {
-                l.Add(_lRepository.FirstOrDefault(l => l.Language_Id == lc.Language_Id));
-            }
-            detail.Languages = l;
+
+
+            var langugaes = from c in _repository.GetAll()
+                            join lc in _lcRepository.GetAll()
+                            on c.C_Id equals lc.C_Id
+                            join l in _lRepository.GetAll()
+                            on lc.Language_Id equals l.Language_Id
+                            where c.C_Id ==id
+                            select l;
+
+            detail.Languages =await langugaes.ToListAsync();
             return View(detail);
         }
 
@@ -229,7 +234,10 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "invalid challenge id value for editing";
                 return View("Error", errorViewModel);
             }
-            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
+            var challenge = await _repository.GetAll()
+                .Include(c =>c.Company)
+                .Include(c =>c.LanguageChallenges)
+                .FirstOrDefaultAsync(c =>c.C_Id==id);
             if (challenge == null)
             {
                 errorViewModel.RequestId = "there's no challenge with this id, please check again";
@@ -245,11 +253,9 @@ namespace PlattformChallenge.Controllers
             model.Challenge = challenge;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
-            List<LanguageChallenge> lc = new List<LanguageChallenge>();
-            lc = _lcRepository.GetAllList(l => l.C_Id == challenge.C_Id);
-            for (int i = 0; i < lc.Count; i++)
+            for (int i = 0; i < challenge.LanguageChallenges.Count(); i++)
             {
-                String lId = lc.ElementAt(i).Language_Id;
+                String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
                 model.IsSelected[int.Parse(lId)] = true;
             }
             return View(model);
@@ -348,19 +354,10 @@ namespace PlattformChallenge.Controllers
         #endregion
 
         #region Participation
-        //
-        // Summary:
-        //    Check if the prerequisites for participating a challenge fulfil.
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with participation conditions and confirmation button if prerequisites passed.
-        [Authorize(Roles = "Programmer")]
-        public async Task<IActionResult> ParticipationConfirm(string id)
+
+        private async Task<IActionResult> ParticipationConfirm(string id)
         {
-            var challenge = await _repository.IncludeAndFindOrDefaultAsync(c => c.C_Id == id);
+            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (GetAvailableQuota(id) <= 0)
             {
@@ -372,7 +369,7 @@ namespace PlattformChallenge.Controllers
                 }
             }
             var ifAlreadyParti = await _particiRepository
-                 .IncludeAndFindOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 .FirstOrDefaultAsync(m => m.P_Id == User.FindFirstValue(ClaimTypes.NameIdentifier)
                  && m.C_Id == id);
 
             if (ifAlreadyParti == null)
@@ -397,7 +394,7 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
-            var challenge = await _repository.IncludeAndFindOrDefaultAsync(m => m.C_Id == id);
+            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);
 
             Participation newParti = new Participation()
             {
