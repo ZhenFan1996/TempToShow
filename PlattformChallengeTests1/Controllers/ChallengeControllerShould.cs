@@ -601,7 +601,34 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
         }
 
-       
+        //
+        // Summary:
+        //    [TestCase-ID: 11-1]
+        //    Test if edit method returns error view if a user tries to edit challenge from other users
+        //
+        [Fact]
+        public async Task editNotOwnChallenge()
+        {
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+                new List<Challenge>()
+                {  new Challenge()
+                {
+                   C_Id = "Id_mock_editNotOwnChallenge",
+                    Title = "Title_mock_editNotOwnChallenge",
+                    Bonus = 60,
+                    Content = "Content_mock_editNotOwnChallenge",
+                    Com_ID = "Com_ID_mock_editNotOwnChallenge"
+                }
+                }.AsQueryable().BuildMockDbSet().Object
+                );
+            var result = await _sut.Edit("Id_mock_editNotOwnChallenge");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("You can't edit challenge from other company", errorInfo);
+        }
     }
 }
 
