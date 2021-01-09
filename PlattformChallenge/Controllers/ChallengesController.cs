@@ -259,7 +259,7 @@ namespace PlattformChallenge.Controllers
             for (int i = 0; i < challenge.LanguageChallenges.Count(); i++)
             {
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
-                model.IsSelected[int.Parse(lId)-1] = true;
+                model.IsSelected[int.Parse(lId) - 1] = true;
             }
             return View(model);
         }
@@ -296,7 +296,7 @@ namespace PlattformChallenge.Controllers
                     ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
                     return View(model);
                 }
-                
+
                 var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
                 for (int i = 0; i < model.IsSelected.Count(); i++)
                 {
@@ -445,6 +445,6 @@ namespace PlattformChallenge.Controllers
             return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
         }
 
-  
+
     }
 }
