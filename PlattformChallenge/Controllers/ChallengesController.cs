@@ -266,7 +266,7 @@ namespace PlattformChallenge.Controllers
 
         //
         // Summary:
-        //    Check if all given para are legal then update database
+        //    Check if all given para are legal, if yes then update database
         //
         // Parameter:
         //    A ChallengeEditViewModel with form information
@@ -278,39 +278,50 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-            int bonus = getCurrentBonus(model.Challenge.C_Id);
-            List<Language> languages = await _lRepository.GetAllListAsync();
-            var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
-            for (int i = 0; i < model.IsSelected.Count(); i++)
-            {
-                var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id);
-                if (model.IsSelected[i])
-                {
-                    if (item == null)
-                    {
-                         item = new LanguageChallenge()
-                        {
-                            C_Id = model.Challenge.C_Id,
-                            Language_Id = languages.ElementAt(i).Language_Id
-                        };
-                        await _lcRepository.InsertAsync(item);
-                    }
-                }
-                else
-                {
-                    if (item !=null)
-                    {
-                        await _lcRepository.DeleteAsync(item);
-                    }
-                }
-            }
+
             if (ModelState.IsValid)
             {
+                int bonus = GetCurrentBonus(model.Challenge.C_Id);
+                var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
+                int alreadyParticiCount = partiList.Count;
+                List<Language> languages = await _lRepository.GetAllListAsync();
+                model.Languages = languages;
                 if (bonus > model.Challenge.Bonus)
                 {
                     ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
                     return View(model);
                 }
+                if (alreadyParticiCount > model.Challenge.Max_Participant)
+                {
+                    ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
+                    return View(model);
+                }
+                
+                var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
+                for (int i = 0; i < model.IsSelected.Count(); i++)
+                {
+                    var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id && lc.C_Id == model.Challenge.C_Id);
+                    if (model.IsSelected[i])
+                    {
+                        if (item == null)
+                        {
+                            item = new LanguageChallenge()
+                            {
+                                C_Id = model.Challenge.C_Id,
+                                Language_Id = languages.ElementAt(i).Language_Id
+                            };
+                            await _lcRepository.InsertAsync(item);
+                        }
+                    }
+                    else
+                    {
+                        if (item != null)
+                        {
+                            await _lcRepository.DeleteAsync(item);
+                        }
+                    }
+                }
+
 
                 try
                 {
@@ -335,7 +346,7 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        private int getCurrentBonus(string c_Id)
+        private int GetCurrentBonus(string c_Id)
         {
             var current = _repository.GetAll().Where(c => c.C_Id == c_Id);
             return current.AsNoTracking().First().Bonus;
@@ -434,15 +445,6 @@ namespace PlattformChallenge.Controllers
             return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
         }
 
-        private bool ContainsLanguage(List<LanguageChallenge> list, string id) {
-
-            foreach (LanguageChallenge lc in list) {
-                if (lc.Language_Id.Equals(id)) {
-                    return true;
-                }
-
-            }
-            return false;
-        }
+  
     }
 }
