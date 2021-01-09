@@ -171,7 +171,7 @@ namespace PlattformChallenge.Controllers.Tests
         }
         //
         // Summary:
-        //    [TestCase-ID: 10-1]
+        //    [TestCase-ID: 54-1]
         //    Test the returned error view if given Id string for challenge details is empty 
         //
         [Fact]
@@ -188,7 +188,7 @@ namespace PlattformChallenge.Controllers.Tests
 
         //
         // Summary:
-        //    [TestCase-ID: 10-2]
+        //    [TestCase-ID: 54-2]
         //    Test the returned error view if given Id string for challenge details doesn't match any challenge 
         //
         [Fact]
@@ -209,7 +209,7 @@ namespace PlattformChallenge.Controllers.Tests
 
         //
         // Summary:
-        //    [TestCase-ID: 10-3]
+        //    [TestCase-ID: 10-1]
         //    Test if index() returns correct list of challenges 
         //
         [Fact]
