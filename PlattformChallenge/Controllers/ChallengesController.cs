@@ -43,7 +43,7 @@ namespace PlattformChallenge.Controllers
         //    A view with list of current active challenges
 
 
-        public async Task<IActionResult> Index(int? pageNumber,string sortOrder, string searchString)
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "Bonus";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
@@ -57,7 +57,7 @@ namespace PlattformChallenge.Controllers
                 challenges = challenges.Where(c => c.Title.Contains(searchString));
             }
 
-            
+
             switch (sortOrder)
             {
                 case "Bonus":
@@ -80,7 +80,7 @@ namespace PlattformChallenge.Controllers
                     break;
             }
             int pageSize = 10;//Temporary value, convenience for testing
-            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(),pageNumber ??1,pageSize));
+            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         //
@@ -106,7 +106,7 @@ namespace PlattformChallenge.Controllers
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
                 .Include(c => c.LanguageChallenges)
-                .FirstOrDefaultAsync(m =>m.C_Id==id);
+                .FirstOrDefaultAsync(m => m.C_Id == id);
 
 
             if (challenge == null)
@@ -140,10 +140,10 @@ namespace PlattformChallenge.Controllers
                             on c.C_Id equals lc.C_Id
                             join l in _lRepository.GetAll()
                             on lc.Language_Id equals l.Language_Id
-                            where c.C_Id ==id
+                            where c.C_Id == id
                             select l;
 
-            detail.Languages =await langugaes.ToListAsync();
+            detail.Languages = await langugaes.ToListAsync();
             return View(detail);
         }
 
@@ -238,9 +238,9 @@ namespace PlattformChallenge.Controllers
                 return View("Error", errorViewModel);
             }
             var challenge = await _repository.GetAll()
-                .Include(c =>c.Company)
-                .Include(c =>c.LanguageChallenges)
-                .FirstOrDefaultAsync(c =>c.C_Id==id);
+                .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
+                .FirstOrDefaultAsync(c => c.C_Id == id);
             if (challenge == null)
             {
                 errorViewModel.RequestId = "there's no challenge with this id, please check again";
@@ -259,7 +259,7 @@ namespace PlattformChallenge.Controllers
             for (int i = 0; i < challenge.LanguageChallenges.Count(); i++)
             {
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
-                model.IsSelected[int.Parse(lId)] = true;
+                model.IsSelected[int.Parse(lId)-1] = true;
             }
             return View(model);
         }
@@ -278,9 +278,32 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-            
             int bonus = getCurrentBonus(model.Challenge.C_Id);
-
+            List<Language> languages = await _lRepository.GetAllListAsync();
+            var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
+            for (int i = 0; i < model.IsSelected.Count(); i++)
+            {
+                var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id);
+                if (model.IsSelected[i])
+                {
+                    if (item == null)
+                    {
+                         item = new LanguageChallenge()
+                        {
+                            C_Id = model.Challenge.C_Id,
+                            Language_Id = languages.ElementAt(i).Language_Id
+                        };
+                        await _lcRepository.InsertAsync(item);
+                    }
+                }
+                else
+                {
+                    if (item !=null)
+                    {
+                        await _lcRepository.DeleteAsync(item);
+                    }
+                }
+            }
             if (ModelState.IsValid)
             {
                 if (bonus > model.Challenge.Bonus)
@@ -288,12 +311,10 @@ namespace PlattformChallenge.Controllers
                     ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
                     return View(model);
                 }
-                //TODO: Check if edited Quota is legal
-                //TODO: Update Language
+
                 try
                 {
                     await _repository.UpdateAsync(model.Challenge);
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -316,7 +337,7 @@ namespace PlattformChallenge.Controllers
 
         private int getCurrentBonus(string c_Id)
         {
-            var current = _repository.FindBy(c => c.C_Id == c_Id);
+            var current = _repository.GetAll().Where(c => c.C_Id == c_Id);
             return current.AsNoTracking().First().Bonus;
         }
         #endregion
@@ -391,11 +412,12 @@ namespace PlattformChallenge.Controllers
             {
                 await _particiRepository.InsertAsync(newParti);
             }
-            catch (Exception ex)when(ex is SqlException ||ex is InvalidOperationException) {
+            catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)
+            {
                 errorViewModel.RequestId = "You have already participated this challenge";
                 return View("Error", errorViewModel);
             }
-                return View(challenge);
+            return View(challenge);
         }
 
         #endregion
@@ -410,6 +432,17 @@ namespace PlattformChallenge.Controllers
             var challenge = _repository.GetAll().Where(c => c.C_Id == id);
             var partiList = _particiRepository.GetAllList(c => c.C_Id == id);
             return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
+        }
+
+        private bool ContainsLanguage(List<LanguageChallenge> list, string id) {
+
+            foreach (LanguageChallenge lc in list) {
+                if (lc.Language_Id.Equals(id)) {
+                    return true;
+                }
+
+            }
+            return false;
         }
     }
 }

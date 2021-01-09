@@ -1,7 +1,5 @@
-using PlattformChallenge.Controllers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Moq;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
@@ -9,10 +7,7 @@ using Xunit;
 using PlattformChallenge.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Controllers;
