@@ -504,8 +504,14 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Single(searched);
         }
 
+        //
+        // Summary:
+        //    [TestCase-ID: 51-1]
+        //    Test if a legal participation can be done as expected
+        // 
         [Fact]
-        public async Task ReturnVaildParticipation() {
+        public async Task ReturnVaildParticipation()
+        {
             Participation toCheck = null;
             _mockRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
                 Task.FromResult(new Challenge()
@@ -541,20 +547,89 @@ namespace PlattformChallenge.Controllers.Tests
                     }
                 }
                 }.AsQueryable().BuildMockDbSet().Object
-                ); 
+                );
             _mockPaRepository.Setup(m => m.InsertAsync(It.IsAny<Participation>()))
                 .Returns(Task.CompletedTask)
                 .Callback<Participation>(x => toCheck = x);
 
-            _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>() {
+            _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
+            {
             });
-            var result=await _sut.ParticipateChallenge("3cde");
+            var result = await _sut.ParticipateChallenge("3cde");
             Assert.Equal("3cde", toCheck.C_Id);
             Assert.Equal("1", toCheck.P_Id);
-           
-
         }
 
+        //
+        // Summary:
+        //    [TestCase-ID: 51-2]
+        //    Test if repeated participation on a same challenge throws exception
+        //
+        [Fact]
+        public async Task ExceptionRepeatedParticipation()
+        {
+            Participation toCheck = null;
+            _mockRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+                Task.FromResult(new Challenge()
+                {
+                    C_Id = "mock_challenge1",
+                    Title = "title_mock_challenge1",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge1",
+                    Max_Participant = 11
+                }
+                ));
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+                new List<Challenge>()
+                {  new Challenge()
+                {
+                   C_Id = "mock_challenge1",
+                    Title = "title_mock_challenge1",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge1",
+                     Max_Participant = 11
+                }
+                }.AsQueryable().BuildMockDbSet().Object
+                );
+            _mockPaRepository.Setup(m => m.InsertAsync(It.IsAny<Participation>()))
+               .Returns(Task.CompletedTask)
+               .Callback<Participation>(x => toCheck = x);
+
+            _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
+            {
+            });
+            await _sut.ParticipateChallenge("mock_challenge1");
+            Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
+        }
+
+        //
+        // Summary:
+        //    [TestCase-ID: 11-1]
+        //    Test if edit method returns error view if a user tries to edit challenge from other users
+        //
+        [Fact]
+        public async Task editNotOwnChallenge()
+        {
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+                new List<Challenge>()
+                {  new Challenge()
+                {
+                   C_Id = "Id_mock_editNotOwnChallenge",
+                    Title = "Title_mock_editNotOwnChallenge",
+                    Bonus = 60,
+                    Content = "Content_mock_editNotOwnChallenge",
+                    Com_ID = "Com_ID_mock_editNotOwnChallenge"
+                }
+                }.AsQueryable().BuildMockDbSet().Object
+                );
+            var result = await _sut.Edit("Id_mock_editNotOwnChallenge");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("You can't edit challenge from other company", errorInfo);
+        }
     }
 }
 
