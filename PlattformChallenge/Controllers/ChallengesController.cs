@@ -41,8 +41,6 @@ namespace PlattformChallenge.Controllers
         //
         // Returns:
         //    A view with list of current active challenges
-
-
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "Bonus";
@@ -278,12 +276,14 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
+
             int bonus = getCurrentBonus(model.Challenge.C_Id);
             List<Language> languages = await _lRepository.GetAllListAsync();
+            model.Languages = languages;
             var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
             for (int i = 0; i < model.IsSelected.Count(); i++)
             {
-                var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id);
+                var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id&&lc.C_Id==model.Challenge.C_Id);
                 if (model.IsSelected[i])
                 {
                     if (item == null)

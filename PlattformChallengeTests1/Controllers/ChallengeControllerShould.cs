@@ -16,6 +16,7 @@ using PlattformChallenge.Models;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MockQueryable.Moq;
+using Microsoft.Data.SqlClient;
 
 namespace PlattformChallenge.Controllers.Tests
 {
