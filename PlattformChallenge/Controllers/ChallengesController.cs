@@ -34,6 +34,7 @@ namespace PlattformChallenge.Controllers
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
         }
+        #region list
 
         //
         // Summary:
@@ -79,10 +80,12 @@ namespace PlattformChallenge.Controllers
                     challenges = challenges.OrderByDescending(c => c.Release_Date);
                     break;
             }
-            int pageSize = 10;//Temporary value, convenience for testing
+            int pageSize = 10;
             return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+        #endregion
 
+        #region details
         //
         // Summary:
         //    Get detail information of a certain challenge which is assigned by challenge Id
@@ -146,6 +149,7 @@ namespace PlattformChallenge.Controllers
             detail.Languages = await langugaes.ToListAsync();
             return View(detail);
         }
+        #endregion
 
         #region Create
         //
@@ -353,41 +357,7 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
-        #region delete
-
-        // GET: Challenges/Delete/5
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var challenge = await _repository.GetAll()
-                .Include(c => c.Company)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
-            if (challenge == null)
-            {
-                return NotFound();
-            }
-
-            return View(challenge);
-        }
-
-        // POST: Challenges/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-
-            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-            challenge = await _repository.DeleteAsync(challenge);
-            return RedirectToAction(nameof(Index));
-        }
-        #endregion
-
+        
         #region Participation
 
         //
@@ -432,6 +402,42 @@ namespace PlattformChallenge.Controllers
         }
 
         #endregion
+
+        #region delete
+
+        // GET: Challenges/Delete/5
+        [Authorize(Roles = "Company")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var challenge = await _repository.GetAll()
+                .Include(c => c.Company)
+                .FirstOrDefaultAsync(m => m.C_Id == id);
+            if (challenge == null)
+            {
+                return NotFound();
+            }
+
+            return View(challenge);
+        }
+
+        // POST: Challenges/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Company")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+
+            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
+            challenge = await _repository.DeleteAsync(challenge);
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
 
         private bool ChallengeExists(string id)
         {

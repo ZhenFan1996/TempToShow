@@ -515,17 +515,11 @@ namespace PlattformChallenge.Controllers.Tests
             _mockRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
                 Task.FromResult(new Challenge()
                 {
-                    C_Id = "3cde",
-                    Title = "test title 3",
-                    Bonus = 600,
-                    Content = "test content 3",
-                    Release_Date = DateTime.Now.AddDays(2),
-                    Max_Participant = 118,
-                    Com_ID = "3333",
-                    Company = new PlatformUser()
-                    {
-                        Id = "test3.com"
-                    }
+                    C_Id = "mock_challenge_RVP",
+                    Title = "title_mock_challenge_RVP",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge_RVP",
+                    Max_Participant = 11
                 }
                 ));
 
@@ -533,17 +527,11 @@ namespace PlattformChallenge.Controllers.Tests
                 new List<Challenge>()
                 {  new Challenge()
                 {
-                    C_Id = "3cde",
-                    Title = "test title 3",
-                    Bonus = 600,
-                    Content = "test content 3",
-                    Release_Date = DateTime.Now.AddDays(2),
-                    Max_Participant = 118,
-                    Com_ID = "3333",
-                    Company = new PlatformUser()
-                    {
-                        Id = "test3.com"
-                    }
+                   C_Id = "mock_challenge_RVP",
+                    Title = "title_mock_challenge_RVP",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge_RVP",
+                    Max_Participant = 11
                 }
                 }.AsQueryable().BuildMockDbSet().Object
                 );
@@ -554,8 +542,8 @@ namespace PlattformChallenge.Controllers.Tests
             _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
             {
             });
-            var result = await _sut.ParticipateChallenge("3cde");
-            Assert.Equal("3cde", toCheck.C_Id);
+            var result = await _sut.ParticipateChallenge("mock_challenge_RVP");
+            Assert.Equal("mock_challenge_RVP", toCheck.C_Id);
             Assert.Equal("1", toCheck.P_Id);
         }
 
@@ -607,7 +595,7 @@ namespace PlattformChallenge.Controllers.Tests
         //    Test if edit method returns error view if a user tries to edit challenge from other users
         //
         [Fact]
-        public async Task editNotOwnChallenge()
+        public async Task EditNotOwnChallenge()
         {
             _mockRepository.Setup(m => m.GetAll()).Returns(
                 new List<Challenge>()
