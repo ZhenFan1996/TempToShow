@@ -599,7 +599,7 @@ namespace PlattformChallenge.Controllers.Tests
             {
             });
             await _sut.ParticipateChallenge("mock_challenge1");
-            Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
+            Assert.ThrowsAsync<Exception>( () =>   _sut.ParticipateChallenge("mock_challenge1"));
         }
 
         //
