@@ -9,9 +9,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlattformChallenge.Controllers
 {
+    [Authorize(Roles="Programmer")]
     public class ProgrammerController :Controller
     {
 
