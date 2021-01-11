@@ -9,9 +9,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlattformChallenge.Controllers
 {
+    [Authorize(Roles="Programmer")]
     public class ProgrammerController :Controller
     {
 
@@ -26,7 +28,9 @@ namespace PlattformChallenge.Controllers
             this._cRepository = cRepository;
             this._pRepository = pRepository;
         }
-
+        /// <summary>
+        /// Get current user information and challenges participated in and return to the page
+        /// </summary>
         public async Task<IActionResult> Index() {
 
             var challenge = await (from c in _cRepository.GetAll().Include(c => c.Company).Include(c => c.LanguageChallenges)
@@ -40,7 +44,11 @@ namespace PlattformChallenge.Controllers
             };
             return View(model);
         }
-
+        /// <summary>
+        /// Exit the currently selected challenge
+        /// </summary>
+        /// <param name="id"></param> the challenge id
+        /// <returns>View index</returns>
         public async Task<IActionResult> Cancel(string id) {
             var p = await (from pc in _pRepository.GetAll()
                     where pc.C_Id == id && pc.P_Id == _currUser.Id

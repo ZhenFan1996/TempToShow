@@ -42,8 +42,6 @@ namespace PlattformChallenge.Controllers
         //
         // Returns:
         //    A view with list of current active challenges
-
-
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "Bonus";

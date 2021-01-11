@@ -40,10 +40,10 @@ namespace PlattformChallengeTests.Controllers
             _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object);
         }
 
-        //
-        // Summary:
-        // [TestCase-ID: 1-1] Test if the view of register is the expected type.
-        //
+    
+        /// <summary>
+        /// [TestCase-ID: 1-1] Test if the view of register is the expected type.
+        /// </summary>
         [Fact]
         public void ReturnViewForRegister()
         {
@@ -55,7 +55,9 @@ namespace PlattformChallengeTests.Controllers
             Assert.IsType<ViewResult>(result);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 1-2] Test if the register is unsuccess,when the modalstate of page is unvaild
+        /// </summary>
         [Fact]
         public async Task InVaildModelStateForRegister()
         {
@@ -77,7 +79,9 @@ namespace PlattformChallengeTests.Controllers
             _signInManager.Verify(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null), Times.Never);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 1-3] Test if the register is unsuccess, if the create methode failed
+        /// </summary>
         [Fact]
         public async Task FailedCreateAsync()
         {
@@ -105,7 +109,9 @@ namespace PlattformChallengeTests.Controllers
             _userManager.Verify(x => x.AddToRoleAsync(It.IsAny<PlatformUser>(), It.Is<string>(s => s.Equals(model.RoleName))), Times.Never);
             _signInManager.Verify(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null), Times.Never);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 1-4] Test if the reigister is unsuccess, when the addtoRole function failed
+        /// </summary>
         [Fact]
         public async Task FailedAddToRoleAsync()
         {
@@ -141,7 +147,9 @@ namespace PlattformChallengeTests.Controllers
             Assert.Equal(toCheckPassword, model.Password);
             Assert.IsType<ViewResult>(result);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 1-5] Test if the register is success, when all the information are vaild 
+        /// </summary>
         [Fact]
         public async Task SaveUserInfoAndReturnViewAsync()
         {
@@ -184,7 +192,9 @@ namespace PlattformChallengeTests.Controllers
             Assert.Equal("Home", value.ControllerName);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 3-1] Test if the view of login is the expected type.
+        /// </summary>
         [Fact]
         public void ReturnViewForLogIn()
         {
@@ -192,7 +202,9 @@ namespace PlattformChallengeTests.Controllers
             IActionResult result = _sut.Register();
             Assert.IsType<ViewResult>(result);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 3-2] Test if the log in is success, when all the information are true .
+        /// </summary>
         [Fact]
         public async Task VaildLogIn()
         {
@@ -228,7 +240,9 @@ namespace PlattformChallengeTests.Controllers
             Assert.Equal("Index", value.ActionName);
             Assert.Equal("Home", value.ControllerName);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 3-3] Test if the login is unsuccess, if the modelstate is invaild
+        /// </summary>
         [Fact]
         public async Task InVaildModelStateForLogIn()
         {
@@ -246,7 +260,9 @@ namespace PlattformChallengeTests.Controllers
             _signInManager.Verify(x => x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 3-4] Test if the log in is unsucccess, when the method passwordsigninAsync failed
+        /// </summary>
         [Fact]
         public async Task FailedLogIn()
         {
@@ -265,7 +281,9 @@ namespace PlattformChallengeTests.Controllers
             IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
             Assert.Equal("Error to login, please try again", allErrors.FirstOrDefault().ErrorMessage);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 3-5] Test the funktion of log out
+        /// </summary>
         [Fact]
         public async Task ReturnViewLogOut() {
             _signInManager.Setup(x => x.SignOutAsync()).Returns(Task.CompletedTask);

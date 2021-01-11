@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,10 +31,12 @@
 
                         @if (SignInMananger.IsSignedIn(User))
                         {
+                            if (ViewContext.HttpContext.User.IsInRole("Programmer"))
+                            {
                             <li class="nav-item ">
                                 <a class="nav-link text-dark" asp-controller="Programmer" asp-action="Index">Portal</a>
                             </li>
-                            
+                            }
                             <li class="nav-item">
                                 <form asp-controller="account" asp-action="logout" method="post">
                                     <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link  py-0>Sign out   @User.Identity.Name</button>

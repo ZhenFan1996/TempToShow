@@ -24,13 +24,20 @@ namespace PlattformChallenge.Controllers
             this._roleManager = roleManager;
 
         }
-
+        /// <summary>
+        /// Enter the registration page
+        /// </summary>
+        /// <returns>the registration page</returns>
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
-
+        /// <summary>
+        /// Obtain registration information on the page and form a user joining database
+        /// </summary>
+        /// <param name="model"></param>Registration information on the page
+        /// <returns>The Index of Home </returns>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -71,12 +78,20 @@ namespace PlattformChallenge.Controllers
         }
 
         #region login
+        /// <summary>
+        /// Enter  the page of login
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult LogIn()
         {
             return View();
         }
-
+        /// <summary>
+        /// Get the login information on the page and try to log in
+        /// </summary>
+        /// <param name="logInViewModel">the login information</param> 
+        /// <returns>the Index of home</returns>
         [HttpPost]
         public async Task<IActionResult> LogIn(LogInViewModel logInViewModel)
         {
@@ -93,14 +108,20 @@ namespace PlattformChallenge.Controllers
             return View(logInViewModel);
         }
         #endregion
-
+        /// <summary>
+        /// Log out for the user
+        /// </summary>
+        /// <returns>The index of Home</returns>
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
+        /// <summary>
+        /// Jump to login failure page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult AccessDenied()
         {
             var roles = ((ClaimsIdentity)User.Identity).Claims
@@ -110,7 +131,11 @@ namespace PlattformChallenge.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// Go to the page of change password
+        /// </summary>
+        /// <param name="email"> the email of user</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult ChangePassword(string email)
         {
@@ -119,7 +144,11 @@ namespace PlattformChallenge.Controllers
             }
             return View();
         }
-
+        /// <summary>
+        /// Get the information in the page and try to change the password
+        /// </summary>
+        /// <param name="model">the information on the page</param>
+        /// <returns>The index and log out</returns>
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
