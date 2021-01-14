@@ -14,6 +14,12 @@ namespace PlattformChallenge.Controllers
     {
         private readonly IRepository<Solution> _repository;
         private readonly IRepository<Participation> _particiRepository;
+
+        public SolutionController(IRepository<Solution> _repository, IRepository<Participation> _particiRepository)
+        {
+            this._particiRepository = _particiRepository;
+            this._repository = _repository;       
+        }
         public IActionResult Add()
         {
             return View();

@@ -91,6 +91,12 @@
         <dd class="col-sm-10">
             <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
         </dd>
+        <dt class="col-sm-2">
+           Solutions list
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Solution" asp-action="List" > View </a>
+        </dd>
     </dl>
 </div>
 <div class="container">
