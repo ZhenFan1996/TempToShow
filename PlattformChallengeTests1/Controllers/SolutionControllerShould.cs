@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using Xunit;
-using PlattformChallenge.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -13,8 +11,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Linq;
 using PlattformChallenge.Models;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MockQueryable.Moq;
 using Moq;
 using PlattformChallenge.Controllers;
@@ -47,7 +43,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         //     Test if the view of list() is the expected type.
         //
         [Fact]
-        public async Task ListReturnView()
+         public async Task ListReturnView()
         {
             var s = new List<Solution>() {
                  new Solution(){
@@ -145,7 +141,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         }
         //
         // Summary:
-        //    [TestCase-ID: 62-2]
+        //    [TestCase-ID: 62-3]
         //     Test if the Solutions after using list() is the expected result.
         //
         [Fact]
@@ -204,10 +200,10 @@ namespace PlattformChallenge_UnitTest.Controllers
 
             var result = await _sut.List(null, null, "test1");
             var value = result as ViewResult;
-            var savedSolutionList = value.Model as PaginatedList<Solution>;
-            PaginatedList<Challenge> sorted = null;
-            sorted = (PaginatedList<Challenge>)value.Model;
-
+            var t = value.Model as BestSolutionViewModel;
+            var sorted = t.Solutions;
+            Assert.Equal(s.ElementAt(0).Point, sorted.ElementAt(1).Point);
+            Assert.Equal(s.ElementAt(2).Point, sorted.ElementAt(0).Point);
 
 
         }
