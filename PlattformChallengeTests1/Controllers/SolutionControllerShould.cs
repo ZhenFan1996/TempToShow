@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MockQueryable.Moq;
 using Moq;
 using PlattformChallenge.Controllers;
+using PlattformChallenge.ViewModels;
 
 namespace PlattformChallenge_UnitTest.Controllers
 {
@@ -46,7 +47,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         //     Test if the view of list() is the expected type.
         //
         [Fact]
-        public async Task SortSolutionsByPointList()
+        public async Task ListReturnView()
         {
             var s = new List<Solution>() {
                  new Solution(){
@@ -78,14 +79,137 @@ namespace PlattformChallenge_UnitTest.Controllers
                     }
                 }
                 }
-            };       
+            };
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
 
-            var result = await _sut.List(null, null,"test1");
+            var result = await _sut.List(null, null, "test1");
             Assert.IsType<ViewResult>(result);
+        }
+
+
+
+        //
+        // Summary:
+        //    [TestCase-ID: 62-2]
+        //     Test if the view of list() is the error type with null challenge id.
+        //
+        [Fact]
+        public async Task ListWithoutCId()
+        {
+            var s = new List<Solution>() {
+                 new Solution(){
+                S_Id = "1abc",
+                URL = "test URL 1",
+                Status = StatusEnum.Rated,
+                Point=10,
+                Submit_Date = DateTime.Now.AddDays(-2),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang1",
+                    }
+                }
+                },
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=100,
+                Submit_Date = DateTime.Now.AddDays(+2),
+                 Participation = new Participation(){
+                    C_Id = "test2",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang2",
+                    }
+                }
+                }
+            };
+            var query = s.AsQueryable().BuildMockDbSet();
+            _mockSRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+
+            var result = await _sut.List(null, null, null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("invalid challenge id!", errorInfo);
+        }
+        //
+        // Summary:
+        //    [TestCase-ID: 62-2]
+        //     Test if the Solutions after using list() is the expected result.
+        //
+        [Fact]
+        public async Task SortSolutionsByPointList()
+        {
+            var s = new List<Solution>() {
+                 new Solution(){
+                S_Id = "1abc",
+                URL = "test URL 1",
+                Status = StatusEnum.Rated,
+                Point=100,
+                Submit_Date = DateTime.Now.AddDays(-2),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang1",
+                    }
+                }
+                },
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=200,
+                Submit_Date = DateTime.Now.AddDays(+2),
+                 Participation = new Participation(){
+                    C_Id = "test2",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang2",
+                    }
+                }
+                },
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=300,
+                Submit_Date = DateTime.Now.AddDays(+4),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang3",
+                    }
+                }
+                }
+            };
+            var query = s.AsQueryable().BuildMockDbSet();
+            _mockSRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+
+            var result = await _sut.List(null, null, "test1");
+            var value = result as ViewResult;
+            var savedSolutionList = value.Model as PaginatedList<Solution>;
+            PaginatedList<Challenge> sorted = null;
+            sorted = (PaginatedList<Challenge>)value.Model;
+
+
+
         }
     }
 }
