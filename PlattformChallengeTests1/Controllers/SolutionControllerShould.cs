@@ -21,7 +21,7 @@ using PlattformChallenge.Controllers;
 
 namespace PlattformChallenge_UnitTest.Controllers
 {
-    class SolutionControllerShould
+    public class SolutionControllerShould
     {
 
         private readonly Mock<IRepository<Solution>> _mockSRepository;
@@ -40,7 +40,52 @@ namespace PlattformChallenge_UnitTest.Controllers
         }
 
 
+        //
+        // Summary:
+        //    [TestCase-ID: 62-1]
+        //     Test if the view of list() is the expected type.
+        //
+        [Fact]
+        public async Task SortSolutionsByPointList()
+        {
+            var s = new List<Solution>() {
+                 new Solution(){
+                S_Id = "1abc",
+                URL = "test URL 1",
+                Status = StatusEnum.Rated,
+                Point=10,
+                Submit_Date = DateTime.Now.AddDays(-2),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang1",
+                    }
+                }
+                },
 
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=100,
+                Submit_Date = DateTime.Now.AddDays(+2),
+                 Participation = new Participation(){
+                    C_Id = "test2",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang2",
+                    }
+                }
+                }
+            };       
+            var query = s.AsQueryable().BuildMockDbSet();
+            _mockSRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
 
+            var result = await _sut.List(null, null,"test1");
+            Assert.IsType<ViewResult>(result);
+        }
     }
 }
