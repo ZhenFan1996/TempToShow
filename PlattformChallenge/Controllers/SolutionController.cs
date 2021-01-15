@@ -57,7 +57,7 @@ namespace PlattformChallenge.Controllers
                     solutions = solutions.OrderByDescending(c => c.Point);
                     break;
             }
-            var solutionsSorted = solutions.OrderByDescending(c => c.Point).ToList();
+            var solutionsSorted = await solutions.OrderByDescending(c => c.Point).ToListAsync();
 
             Solution bestSolution = solutionsSorted.FirstOrDefault();
             BestSolutionViewModel bSolution;
