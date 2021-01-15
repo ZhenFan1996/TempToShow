@@ -1,6 +1,68 @@
 ﻿@using PlattformChallenge.Core.Model
-@model PaginatedList<Solution>
+@model PlattformChallenge.ViewModels.BestSolutionViewModel;
 
 <div class="container">
-    ss
+
+    <div class="row">
+        <div class="card col-lg-3 " style="width: 18rem;">
+            <div style="color:#0000FF">
+                <h3>Best Solution for now</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Programmer name: @Model.Best_Name</h5>
+                <ul>                   
+                    <li class="card-text"> Point: @Model.Best_Point </li>
+                </ul>
+                <a>@Model.Best_URL</a>
+            </div>
+        </div>
+        <table class="table col-lg-8 offset-lg-1">
+            <thead>
+                <tr>
+
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Challenge Title
+                    </th>
+                    <th>
+                        Company
+                    </th>
+                    <th>
+                        <a asp-action="List" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-c_Id="@Model.C_ID">Date</a>
+                    </th>
+                    <th>
+                        <a asp-action="List" asp-route-sortOrder="@ViewData["PointSortParm"]" asp-route-c_Id="@Model.C_ID">Point</a>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Solutions)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Participation.Programmer.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Participation.Challenge.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Participation.Challenge.Company.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Submit_Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Point)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
 </div>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
+using PlattformChallenge.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,21 +19,26 @@ namespace PlattformChallenge.Controllers
         public SolutionController(IRepository<Solution> _repository, IRepository<Participation> _particiRepository)
         {
             this._particiRepository = _particiRepository;
-            this._repository = _repository;       
+            this._repository = _repository;
         }
         public IActionResult Add()
         {
             return View();
         }
 
-        public async Task<IActionResult> List(int? pageNumber, string sortOrder)
+        public async Task<IActionResult> List(int? pageNumber, string sortOrder, string c_Id)
         {
-            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
-            ViewData["BonusSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["PointSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ErrorViewModel errorViewModel = new ErrorViewModel();
+            if (c_Id == null || c_Id == "")
+            {
+                errorViewModel.RequestId = "invalid challenge id!";
+                return View("Error", errorViewModel);
+            }
             var solutions = from s
-                             in _repository.GetAll().Where(s => s.Submit_Date <= DateTime.Now)
-                             select s;
-
+                             in _repository.GetAll().Include(i => i.Participation).Where(s => s.Participation.C_Id == c_Id)
+                            select s;
             switch (sortOrder)
             {
                 case "Point":
@@ -48,9 +54,37 @@ namespace PlattformChallenge.Controllers
                     solutions = solutions.OrderByDescending(c => c.Point);
                     break;
             }
-            int pageSize = 10;//Temporary value, convenience for testing
-            return View(await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize));
+            var solutionsSorted = solutions.OrderByDescending(c => c.Point).ToList();
+
+            Solution bestSolution = solutionsSorted.FirstOrDefault();
+            BestSolutionViewModel bSolution;
+            if (bestSolution != null && bestSolution.Point!=null)
+            {
+                bSolution = new BestSolutionViewModel()
+                {
+                    Solutions = solutions.ToList(),
+                    C_ID = c_Id,
+                    Best_Name = bestSolution.Participation.Programmer.Name,
+                    Best_Point = bestSolution.Point,
+                    Best_URL = bestSolution.URL,
+                };
+            }
+            else
+            {
+                bSolution = new BestSolutionViewModel()
+                {
+                    Solutions = solutions.ToList(),
+                    C_ID = c_Id,
+                    Best_Name = "",
+                    Best_Point = 0,
+                    Best_URL = "",
+                };
+            }
+
+            int pageSize = 10;
+            return View(bSolution);
         }
+    
 
         public void Delete()
         {
