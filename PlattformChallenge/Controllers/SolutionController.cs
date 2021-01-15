@@ -79,7 +79,7 @@ namespace PlattformChallenge.Controllers
                     Solutions =solutions.ToPagedList(pageNumber, pageSize),
                     C_ID = c_Id,
                     Best_Name = "",
-                    Best_Point = 0,
+                    Best_Point = null,
                     Best_URL = "",
                 };
             }

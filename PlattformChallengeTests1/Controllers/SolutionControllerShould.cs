@@ -279,7 +279,7 @@ namespace PlattformChallenge_UnitTest.Controllers
 
         //
         // Summary:
-        //    [TestCase-ID: 62-5]
+        //    [TestCase-ID: 20-1]
         //     Test if list() return correct best solution for now
         //
         [Fact]
@@ -342,5 +342,45 @@ namespace PlattformChallenge_UnitTest.Controllers
             var bs = t.Best_Point;
             Assert.Equal(s.ElementAt(2).Point, bs);
         }
+
+
+        //
+        // Summary:
+        //    [TestCase-ID: 20-2]
+        //     Test if the Solutions after using list() is the expected result, when there is no solution in the list
+        //
+        [Fact]
+        public async Task ListWithoutSolutions()
+        {
+            var s = new List<Solution>() {
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=200,
+                Submit_Date = DateTime.Now.AddDays(+2),
+                 Participation = new Participation(){
+                    C_Id = "test2",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang2",
+                    }
+                }
+                }
+            };
+            var query = s.AsQueryable().BuildMockDbSet();
+            _mockSRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+
+            var result = await _sut.List(null, null, "test1");
+            var value = result as ViewResult;
+            var t = value.Model as BestSolutionViewModel;
+            Assert.Null(t.Best_Point);
+        }
+
+
     }
+    
 }
