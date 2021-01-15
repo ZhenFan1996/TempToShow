@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PagedList;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
@@ -26,10 +27,12 @@ namespace PlattformChallenge.Controllers
             return View();
         }
 
-        public async Task<IActionResult> List(int? pageNumber, string sortOrder, string c_Id)
+        public async Task<IActionResult> List(int? page, string sortOrder, string c_Id)
         {
             ViewData["PointSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (c_Id == null || c_Id == "")
             {
@@ -62,7 +65,7 @@ namespace PlattformChallenge.Controllers
             {
                 bSolution = new BestSolutionViewModel()
                 {
-                    Solutions = solutions.ToList(),
+                    Solutions = solutions.ToPagedList(pageNumber,pageSize),
                     C_ID = c_Id,
                     Best_Name = bestSolution.Participation.Programmer.Name,
                     Best_Point = bestSolution.Point,
@@ -73,7 +76,7 @@ namespace PlattformChallenge.Controllers
             {
                 bSolution = new BestSolutionViewModel()
                 {
-                    Solutions = solutions.ToList(),
+                    Solutions =solutions.ToPagedList(pageNumber, pageSize),
                     C_ID = c_Id,
                     Best_Name = "",
                     Best_Point = 0,
@@ -81,7 +84,6 @@ namespace PlattformChallenge.Controllers
                 };
             }
 
-            int pageSize = 10;
             return View(bSolution);
         }
     
