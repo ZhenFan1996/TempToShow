@@ -207,5 +207,75 @@ namespace PlattformChallenge_UnitTest.Controllers
 
 
         }
+
+
+        //
+        // Summary:
+        //    [TestCase-ID: 62-4]
+        //     Test if the Solutions after sorted by date return create result.
+        //
+        [Fact]
+        public async Task SortSolutionsByDateList()
+        {
+            var s = new List<Solution>() {
+                 new Solution(){
+                S_Id = "1abc",
+                URL = "test URL 1",
+                Status = StatusEnum.Rated,
+                Point=100,
+                Submit_Date = DateTime.Now.AddDays(-2),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang1",
+                    }
+                }
+                },
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=200,
+                Submit_Date = DateTime.Now.AddDays(+2),
+                 Participation = new Participation(){
+                    C_Id = "test2",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang2",
+                    }
+                }
+                },
+
+                new Solution(){
+                S_Id = "2abc",
+                URL = "test URL 2",
+                Status = StatusEnum.Rated,
+                Point=300,
+                Submit_Date = DateTime.Now.AddDays(+4),
+                 Participation = new Participation(){
+                    C_Id = "test1",
+                    Programmer = new PlatformUser()
+                    {
+                        Name ="Xiang3",
+                    }
+                }
+                }
+            };
+            var query = s.AsQueryable().BuildMockDbSet();
+            _mockSRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+
+            var result = await _sut.List(null, "date_desc", "test1");
+            var value = result as ViewResult;
+            var t = value.Model as BestSolutionViewModel;
+            var sorted = t.Solutions;
+            Assert.Equal(s.ElementAt(0).Point, sorted.ElementAt(1).Point);
+            Assert.Equal(s.ElementAt(2).Point, sorted.ElementAt(0).Point);
+
+
+        }
     }
 }
