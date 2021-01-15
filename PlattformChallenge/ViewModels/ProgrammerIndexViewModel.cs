@@ -12,6 +12,10 @@ namespace PlattformChallenge.ViewModels
         public List<Challenge> Challenges { get; set; }
 
         public PlatformUser Programmer { get; set; }
+
+        public List<Participation> Participations { get; set; }
+
+
     }
     }
 

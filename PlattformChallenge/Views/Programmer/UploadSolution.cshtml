@@ -1,0 +1,19 @@
+@model PlattformChallenge.ViewModels.UploadSolutionViewModel;
+
+<h1>@Model.Challenge.Title</h1>
+<h2>@Model.Programmer.Name</h2>
+
+<form enctype="multipart/form-data" method="post">
+    <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
+    <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
+    <dl>
+        <dt>
+            <label asp-for="@Model.SolutionFile"></label>
+        </dt>
+        <dd>
+            <input asp-for="@Model.SolutionFile" type="file">
+            <span asp-validation-for="@Model.SolutionFile"></span>
+        </dd>
+    </dl>
+    <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="Upload" />
+</form>

@@ -33,13 +33,20 @@ namespace PlattformChallenge.Controllers
         /// </summary>
         public async Task<IActionResult> Index() {
 
-            var challenge = await (from c in _cRepository.GetAll().Include(c => c.Company).Include(c => c.LanguageChallenges)
+            var cp = await (from c in _cRepository.GetAll().Include(c => c.Company).Include(c => c.LanguageChallenges)
                              join p in _pRepository.GetAll()
                              on c.C_Id equals p.C_Id
                              where p.P_Id == _currUser.Id
-                             select c).ToListAsync();
+                             select new { c,p}).ToListAsync();
+            var challenges = new List<Challenge>();
+            var participations = new List<Participation>();
+            foreach (var e in cp) {
+                challenges.Add(e.c);
+                participations.Add(e.p);
+            }
             var model = new ProgrammerIndexViewModel() {
-                Challenges = challenge,
+                Challenges = challenges,
+                Participations = participations,
                 Programmer = _currUser
             };
             return View(model);
@@ -63,5 +70,30 @@ namespace PlattformChallenge.Controllers
                 return RedirectToAction("Index");
             }
         }
+        [HttpGet]
+        public  async Task<IActionResult> UploadSolution(string c_id) {
+
+            var par =(await _pRepository.GetAllListAsync(p => p.C_Id == c_id && p.P_Id == _currUser.Id)).FirstOrDefault();
+            var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == c_id);
+
+            var model = new UploadSolutionViewModel()
+            {
+                Participation = par,
+                Challenge = c,
+                Programmer =_currUser
+                
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
+            var par = (await _pRepository.GetAllListAsync(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id)).FirstOrDefault();
+            var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
+
+
+            return View();
+        }
+
     }
 }
