@@ -22,6 +22,13 @@ namespace PlattformChallenge.Controllers
             this._particiRepository = _particiRepository;
             this._repository = _repository;
         }
+
+        //
+        // Summary:
+        //    Get the list of solutions of the selected challenge and return the best solution with highest point
+        //
+        // Returns:
+        //    A view with list of solutions and best solution
         public IActionResult Add()
         {
             return View();
@@ -40,8 +47,15 @@ namespace PlattformChallenge.Controllers
                 return View("Error", errorViewModel);
             }
             var solutions = from s
-                             in _repository.GetAll().Include(i => i.Participation).Where(s => s.Participation.C_Id == c_Id)
+                             in _repository.GetAll()
+                             .Include(i => i.Participation) 
+                             .ThenInclude(p=>p.Challenge)
+                             .ThenInclude(c=>c.Company)
+                             .Include(i=>i.Participation)
+                             .ThenInclude(p=>p.Programmer)
+                             .Where(s => s.Participation.C_Id == c_Id)
                             select s;
+            
             switch (sortOrder)
             {
                 case "Point":
