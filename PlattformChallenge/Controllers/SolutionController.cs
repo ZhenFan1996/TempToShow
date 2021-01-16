@@ -22,6 +22,13 @@ namespace PlattformChallenge.Controllers
             this._particiRepository = _particiRepository;
             this._repository = _repository;
         }
+
+        //
+        // Summary:
+        //    Get the list of solutions of the selected challenge and return the best solution with highest point
+        //
+        // Returns:
+        //    A view with list of solutions and best solution
         public IActionResult Add()
         {
             return View();
