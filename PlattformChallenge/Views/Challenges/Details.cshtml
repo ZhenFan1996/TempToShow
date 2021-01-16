@@ -105,7 +105,7 @@
 
             if (Model.Available_Quota > 0)
             {
-                
+
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
                     Take part in
                 </button>
@@ -129,19 +129,26 @@
                         </div>
                     </div>
                 </div>
-                   
+
             }
             else
             {
                 <p>You can't participate this challenge. There's no place anymore</p>
             }
 
-        <div>
+        @*<div>
             @if (ViewContext.HttpContext.User.IsInRole("Company"))
             {
                 <a   asp-action="Edit" asp-route-id="@Model.C_Id" class="btn btn-primary " >Edit</a>
             }
+        </div>*@
+        <div class="col-3">    <a asp-action="Index" class="btn btn-primary ">Go To All Challenge List</a></div>
+        <div>
+            @if (ViewContext.HttpContext.User.IsInRole("Company"))
+            {
+            <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index"class="btn btn-primary ">Go To My portal</a></div>
+            }
         </div>
-        <div class="col-3">    <a asp-action="Index" class="btn btn-primary ">Back to List</a></div>
+        
     </div>
 </div>
