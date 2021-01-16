@@ -17,6 +17,8 @@ namespace PlattformChallenge.Core.Model
         [Required]
         public DateTime Submit_Date { get; set; }
 
+        public string FileName { get; set; }
+
         public int? Point { get; set; }
 
         public Participation Participation { get; set; }

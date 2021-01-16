@@ -28,7 +28,6 @@ namespace PlattformChallenge.Core.Interfaces
         Task<TEntity> DeleteAsync(TEntity entity);
 
         Task DeleteAsync(Expression<Func<TEntity, bool>> predicate);
-        void AsNoTracking();
 
     }
 }

@@ -82,7 +82,12 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public  async Task<IActionResult> UploadSolution(string c_id) {
 
-            var par =(await _pRepository.GetAllListAsync(p => p.C_Id == c_id && p.P_Id == _currUser.Id)).FirstOrDefault();
+            var par = await _pRepository.GetAll()
+                .Include(p => p.Solution)
+                .Include(p =>p.Challenge)
+                .Include(p => p.Programmer)
+                .FirstOrDefaultAsync(p => p.C_Id == c_id && p.P_Id == _currUser.Id);
+
             var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == c_id);
 
             var model = new UploadSolutionViewModel()
@@ -105,35 +110,23 @@ namespace PlattformChallenge.Controllers
                 S_Id = Guid.NewGuid().ToString(),
                 URL = path,
                 Status = StatusEnum.Receive,
-                Submit_Date= DateTime.Now
+                Submit_Date = DateTime.Now,
+                FileName = model.SolutionFile.FileName
             };
             if (par.S_Id == null)
             {
 
                 await _sRepository.InsertAsync(s);
-                await _pRepository.UpdateAsync(new Participation()
-                {
-                    P_Id = par.P_Id,
-                    C_Id = par.C_Id,
-                    S_Id = s.S_Id
-                });
+                par.S_Id = s.S_Id;
+                await _pRepository.UpdateAsync(par);
             }
             else {
-                await _pRepository.UpdateAsync(new Participation()
-                {
-                    P_Id = par.P_Id,
-                    C_Id = par.C_Id,
-                    S_Id = null
-                });
-                _pRepository.AsNoTracking();
+                par.S_Id = null;
+                await _pRepository.UpdateAsync(par);
                 await _sRepository.DeleteAsync(x => x.S_Id == par.S_Id);
                 await _sRepository.InsertAsync(s);
-                await _pRepository.UpdateAsync(new Participation()
-                {
-                    P_Id = par.P_Id,
-                    C_Id = par.C_Id,
-                    S_Id = s.S_Id
-                });
+                par.S_Id = s.S_Id;
+                await _pRepository.UpdateAsync(par);
 
             }
             return RedirectToAction("Index");
