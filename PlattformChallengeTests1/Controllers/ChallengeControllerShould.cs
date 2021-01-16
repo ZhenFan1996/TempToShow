@@ -322,7 +322,6 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
-
         }
 
         //
@@ -599,7 +598,7 @@ namespace PlattformChallenge.Controllers.Tests
             {
             });
             await _sut.ParticipateChallenge("mock_challenge1");
-            Assert.ThrowsAsync<Exception>( () =>   _sut.ParticipateChallenge("mock_challenge1"));
+            await Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
         }
 
         //
