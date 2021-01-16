@@ -10,23 +10,32 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using System.Web;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using PlattformChallenge.Infrastructure;
 
 namespace PlattformChallenge.Controllers
 {
     [Authorize(Roles="Programmer")]
     public class ProgrammerController :Controller
     {
-
         private readonly UserManager<PlatformUser> _userManger;
         private PlatformUser _currUser => _userManger.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)).Result;
         private readonly IRepository<Challenge> _cRepository;
         private readonly IRepository<Participation> _pRepository;
+        private readonly IRepository<Solution> _sRepository;
+        private readonly ConfigProviderService _appcfg;
 
-        public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository)
+        public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg)
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
             this._pRepository = pRepository;
+            this._sRepository = sRepository;
+            _appcfg = appcfg;
         }
         /// <summary>
         /// Get current user information and challenges participated in and return to the page
@@ -88,12 +97,35 @@ namespace PlattformChallenge.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
-            var par = (await _pRepository.GetAllListAsync(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id)).FirstOrDefault();
+            var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).AsNoTracking().ToListAsync()).FirstOrDefault();
             var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
-
-
-            return View();
+            string path = await Upload(model.SolutionFile);
+            Solution s = new Solution()
+            {
+                S_Id = Guid.NewGuid().ToString(),
+                URL = path,
+                Status = StatusEnum.Receive,
+                Submit_Date= DateTime.Now
+            };
+            await _sRepository.InsertAsync(s);
+            await _pRepository.UpdateAsync(new Participation() {
+                P_Id = par.P_Id,
+                C_Id = par.C_Id,
+                S_Id = s.S_Id
+            });
+            return RedirectToAction("Index");
         }
 
+        private async Task<string> Upload(IFormFile file) {
+            string dir = Path.Combine(_appcfg.AppCfg.SolutionPath, "Solutions");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            string fileName = file.FileName;
+            string filePath = Path.Combine(dir, fileName);
+            await file.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            return filePath;
+        }
     }
 }

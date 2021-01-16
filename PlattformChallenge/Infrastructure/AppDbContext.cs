@@ -63,6 +63,11 @@ namespace PlattformChallenge.Infrastructure
                 .WithOne(s => s.Participation)
                 .HasForeignKey<Participation>(pa => pa.S_Id);
 
+            modelBuilder.Entity<Solution>()
+             .HasOne(s => s.Participation)
+             .WithOne(p => p.Solution)
+             .HasForeignKey<Participation>(pa => pa.S_Id);
+
         }
 
         public DbSet<Challenge> Challenges { get; set; }

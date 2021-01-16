@@ -40,7 +40,10 @@ namespace PlattformChallenge
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<AppDbContext>()
-            .AddTokenProvider<DataProtectorTokenProvider<PlatformUser>>(TokenOptions.DefaultProvider); 
+            .AddTokenProvider<DataProtectorTokenProvider<PlatformUser>>(TokenOptions.DefaultProvider);
+            var cfg = Configuration.GetSection("AppCfg").Get<AppCfgClass>();
+            var cfgservice = new ConfigProviderService();
+            cfgservice.SetAppCfg(cfg);
 
 
             services.ConfigureApplicationCookie(options =>
@@ -53,7 +56,7 @@ namespace PlattformChallenge
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
-
+            services.AddSingleton<ConfigProviderService>(cfgservice);
             services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
             services.AddControllersWithViews();
             services.AddRazorPages();
