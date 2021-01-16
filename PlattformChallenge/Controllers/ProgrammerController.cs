@@ -97,7 +97,7 @@ namespace PlattformChallenge.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
-            var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).AsNoTracking().ToListAsync()).FirstOrDefault();
+            var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p=>p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
             var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
             string path = await Upload(model.SolutionFile);
             Solution s = new Solution()
@@ -107,12 +107,35 @@ namespace PlattformChallenge.Controllers
                 Status = StatusEnum.Receive,
                 Submit_Date= DateTime.Now
             };
-            await _sRepository.InsertAsync(s);
-            await _pRepository.UpdateAsync(new Participation() {
-                P_Id = par.P_Id,
-                C_Id = par.C_Id,
-                S_Id = s.S_Id
-            });
+            if (par.S_Id == null)
+            {
+
+                await _sRepository.InsertAsync(s);
+                await _pRepository.UpdateAsync(new Participation()
+                {
+                    P_Id = par.P_Id,
+                    C_Id = par.C_Id,
+                    S_Id = s.S_Id
+                });
+            }
+            else {
+                await _pRepository.UpdateAsync(new Participation()
+                {
+                    P_Id = par.P_Id,
+                    C_Id = par.C_Id,
+                    S_Id = null
+                });
+                _pRepository.AsNoTracking();
+                await _sRepository.DeleteAsync(x => x.S_Id == par.S_Id);
+                await _sRepository.InsertAsync(s);
+                await _pRepository.UpdateAsync(new Participation()
+                {
+                    P_Id = par.P_Id,
+                    C_Id = par.C_Id,
+                    S_Id = s.S_Id
+                });
+
+            }
             return RedirectToAction("Index");
         }
 

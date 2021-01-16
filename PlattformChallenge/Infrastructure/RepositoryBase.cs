@@ -88,6 +88,10 @@ namespace PlattformChallenge.Infrastructure
                 await DeleteAsync(entity);
             }
         }
+        public void AsNoTracking() {
+            Table.AsNoTracking();
+            return;
+        }
 
         protected virtual void AttachIfNot(TEntity entity)
         {
