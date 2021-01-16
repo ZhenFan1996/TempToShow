@@ -64,30 +64,7 @@ namespace PlattformChallenge.Controllers
         /// <returns>A View with all solution list</returns>
         public async Task<IActionResult> AllSolutions(string Id)
         {
-            if (Id == null || Id == "")
-            {
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "invalid challenge id value for looking up all solutions";
-                return View("Error", errorViewModel);
-            }
-            var challenge = await _cRepository.GetAll()
-                .Include(c => c.Company)
-                .Include(c => c.LanguageChallenges)
-                .FirstOrDefaultAsync(c => c.C_Id == Id);
-            if (challenge == null)
-            {
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "there's no challenge with this id, please check again";
-                return View("Error", errorViewModel);
-            }
-
-            if (_currUser.Id != challenge.Com_ID)
-            {
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "You can't see solutions of challenge from other companies";
-                return View("Error", errorViewModel);
-            }
-
+            InvalidOpCheck(Id);
             var solutions = await (from p in _pRepository.GetAll()
                                    join s in _sRepository.GetAll()
                                    on p.S_Id equals s.S_Id
@@ -108,5 +85,31 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
+        private ViewResult InvalidOpCheck(String Id)
+        {
+            ErrorViewModel errorViewModel = new ErrorViewModel();
+            if (Id == null || Id == "")
+            {
+                errorViewModel.RequestId = "invalid empty challenge id value";
+                return View("Error", errorViewModel);
+            }
+           Challenge challenge =  _cRepository.GetAll()
+                .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
+                .FirstOrDefault(c => c.C_Id == Id);
+            if (challenge == null)
+            {
+                errorViewModel.RequestId = "there's no challenge with this id, please check again";
+                return View("Error", errorViewModel);
+            }
+
+            if (_currUser.Id != challenge.Com_ID)
+            {
+                errorViewModel.RequestId = "You don't have access to challenges from other companies";
+                return View("Error", errorViewModel);
+            }
+
+            return null;
+        }
     }
 }
