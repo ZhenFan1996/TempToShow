@@ -36,6 +36,7 @@ namespace PlattformChallenge.Controllers
         /// <summary>
         /// Get challenges which are published from current company user
         /// </summary>
+        /// <returns>A view with all published challenges</returns>
         public async Task<IActionResult> Index()
         {
 
@@ -55,5 +56,57 @@ namespace PlattformChallenge.Controllers
             };
             return View(model);
         }
+
+        /// <summary>
+        /// See all solutions from programmer users for a selected own challenge
+        /// </summary>
+        /// <param name="Id">Challenge Id</param>
+        /// <returns>A View with all solution list</returns>
+        public async Task<IActionResult> AllSolutions(string Id)
+        {
+            if (Id == null || Id == "")
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "invalid challenge id value for looking up all solutions";
+                return View("Error", errorViewModel);
+            }
+            var challenge = await _cRepository.GetAll()
+                .Include(c => c.Company)
+                .Include(c => c.LanguageChallenges)
+                .FirstOrDefaultAsync(c => c.C_Id == Id);
+            if (challenge == null)
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "there's no challenge with this id, please check again";
+                return View("Error", errorViewModel);
+            }
+
+            if (_currUser.Id != challenge.Com_ID)
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "You can't see solutions of challenge from other companies";
+                return View("Error", errorViewModel);
+            }
+
+            var solutions = await (from p in _pRepository.GetAll()
+                                   join s in _sRepository.GetAll()
+                                   on p.S_Id equals s.S_Id
+                                   where p.C_Id == Id
+                                   select new { s,p }
+                                  ).ToListAsync();
+
+            var solutionList = new List<Solution>();
+            foreach (var c in solutions)
+            {
+                solutionList.Add(c.s);
+            }
+
+            var model = new AllSolutionsViewModel()
+            {
+                Solutions = solutionList
+        };
+            return View(model);
+        }
+
     }
 }

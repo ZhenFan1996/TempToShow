@@ -1,0 +1,53 @@
+﻿@using PlattformChallenge.ViewModels
+@model AllSolutionsViewModel
+
+@if (Model.Solutions.Count <= 0)
+{
+    <p>
+        There's no solution yet
+    </p>
+}
+else{
+<table class="table col-lg-12">
+    <thead>
+        <tr>
+            <th>Solution ID</th>
+            <th>Status</th>
+            <th>Submit Date</th>
+            <th>Point</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Solutions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.S_Id)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Submit_Date)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Point)
+
+                </td>
+
+                <td>
+                    <a asp-controller="Company" asp-action="DownloadSolution" asp-route-id="@item.S_Id" class="btn btn-primary"> Download</a>
+                </td>
+                <td>
+                    <a asp-controller="Company" asp-action="RateSolution" asp-route-id="@item.S_Id" class="btn btn-primary"> Rate</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+ }
+<div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">Go To My portal</a></div>

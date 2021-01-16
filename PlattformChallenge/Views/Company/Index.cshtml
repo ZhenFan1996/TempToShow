@@ -41,7 +41,7 @@
 
                             <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Edit</a>
                         <td>
-                            <a asp-action="AllSolutions" asp-route-c_id="@item.C_Id" class="btn-group btn-group-justified">All Solutions</a>
+                            <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">All Solutions</a>
                         </td>
                     </tr>
                 }
