@@ -38,21 +38,33 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Release_Date)
                         </td>
-                        <td>
+                        @if (item.Winner_Id == null)
+                        {
+                            <td>
 
-                            <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Edit</a>
-                        </td>
+                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Edit</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <span> closed </span>
+                            </td>
+                        }
                         <td>
                             <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Solutions</a>
                         </td>
-                        <td>
-                            
-                                <button type="button" class="btn-group btn-group-justified" data-toggle="modal" data-target="#c">
-                                   Close
+
+                        @if (item.Winner_Id == null)
+                        {
+                            <td>
+
+                                <button type="button" class="btn-group btn-group-justified" data-toggle="modal" data-target="#tips-@item.C_Id">
+                                    Close
                                 </button>
 
                                 <!-- Modal -->
-                                <div class="modal fade" id="c" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -74,16 +86,22 @@
                                     </div>
                                 </div>
                             </td>
-                            
-                       
+
+                        }
+                        else
+                        {
+                            <td>
+                                <span> closed </span>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
-            
+
         </table>
-        
+
     </div>
-   
-        
+
+
 
 </div>
