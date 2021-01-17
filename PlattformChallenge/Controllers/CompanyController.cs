@@ -64,7 +64,7 @@ namespace PlattformChallenge.Controllers
         /// <returns>A View with all solution list</returns>
         public async Task<IActionResult> AllSolutions(string Id)
         {
-            InvalidOpCheck(Id);
+            IllegalOpCheck(Id);
             var solutions = await (from p in _pRepository.GetAll()
                                    join s in _sRepository.GetAll()
                                    on p.S_Id equals s.S_Id
@@ -80,12 +80,67 @@ namespace PlattformChallenge.Controllers
 
             var model = new AllSolutionsViewModel()
             {
-                Solutions = solutionList
-        };
+                Solutions = solutionList,
+                CurrChallenge = Id
+            };
             return View(model);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vm">AllSolutionsViewModel</param>
+        /// <returns>View with all solutions with updated point</returns>
+        [HttpPost]
+        public async Task<IActionResult> RateSolution(AllSolutionsViewModel vm)
+        {
+            //NOT WORKING! vm.CurrSolution doesn't work as expected
+            if (ModelState.IsValid)
+            {
+                //TODO: If the challenge is already closed, not allow to rate anymore
+                var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolution);
+                toUpdate.First().Point = vm.Point;
+                    try
+                    {
+                        await _sRepository.UpdateAsync(toUpdate.First());
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        throw;                     
+                    }
+                
+            }
+            return RedirectToAction("AllSolutions", new { id = vm.CurrChallenge });
+        }
+        public async Task<IActionResult> CloseChallenge(String Id)
+        {
 
-        private ViewResult InvalidOpCheck(String Id)
+            var toUpdate = await _cRepository.GetAllListAsync(c => c.C_Id == Id);
+            if (toUpdate.First().Winner_Id != null)
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "You already closed this challenge";
+                return View("Error", errorViewModel);
+            }
+            var allSolutions = await _sRepository.GetAllListAsync();
+            var bestSolution = allSolutions.OrderByDescending(s => s.Point).First();
+            var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.S_Id);
+            var winnerId = participation.P_Id;
+            toUpdate.First().Winner_Id = winnerId;
+            try
+            {
+                await _cRepository.UpdateAsync(toUpdate.First());
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
+
+            private ViewResult IllegalOpCheck(String Id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (Id == null || Id == "")

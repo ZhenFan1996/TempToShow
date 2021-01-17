@@ -71,8 +71,8 @@
             }
         </dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Winner)
+        @*<dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Winner_Id)
         </dt>
         <dd class="col-sm-10">
             @if (Model.Winner_Id == null)
@@ -81,18 +81,18 @@
             }
             else
             {
-                <span>  @Model.Winner.Name</span>
+                @Html.DisplayFor(model => model.Winner_Id)
             }
 
-        </dd>
-        <dt class="col-sm-2">
+        </dd>*@
+        @*<dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Best_Solution_Id)
         </dt>
         <dd class="col-sm-10">
             <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
-        </dd>
+        </dd>*@
         <dt class="col-sm-2">
-           Solutions list
+           Winner and Solutions list
         </dt>
         <dd class="col-sm-10">
             <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id" > View </a>
