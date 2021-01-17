@@ -86,7 +86,7 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
         /// <summary>
-        /// 
+        /// Rate a selected solution by updating point and status
         /// </summary>
         /// <param name="vm">AllSolutionsViewModel</param>
         /// <returns>View with all solutions with updated point</returns>
@@ -115,6 +115,7 @@ namespace PlattformChallenge.Controllers
 
                 var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolutionId);
                 toUpdate.First().Point = vm.Point;
+                toUpdate.First().Status = StatusEnum.Rated;
                     try
                     {
                         await _sRepository.UpdateAsync(toUpdate.First());
@@ -127,6 +128,11 @@ namespace PlattformChallenge.Controllers
             }
             return RedirectToAction("AllSolutions", new { id = vm.CurrChallengeId });
         }
+        /// <summary>
+        /// Close a challenge if all solutions are rated
+        /// </summary>
+        /// <param name="Id">Id of the challenge which should be closed</param>
+        /// <returns>A View back to portal index</returns>
         public async Task<IActionResult> CloseChallenge(String Id)
         {
 
@@ -137,11 +143,31 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "You already closed this challenge";
                 return View("Error", errorViewModel);
             }
-            var allSolutions = await _sRepository.GetAllListAsync();
-            var bestSolution = allSolutions.OrderByDescending(s => s.Point).First();
-            var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.S_Id);
+
+            //var allSolutions = await _sRepository.GetAllListAsync();
+            var allSolutions = await (from p in _pRepository.GetAll()
+                                 join s in _sRepository.GetAll()
+                                 on p.S_Id equals s.S_Id
+                                 where p.C_Id == Id
+                                 select new { s, p }
+                                 ).ToListAsync();
+
+            foreach(var s in allSolutions)
+            {
+                if(s.s.Point == null || s.s.Point == 0)
+                {
+                    ErrorViewModel errorViewModel = new ErrorViewModel();
+                    errorViewModel.RequestId = "There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                        "Please rate all solutions before closing a challenge";
+                    return View("Error", errorViewModel);
+                }
+            }
+
+            var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
+            var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
             var winnerId = participation.P_Id;
             toUpdate.First().Winner_Id = winnerId;
+            toUpdate.First().Best_Solution_Id = bestSolution.s.S_Id;
             try
             {
                 await _cRepository.UpdateAsync(toUpdate.First());
