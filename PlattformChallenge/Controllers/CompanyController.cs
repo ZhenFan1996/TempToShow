@@ -81,7 +81,7 @@ namespace PlattformChallenge.Controllers
             var model = new AllSolutionsViewModel()
             {
                 Solutions = solutionList,
-                CurrChallenge = Id
+                CurrChallengeId = Id
             };
             return View(model);
         }
@@ -93,11 +93,27 @@ namespace PlattformChallenge.Controllers
         [HttpPost]
         public async Task<IActionResult> RateSolution(AllSolutionsViewModel vm)
         {
-            //NOT WORKING! vm.CurrSolution doesn't work as expected
+   
             if (ModelState.IsValid)
             {
-                //TODO: If the challenge is already closed, not allow to rate anymore
-                var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolution);
+                var solItem = await (from p in _pRepository.GetAll()
+                                       join s in _sRepository.GetAll()
+                                       on p.S_Id equals s.S_Id
+                                       where p.C_Id == vm.CurrChallengeId
+                                       select new { s, p }
+                                 ).ToListAsync();
+
+                var challengeId = solItem.First().p.C_Id;
+                var challenge = _cRepository.FirstOrDefault(c => c.C_Id == challengeId);
+                if (challenge.Winner_Id != null)
+                {
+                    ErrorViewModel errorViewModel = new ErrorViewModel();
+                    errorViewModel.RequestId = "You can't rate solution anymore because this challenge is already closed";
+                    return View("Error", errorViewModel);
+                }
+
+
+                var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolutionId);
                 toUpdate.First().Point = vm.Point;
                     try
                     {
@@ -109,7 +125,7 @@ namespace PlattformChallenge.Controllers
                     }
                 
             }
-            return RedirectToAction("AllSolutions", new { id = vm.CurrChallenge });
+            return RedirectToAction("AllSolutions", new { id = vm.CurrChallengeId });
         }
         public async Task<IActionResult> CloseChallenge(String Id)
         {

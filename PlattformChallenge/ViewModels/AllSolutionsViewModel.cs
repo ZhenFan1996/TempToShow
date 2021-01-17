@@ -10,9 +10,9 @@ namespace PlattformChallenge.ViewModels
     public class AllSolutionsViewModel
     {
         public List<Solution> Solutions { get; set; }
-        public String CurrChallenge { get; set; }
+        public String CurrChallengeId { get; set; }
 
-        public String CurrSolution { get; set; }
+        public String CurrSolutionId { get; set; }
 
         [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Point { get; set; }

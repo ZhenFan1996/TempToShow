@@ -22,71 +22,73 @@ else
         <tbody>
             @foreach (var item in Model.Solutions)
             {
-                
-              <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.S_Id)
 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.S_Id)
 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Submit_Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Point)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Submit_Date)
 
-                </td>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Point)
 
-                <td>
-                    <a asp-controller="Company" asp-action="DownloadSolution" asp-route-id="@item.S_Id" class="btn btn-primary"> Download</a>
-                </td>
+                    </td>
 
-            
-                <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p"> Rate</button>
+                    <td>
+                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-id="@item.S_Id" class="btn btn-primary"> Download</a>
+                    </td>
 
-                    <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel"> Rate this solution:  </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Point should be greater than 0.
-                                </div>
-                                <form asp-controller="Company" asp-action="RateSolution" method="post">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <input type="hidden" asp-for="@Model.CurrChallenge" />
-                                   
-                                    <div class="form-group">
-                                        <label asp-for="@Model.Point" class="control-label">Point</label>
-                                        <input asp-for="@Model.Point" class="form-control" />
-                                        <span asp-validation-for="@Model.Point" class="text-danger"></span>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <input asp-for="@Model.CurrSolution" value="@item.S_Id" />
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="form-group">
-                                            <input type="submit" value="Rate" class="btn btn-primary" />
+                    
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id"> Rate</button>
+
+                            <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"> Rate this solution:  </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                                        <div class="modal-body">
+                                            Point should be greater than 0.
+                                        </div>
+                                        <form asp-controller="Company" asp-action="RateSolution" method="post">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input type="hidden" asp-for="@Model.CurrChallengeId" />
 
-                </td>
-            </tr>
-    }
+                                            <div class="form-group">
+                                                <label asp-for="@Model.Point" class="control-label">Point</label>
+                                                <input asp-for="@Model.Point" class="form-control" />
+                                                <span asp-validation-for="@Model.Point" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="form-group">
+                                                    <input type="submit" value="Rate" class="btn btn-primary" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </td>
+                    }
+                    
+                </tr>
+            }
         </tbody>
 
     </table>
