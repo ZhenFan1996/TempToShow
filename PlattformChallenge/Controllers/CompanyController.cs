@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PagedList;
@@ -8,6 +8,7 @@ using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -207,6 +208,19 @@ namespace PlattformChallenge.Controllers
             }
 
             return null;
+        }
+        public async Task<FileResult> DownloadSolution(string s_id)
+        {
+            Solution solution = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == s_id);
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(solution.URL, FileMode.Open))
+            {
+
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(solution.URL).ToLowerInvariant();
+            return File(memory, "application/zip", Path.GetFileName(solution.URL));
         }
     }
 }

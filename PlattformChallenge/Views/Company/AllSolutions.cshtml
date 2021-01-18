@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.ViewModels.AllSolutionsViewModel
+@model PlattformChallenge.ViewModels.AllSolutionsViewModel
 
 @if (Model.Solutions.Count <= 0)
 {
@@ -42,7 +42,7 @@ else
                     </td>
 
                     <td>
-                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-id="@item.S_Id" class="btn btn-primary"> Download</a>
+                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@item.S_Id" class="btn btn-primary"> Download</a>
                     </td>
 
                     
