@@ -227,6 +227,7 @@ namespace PlattformChallenge.Controllers
         // GET: Challenges/Edit/5
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
+
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
@@ -250,6 +251,13 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "You can't edit challenge from other company";
                 return View("Error", errorViewModel);
             }
+
+            if(challenge.Winner_Id != null)
+            {
+                errorViewModel.RequestId = "You can't edit a closed challenge";
+                return View("Error", errorViewModel);
+            }
+
             ChallengeEditViewModel model = new ChallengeEditViewModel();
             model.Challenge = challenge;
             model.Languages = await _lRepository.GetAllListAsync();
