@@ -42,12 +42,12 @@
                                 @Html.DisplayFor(modelItem => item.Release_Date)
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#c">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
                                    Cancel
                                 </button>
 
                                 <!-- Modal -->
-                                <div class="modal fade" id="c" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
