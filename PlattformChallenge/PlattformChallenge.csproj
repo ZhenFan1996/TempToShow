@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -51,6 +51,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Views\Account\" />
+    <Folder Include="Resources\Views\Challenges\" />
+    <Folder Include="Resources\Views\Company\" />
+    <Folder Include="Resources\Views\Solution\" />
+    <Folder Include="Resources\Views\Home\" />
   </ItemGroup>
 
 </Project>

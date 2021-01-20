@@ -1,81 +1,84 @@
-@model PlattformChallenge.ViewModels.ProgrammerIndexViewModel;
+@model PlattformChallenge.ViewModels.ProgrammerIndexViewModel
 
-    <div class="container">
-        <div class="row">
-            <div class="card col-lg-3 " style="width: 18rem;">
-                <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">@Model.Programmer.Name</h5>
-                    <ul>
-                        <li class="card-text"> Email: @Model.Programmer.Email</li>
-                        <li class="card-text"> participated Challenges:@Model.Challenges.Count()</li>
-                    </ul>
-                    <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary">Change Password</a>
+
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+<div class="container">
+    <div class="row">
+        <div class="card col-lg-3 " style="width: 18rem;">
+            <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Programmer.Name</h5>
+                <ul>
+                    <li class="card-text"> Email: @Model.Programmer.Email</li>
+                    <li class="card-text"> participated Challenges:@Model.Challenges.Count()</li>
+                </ul>
+                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary">Change Password</a>
+            </div>
+        </div>
+
+        <table class="table col-lg-8 offset-lg-1">
+            <thead>
+                <tr>
+                    <th>@SharedLocalizer["Titel"]</th>
+                    <th>@SharedLocalizer["Bonus"]</th>
+                    <th>@SharedLocalizer["Company"]</th>
+                    <th>@SharedLocalizer["Date"]</th>
+                    <th>@Localizer["Cancel"]</th>
+                    <th>@Localizer["UploadItem"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Challenges)
+                {
+    <tr>
+        <td>
+            <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bonus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Release_Date)
+        </td>
+        <td>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
+                Cancel
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @Localizer["Confirm"]
+                        </div>
+                        <div class="modal-footer">
+                            <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">Yes</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </td>
 
-            <table class="table col-lg-8 offset-lg-1">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Bonus</th>
-                        <th>Company</th>
-                        <th>Date</th>
-                        <th>Cancel</th>
-                        <th>Solution Upload</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Challenges)
-                    {
-                        <tr>
-                            <td>
-                                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Bonus)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Company.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Release_Date)
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
-                                   Cancel
-                                </button>
+        <td>
+            <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">@Localizer["Upload"]</a>
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel"></h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">Yes</a>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
+        </td>
+    </tr>
+}
+            </tbody>
+        </table>
 
-                            <td>
-                                <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">upload</a>
-
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-        </div>
     </div>
+</div>

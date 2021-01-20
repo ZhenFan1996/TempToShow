@@ -17,6 +17,8 @@ using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Data;
 using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace PlattformChallenge
 {
@@ -88,12 +90,16 @@ namespace PlattformChallenge
                 app.UseHsts();
             }
 
-            var supportedCultures = new[] { "en", "de" };
-            var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
-                .AddSupportedCultures(supportedCultures)
-                .AddSupportedUICultures(supportedCultures);
 
-            app.UseRequestLocalization(localizationOptions);
+            var supportedCultures = new[]{
+                  new CultureInfo("en"),
+                   new CultureInfo("de")};
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseDataInitializerAsync();
             app.UseHttpsRedirection();
