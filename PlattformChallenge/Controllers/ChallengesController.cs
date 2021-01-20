@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
@@ -24,15 +25,21 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
+        private readonly IStringLocalizer<ChallengesController> localizer;
+        private readonly IStringLocalizer<SharedResource> sharedLocalizer;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
+            IStringLocalizer<ChallengesController> localizer, IStringLocalizer<SharedResource> sharedLocalizer
+            )
         {
             _repository = repository;
             _pRepository = pRepository;
             _lRepository = lRepository;
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
+            this.localizer = localizer;
+            this.sharedLocalizer = sharedLocalizer;
         }
 
         //
