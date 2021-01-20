@@ -73,7 +73,7 @@ namespace PlattformChallenge.Controllers.Tests
         //    Test if the view of create is the expected type.
         //
         [Fact]
-        public void ReturnViewForCreate()
+        public async Task ReturnViewForCreateAsync()
         {
             _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
             {
@@ -102,7 +102,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
-            var result = _sut.Create();
+            var result = await _sut.Create();
             Assert.IsType<ViewResult>(result);
 
 
@@ -598,7 +598,7 @@ namespace PlattformChallenge.Controllers.Tests
             {
             });
             await _sut.ParticipateChallenge("mock_challenge1");
-            await Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
+            Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
         }
 
         //

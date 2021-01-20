@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using PlattformChallenge.Infrastructure;
 
 namespace PlattformChallenge_UnitTest.Controllers
 {
@@ -30,7 +31,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         private readonly Mock<IRepository<Challenge>> _mockCRepo;
         private readonly Mock<IRepository<Participation>> _mockPRepo;
         private readonly ProgrammerController _sut;
-        private readonly Mock<IWebHostEnvironment> _mockEnv;
+        private readonly Mock<ConfigProviderService> _mockAfg;
         private readonly Mock<IRepository<Solution>> _mockSRepo;
         private PlatformUser _user;
 
@@ -38,7 +39,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         {
             _mockCRepo = new Mock<IRepository<Challenge>>();
             _mockPRepo = new Mock<IRepository<Participation>>();
-            _mockEnv = new Mock<IWebHostEnvironment>();
+            _mockAfg = new Mock<ConfigProviderService>();
             _mockSRepo = new Mock<IRepository<Solution>>();
             this._mockUseerManager = MockUserManager<PlatformUser> ();
             var mock = new Mock<HttpContext>();
@@ -50,7 +51,7 @@ namespace PlattformChallenge_UnitTest.Controllers
             };
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "Pro_1"));
             _mockUseerManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockEnv.Object,_mockSRepo.Object);
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,_mockAfg.Object);
             _sut.ControllerContext = context;
         }
         /// <summary>

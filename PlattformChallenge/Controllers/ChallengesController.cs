@@ -154,10 +154,10 @@ namespace PlattformChallenge.Controllers
         // Returns:
         //    A view with form which must be filled out for creating challenge.
         [Authorize(Roles = "Company")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new ChallengeCreateViewModel();
-            model.Languages = _lRepository.GetAllListAsync().Result;
+            model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);
         }
