@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlattformChallenge.UnitTests", "PlattformChallenge.UnitTests\PlattformChallenge.UnitTests.csproj", "{8245AD30-5727-49FD-806D-003590D1EE71}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlattformChallenge.IntegrationTests", "PlattformChallenge.IntegrationTests\PlattformChallenge.IntegrationTests.csproj", "{755E37A4-C695-4DE8-B304-32AEB76BA364}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC3DF8F7-F3D9-42F3-B599-C621C711C73A} = {DC3DF8F7-F3D9-42F3-B599-C621C711C73A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

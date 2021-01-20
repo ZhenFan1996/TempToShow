@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>PlattformChallenge_UnitTest</AssemblyName>
+    <AssemblyName>PlattformChallenge.UnitTest</AssemblyName>
 
-    <RootNamespace>PlattformChallenge_UnitTest</RootNamespace>
+    <RootNamespace>PlattformChallenge.UnitTest</RootNamespace>
 
     <OutputType>Library</OutputType>
   </PropertyGroup>

@@ -19,7 +19,10 @@ namespace PlattformChallenge.Data
                 var dbcontext = scope.ServiceProvider.GetService<AppDbContext>();
                 var roleMangaer = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
 
-                dbcontext.Database.Migrate();
+                if (dbcontext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+                {
+                    dbcontext.Database.Migrate();
+                }
                 if (!dbcontext.Languages.Any()) {
                     dbcontext.Languages.Add(new Language()
                     {
