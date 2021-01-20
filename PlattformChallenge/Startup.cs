@@ -94,6 +94,7 @@ namespace PlattformChallenge
             var supportedCultures = new[]{
                   new CultureInfo("en"),
                    new CultureInfo("de")};
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("en"),
