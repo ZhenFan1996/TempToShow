@@ -144,6 +144,9 @@
   <data name="Titel" xml:space="preserve">
     <value>Titel</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Hochladen</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
