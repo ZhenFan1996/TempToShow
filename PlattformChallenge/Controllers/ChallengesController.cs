@@ -45,7 +45,7 @@ namespace PlattformChallenge.Controllers
         //
         // Summary:
         //    Get the list of current active challenges with paging function
-        //
+        //    default situation is return the challenges, which descending sorted by date
         // Returns:
         //    A view with list of current active challenges
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)

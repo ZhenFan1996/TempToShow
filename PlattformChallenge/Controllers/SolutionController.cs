@@ -23,17 +23,18 @@ namespace PlattformChallenge.Controllers
             this._repository = _repository;
         }
 
-        //
-        // Summary:
-        //    Get the list of solutions of the selected challenge and return the best solution with highest point
-        //
-        // Returns:
-        //    A view with list of solutions and best solution
+        
         public IActionResult Add()
         {
             return View();
         }
 
+        //
+        // Summary:
+        //    Get the list of solutions of the selected challenge and return the best solution with highest point
+        //    default situation is return the challenges, which descending sorted by point
+        // Returns:
+        //    A view with list of solutions and best solution
         public async Task<IActionResult> List(int? page, string sortOrder, string c_Id)
         {
             ViewData["PointSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
