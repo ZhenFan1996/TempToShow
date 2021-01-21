@@ -45,7 +45,7 @@ namespace PlattformChallenge.IntegrationTests
 
                     try
                     {
-                        Utilities.InitializeDbForTests(db, roleManager);
+                        Utilities.InitializeDbForTests(db);
                     }
                     catch (Exception ex)
                     {

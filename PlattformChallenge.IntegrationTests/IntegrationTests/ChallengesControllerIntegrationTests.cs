@@ -5,6 +5,9 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Threading.Tasks;
 using System.Net.Http;
+using PlattformChallenge.IntegrationTests.Helpers;
+using Newtonsoft.Json;
+using PlattformChallenge.Core.Model;
 
 namespace PlattformChallenge.IntegrationTests.IntegrationTests
 {
@@ -25,12 +28,11 @@ namespace PlattformChallenge.IntegrationTests.IntegrationTests
         }
 
         [Fact]
-        public async Task RenderApplicationForm() {
-            var reponse = await _client.GetAsync("/Challenges");
+        public async Task Get_IndexPage() {
+            var indexPage = await _client.GetAsync("/Challenges");
+            var content = await HtmlHelpers.GetDocumentAsync(indexPage);
             
-            reponse.EnsureSuccessStatusCode();
-            var reponseString = await reponse.Content.ReadAsStringAsync();
-            
+           
         }
 
         

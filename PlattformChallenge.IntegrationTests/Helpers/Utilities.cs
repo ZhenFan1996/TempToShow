@@ -11,22 +11,16 @@ namespace PlattformChallenge.IntegrationTests.Helpers
     public static class Utilities
     {
         
-        public static void InitializeDbForTests(AppDbContext db, RoleManager<IdentityRole> roleManager)
+        public static void InitializeDbForTests(AppDbContext db)
         {
 
-            var IdentityResult1 = roleManager.CreateAsync(new IdentityRole("Programmer")).GetAwaiter().GetResult();
-
-            var IdentityResult2 = roleManager.CreateAsync(new IdentityRole("Company")).GetAwaiter().GetResult();
-
-            db.Languages.AddRange(GetSeedLanguages());
-
+            db.Challenges.AddRange(GetSeedChallenges());
+            db.SaveChanges();
         }
 
-        public static void ReinitializeDbForTests(AppDbContext db,RoleManager<IdentityRole> roleManager)
+        public static void ReinitializeDbForTests(AppDbContext db)
         {
-            roleManager.DeleteAsync(roleManager.FindByNameAsync("Programmer").Result);
-            roleManager.DeleteAsync(roleManager.FindByNameAsync("Company").Result);
-            db.Languages.RemoveRange(db.Languages);
+
             db.LanguageChallenge.RemoveRange(db.LanguageChallenge);
             db.Challenges.RemoveRange(db.Challenges);
             db.Participations.RemoveRange(db.Participations);
@@ -34,65 +28,35 @@ namespace PlattformChallenge.IntegrationTests.Helpers
             db.Users.RemoveRange(db.Users);
             db.UserTokens.RemoveRange(db.UserTokens);
             db.UserRoles.RemoveRange(db.UserRoles);
-            db.Roles.RemoveRange(db.Roles);
-            InitializeDbForTests(db,roleManager);
+            InitializeDbForTests(db);
         }
 
-        public static List<Language> GetSeedLanguages() {
+        public static List<Challenge> GetSeedChallenges() {
 
-            return new List<Language>() {
-                new Language()
-                    {
-                        Language_Id = "1",
-                        DevelopmentLanguage = "Java"
+            return new List<Challenge>()
+            {
+                new Challenge(){
+                C_Id ="test 1",
+                Title ="Test challenge 1",
+                Bonus = 10,
+                Release_Date = DateTime.Now,
+                Content = "Content of test 1",
+                Max_Participant = 10,
+                Company = new PlatformUser(){
+                    Id = "company 1"
+                },
+                Com_ID = "company 1"
+                
+                }
 
-                    },
-                new Language()
-                    {
-                        Language_Id = "2",
-                        DevelopmentLanguage = "C#"
-                    },
-                new Language()
-                    {
-                        Language_Id = "3",
-                        DevelopmentLanguage = "Python"
 
-                    },
-                new Language()
-                    {
-                        Language_Id = "4",
-                        DevelopmentLanguage = "C++"
 
-                    },
-                new Language()
-                    {
-                        Language_Id = "5",
-                        DevelopmentLanguage = "JavaScript"
-
-                    },
-                new Language()
-                    {
-                        Language_Id = "6",
-                        DevelopmentLanguage = "Go"
-
-                    },
-                new Language()
-                    {
-                        Language_Id = "7",
-                        DevelopmentLanguage = "Swift"
-
-                    },
-                new Language()
-                    {
-                        Language_Id = "8",
-                        DevelopmentLanguage = "Other"
-
-                    }
             };
+        }
 
 
         }
 
         
     }
-}
+
