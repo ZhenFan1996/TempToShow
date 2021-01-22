@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 @inject IOptions<RequestLocalizationOptions> LocOptions
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -17,7 +18,7 @@
           asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
           method="post" class="form-inline justify-content-end" role="form">
         <div class="form-group">
-            <label asp-for="@requestCulture.RequestCulture.UICulture.Name" class="mr-2">@Localizer["Language:"]</label>
+            <label asp-for="@requestCulture.RequestCulture.UICulture.Name" class="mr-2">@SharedLocalizer["Language"]:</label>
             <select name="culture" onchange="this.form.submit();" class="form-control" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
         </div>
     </form>

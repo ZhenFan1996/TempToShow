@@ -7,12 +7,12 @@
     <div class="row">
         <div class="card col-lg-3 " style="width: 18rem;">
             <div style="color:#0000FF">
-                <h3>Best Solution for now</h3>
+                <h3>@Localizer["Best Solution for now"]</h3>
             </div>
             <div class="card-body">
                 <h5 class="card-title">@Localizer["Programmer Name"]: @Model.Best_Name</h5>
                 <ul>
-                    <li class="card-text"> Point: @Model.Best_Point </li>
+                    <li class="card-text"> @SharedLocalizer["Points"]: @Model.Best_Point </li>
                 </ul>
                 <a>@Model.Best_URL</a>
             </div>
@@ -22,19 +22,19 @@
                 <tr>
 
                     <th>
-                        Username
+                        @SharedLocalizer["Name"]
                     </th>
                     <th>
-                        Challenge Title
+                        @SharedLocalizer["Challenge Title"]
                     </th>
                     <th>
-                        Company
+                        @SharedLocalizer["Company"]
                     </th>
                     <th>
-                        <a asp-action="List" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-c_Id="@Model.C_ID">Date</a>
+                        <a asp-action="List" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-c_Id="@Model.C_ID">@SharedLocalizer["Date"]</a>
                     </th>
                     <th>
-                        <a asp-action="List" asp-route-sortOrder="@ViewData["PointSortParm"]" asp-route-c_Id="@Model.C_ID">Point</a>
+                        <a asp-action="List" asp-route-sortOrder="@ViewData["PointSortParm"]" asp-route-c_Id="@Model.C_ID">@SharedLocalizer["Points"]</a>
                     </th>
                     <th></th>
                 </tr>
