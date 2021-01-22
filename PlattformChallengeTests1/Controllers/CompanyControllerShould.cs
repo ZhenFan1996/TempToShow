@@ -56,7 +56,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         }
         /// <summary>
         /// [TestCase-ID: 42-1]
-        /// Test whether a company user can get a valid list of challenges that users have published
+        /// Test whether a company user can get a valid list of challenges that he has published
         /// </summary>
         [Fact]
         public async Task ReturnVaildIndex()
@@ -72,9 +72,69 @@ namespace PlattformChallenge_UnitTest.Controllers
             Assert.Equal(_user, model.Company);
         }
 
-        
+        /// <summary>
+        /// [TestCase-ID: 14-1]
+        /// Test whether a company user can get a valid list of submitted solutions to a selected challenge
+        /// </summary>
+        [Fact]
+        public async Task ReturnVaildSolutionList()
+        {
+            var challenges = GetAllBuildChallenge();
+            var solutions = GetAllBuildSolution();
+            GetAllBuildParticipation();
+            var result = await _sut.AllSolutions(challenges.ElementAt(1).C_Id);
+            var vaule = result as ViewResult;
+            var view = vaule.Model;
+            Assert.IsType<AllSolutionsViewModel>(view);
+            var model = view as AllSolutionsViewModel;
+            Assert.Single(model.Solutions);
+            Assert.Equal(solutions.ElementAt(1), model.Solutions.ElementAt(0));
+            Assert.Equal(challenges.ElementAt(1).C_Id, model.CurrChallengeId);
+        }
 
-      
+        private List<Participation> GetAllBuildParticipation()
+        {
+            var participations = new List<Participation>() {
+                new Participation(){
+                    C_Id="c1",
+                    P_Id="test-programmer1",
+                    S_Id = "s1"
+                },
+                  new Participation(){
+                    C_Id="c2",
+                    P_Id="test-programmer2",
+                    S_Id = "s2"
+                }
+            };
+
+            var mockPars = participations.AsQueryable().BuildMockDbSet();
+            _mockPRepo.Setup(p => p.GetAll()).Returns(mockPars.Object);
+            return participations;
+        }
+
+        private List<Solution> GetAllBuildSolution()
+        {
+            var solutions = new List<Solution>() {
+                new Solution(){
+                    S_Id="s1",
+                    URL = "www.test/solution/s1",
+                    Status = StatusEnum.Receive,
+                    Submit_Date = DateTime.Now.AddDays(-2),
+                },
+                  new Solution(){
+                    S_Id="s2",
+                    URL = "www.test/solution/s2",
+                    Status = StatusEnum.Receive,
+                    Submit_Date = DateTime.Now.AddDays(-4),
+                },
+
+            };
+            var mockSolutions = solutions.AsQueryable().BuildMockDbSet();
+            _mockSRepo.Setup(s => s.GetAll()).Returns(mockSolutions.Object);
+            return solutions;
+        }
+
+
         private List<Challenge> GetAllBuildChallenge()
         {
             var challenges = new List<Challenge>() {

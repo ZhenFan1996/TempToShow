@@ -42,12 +42,14 @@ namespace PlattformChallenge.Controllers
             this.sharedLocalizer = sharedLocalizer;
         }
 
-        //
-        // Summary:
-        //    Get the list of current active challenges with paging function
+        /// <summary>
+        ///  Get the list of current active challenges with paging function
         //    default situation is return the challenges, which descending sorted by date
-        // Returns:
-        //    A view with list of current active challenges
+        /// </summary>
+        /// <param name="pageNumber">which page it should be shown</param>
+        /// <param name="sortOrder">which sort criteria</param>
+        /// <param name="searchString">which search keyword</param>
+        /// <returns>A view with list of current active challenges</returns>
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
@@ -88,15 +90,11 @@ namespace PlattformChallenge.Controllers
             return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
-        //
-        // Summary:
-        //    Get detail information of a certain challenge which is assigned by challenge Id
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with all available information of given challenge
+        /// <summary>
+        ///  Get detail information of a certain challenge which is assigned by challenge Id
+        /// </summary>
+        /// <param name="id"> The Id string of a challenge</param>
+        /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
@@ -153,13 +151,11 @@ namespace PlattformChallenge.Controllers
         }
 
         #region Create
-        //
-        // Summary:
-        //    Create a new challenge. Get the create form.
+        /// <summary>
+        /// Create a new challenge. Get the create form.
         //    This method is only authorized to company user.
-        //
-        // Returns:
-        //    A view with form which must be filled out for creating challenge.
+        /// </summary>
+        /// <returns> A view with form which must be filled out for creating challenge.</returns>
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create()
         {
@@ -169,14 +165,14 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        //
-        // Summary:
-        //    Create a new challenge. Post the create form.
+      
+        /// Create a new challenge. Post the create form.
         //    This method is only authorized to company user.
-        //
-        // Returns:
-        //    A view with all the given details at creating challenge, if the given information passed validation check.
-        //    A view with error message, if the given information didn't pass validation check.
+        /// </summary>
+        /// <param name="model">A ChallengeCreateViewModel</param>
+        /// <returns>A view with all the given details at creating challenge, if the given information passed validation check.
+        ///   A view with error message, if the given information didn't pass validation check.
+        /// <summary></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -222,16 +218,12 @@ namespace PlattformChallenge.Controllers
 
 
         #region Edit
-        //
-        // Summary:
-        //    Check prerequisites of editing challenge and provides information for edit form
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with a edit form if passed prerequisites; Else an error view with error message
         // GET: Challenges/Edit/5
+        /// <summary>
+        /// Check prerequisites of editing challenge and provides information for edit form
+        /// </summary>
+        /// <param name="id">The Id string of a challenge</param>
+        /// <returns>A view with a edit form if passed prerequisites; Else an error view with error message</returns>
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
 
@@ -277,15 +269,13 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        //
-        // Summary:
-        //    Check if all given para are legal, if yes then update database
-        //
-        // Parameter:
-        //    A ChallengeEditViewModel with form information
-        //
-        // Returns:
-        ////    The detail view of edited challenge with updated information
+    
+       
+        /// <summary>
+        ///  Check if all given para are legal, if yes then update database
+        /// </summary>
+        /// <param name="model">A ChallengeEditViewModel with form information</param>
+        /// <returns> The detail view of edited challenge with updated information</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -366,52 +356,48 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
-        #region delete
+        //#region delete
+        ////Now not allow to delete a challenge
+        //// GET: Challenges/Delete/5
+        //[Authorize(Roles = "Company")]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        // GET: Challenges/Delete/5
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //    var challenge = await _repository.GetAll()
+        //        .Include(c => c.Company)
+        //        .FirstOrDefaultAsync(m => m.C_Id == id);
+        //    if (challenge == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var challenge = await _repository.GetAll()
-                .Include(c => c.Company)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
-            if (challenge == null)
-            {
-                return NotFound();
-            }
+        //    return View(challenge);
+        //}
 
-            return View(challenge);
-        }
+        //// POST: Challenges/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Company")]
+        //public async Task<IActionResult> DeleteConfirmed(string id)
+        //{
 
-        // POST: Challenges/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-
-            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-            challenge = await _repository.DeleteAsync(challenge);
-            return RedirectToAction(nameof(Index));
-        }
-        #endregion
+        //    var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
+        //    challenge = await _repository.DeleteAsync(challenge);
+        //    return RedirectToAction(nameof(Index));
+        //}
+        //#endregion
 
         #region Participation
-
-        //
-        // Summary:
-        //    Add user and challenge to Participation in database and update quota of the challenge
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with participation confirmation
+ 
+        /// <summary>
+        ///  Add user and challenge to Participation in database and update quota of the challenge
+        /// </summary>
+        /// <param name="id">The Id string of a challenge</param>
+        /// <returns>A view with participation confirmation</returns>
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
