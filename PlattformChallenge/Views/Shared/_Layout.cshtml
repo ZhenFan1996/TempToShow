@@ -1,4 +1,6 @@
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +48,7 @@
                             }
                             <li class="nav-item">
                                 <form asp-controller="account" asp-action="logout" method="post">
-                                    <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link py-0>Sign out   @User.Identity.Name</button>
+                                    <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link py-0>@Localizer["Sign out"]   @User.Identity.Name</button>
                                 </form>
                             </li>
 
@@ -56,10 +58,10 @@
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["Register"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">Log in</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">@Localizer["Log in"]</a>
                             </li>
 
                         }
