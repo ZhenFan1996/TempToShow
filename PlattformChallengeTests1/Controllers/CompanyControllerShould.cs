@@ -63,8 +63,8 @@ namespace PlattformChallenge_UnitTest.Controllers
         {
             var challenges = GetAllBuildChallenge();
             var result = await _sut.Index();
-            var vaule = result as ViewResult;
-            var view = vaule.Model;
+            var value = result as ViewResult;
+            var view = value.Model;
             Assert.IsType<CompanyIndexViewModel>(view);
             var model = view as CompanyIndexViewModel;
             Assert.Equal(challenges.ElementAt(1), model.Challenges.ElementAt(0));
@@ -83,8 +83,8 @@ namespace PlattformChallenge_UnitTest.Controllers
             var solutions = GetAllBuildSolution();
             GetAllBuildParticipation();
             var result = await _sut.AllSolutions(challenges.ElementAt(1).C_Id);
-            var vaule = result as ViewResult;
-            var view = vaule.Model;
+            var value = result as ViewResult;
+            var view = value.Model;
             Assert.IsType<AllSolutionsViewModel>(view);
             var model = view as AllSolutionsViewModel;
             Assert.Single(model.Solutions);
@@ -92,7 +92,35 @@ namespace PlattformChallenge_UnitTest.Controllers
             Assert.Equal(challenges.ElementAt(1).C_Id, model.CurrChallengeId);
         }
 
-        private List<Participation> GetAllBuildParticipation()
+        /// <summary>
+        /// [TestCase-ID: 17-1]
+        /// Test if a company user can rate solution successfully
+        /// </summary>
+        [Fact]
+        public async Task RateSolutionSuccess()
+        {
+            var challenges = GetAllBuildChallenge();
+            var solutions = GetAllBuildSolution();
+            GetAllBuildParticipation();
+            _mockCRepo.Setup(m => m.FirstOrDefault(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+               challenges.ElementAt(1));
+            _mockSRepo.Setup(s => s.GetAllListAsync(It.IsAny<Expression<Func<Solution, bool>>>())).Returns(
+               Task.FromResult(solutions));
+            AllSolutionsViewModel vm = new AllSolutionsViewModel
+            {
+                CurrChallengeId = "c2",
+                Point = 55
+            };
+            var result = await _sut.RateSolution(vm) as RedirectToActionResult;
+            _mockSRepo.Verify(s => s.UpdateAsync(It.IsAny<Solution>()), Times.Once);
+            Assert.Equal("AllSolutions", result.ActionName);
+            Assert.Equal("c2", result.RouteValues["id"]);
+        }
+
+
+
+
+            private List<Participation> GetAllBuildParticipation()
         {
             var participations = new List<Participation>() {
                 new Participation(){
