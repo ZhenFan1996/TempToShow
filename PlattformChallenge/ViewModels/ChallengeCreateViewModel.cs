@@ -28,6 +28,10 @@ namespace PlattformChallenge.ViewModels
         public DateTime Release_Date { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Deadline { get; set; }
+
+        [Required]
         [RegularExpression(@"^([1-9][0-9]*)$")]
         public int Max_Participant { get; set; }
 

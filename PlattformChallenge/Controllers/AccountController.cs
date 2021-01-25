@@ -136,10 +136,18 @@ namespace PlattformChallenge.Controllers
         /// <param name="email"> the email of user</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult ChangePassword(string email)
+        public async Task<IActionResult> ChangePassword(string email)
         {
             if (email == null) {
                 ModelState.AddModelError("", "no email");
+            }
+
+            var cur = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (!cur.Email.Equals(email)) 
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "The current user is false";
+                return View("Error", errorViewModel);
             }
             return View();
         }

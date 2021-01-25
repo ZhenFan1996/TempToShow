@@ -20,6 +20,11 @@
                     </h3>
                 </div>
             </div>
+            @if (!Model.IsVaild && Model.Participation.Solution == null) {
+            <h2>The challenge is over and you did not submit an Solution.</h2>
+            }
+
+
             @if (Model.Participation.Solution != null)
             {
                 <div class="row">
@@ -60,6 +65,8 @@
                         </table>
                     </div>
                 </div>}
+            @if (Model.IsVaild)
+            {
             <div class="row">
                 <div class="col-md-6">
                     <form enctype="multipart/form-data" method="post">
@@ -77,7 +84,7 @@
                         <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
                     </form>
                 </div>
-            </div>
+            </div>}
         </div>
     </div>
 </div>

@@ -19,8 +19,6 @@ namespace PlattformChallenge.Controllers
 
     public class CompanyController : Controller
     {
-
-
         private readonly UserManager<PlatformUser> _userManger;
         private PlatformUser _currUser => _userManger.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)).Result;
         private readonly IRepository<Challenge> _cRepository;
@@ -200,7 +198,11 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "there's no challenge with this id, please check again";
                 return View("Error", errorViewModel);
             }
+            if (challenge.Deadline <= DateTime.Now) {
 
+                errorViewModel.RequestId = "Man can not close the challenge bevor the deadline";
+                return View("Error", errorViewModel);
+            }
             if (_currUser.Id != challenge.Com_ID)
             {
                 errorViewModel.RequestId = "You don't have access to challenges from other companies";

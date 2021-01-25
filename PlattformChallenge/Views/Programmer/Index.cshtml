@@ -4,11 +4,11 @@
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 <div class="container">
     <div class="row">
-        <div class="card col-lg-3 " style="width: 18rem;">
+        <div class="card col-md-2 align-content-center col-sm-2" style="width: 15rem;">
             <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">@Model.Programmer.Name</h5>
-                <ul>
+                <ul class="list-unstyled">
                     <li class="card-text"> @SharedLocalizer["E-mail"]: @Model.Programmer.Email</li>
                     <li class="card-text"> @Localizer["Participated Challenges"]: @Model.Challenges.Count()</li>
                 </ul>
@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <table class="table col-lg-8 offset-lg-1">
+        <table class="table col-md-9 offset-md-1 col-sm-9 offset-sm-1 ">
             <thead>
                 <tr>
                     <th>@SharedLocalizer["Titel"]</th>

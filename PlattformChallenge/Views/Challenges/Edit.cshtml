@@ -1,4 +1,4 @@
-﻿@*@model PlattformChallenge.Core.Model.Challenge*@
+@*@model PlattformChallenge.Core.Model.Challenge*@
 @model PlattformChallenge.ViewModels.ChallengeEditViewModel
 
 @{
@@ -25,11 +25,11 @@
                 <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
                 <span asp-validation-for="Challenge.Content" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-            <label asp-for="Release_Date" class="control-label"></label>
-            <input asp-for="Release_Date" class="form-control" />
-            <span asp-validation-for="Release_Date" class="text-danger"></span>
-        </div>*@
+            <div class="form-group">
+            <label asp-for="Challenge.Deadline" class="control-label"></label>
+            <input asp-for="Challenge.Deadline" class="form-control" />
+            <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
+        </div>*
             <input type="hidden" asp-for="Challenge.Release_Date" />
             <input type="hidden" asp-for="Challenge.Com_ID" />
             <div class="form-group">
@@ -55,16 +55,6 @@
             </div>
             <input type="hidden" asp-for="Challenge.Winner_Id" />
             <input type="hidden" asp-for="Challenge.Best_Solution_Id" />
-            @*<div class="form-group">
-            <label asp-for="Challenge.Winner_Id" class="control-label"></label>
-            <input asp-for="Challenge.Winner_Id" class="form-control" />
-            <span asp-validation-for="Challenge.Winner_Id" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Challenge.Best_Solution_Id" class="control-label"></label>
-            <input asp-for="Challenge.Best_Solution_Id" class="form-control" />
-            <span asp-validation-for="Challenge.Best_Solution_Id" class="text-danger"></span>
-        </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

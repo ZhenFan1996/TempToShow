@@ -126,6 +126,7 @@ namespace PlattformChallenge.Controllers
                 Release_Date = challenge.Release_Date,
                 Max_Participant = challenge.Max_Participant,
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
+                Deadline =challenge.Deadline,
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id
@@ -189,6 +190,7 @@ namespace PlattformChallenge.Controllers
                     Bonus = model.Bonus,
                     Content = model.Content,
                     Release_Date = model.Release_Date,
+                    Deadline = model.Deadline,
                     Max_Participant = model.Max_Participant,
                     Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier),
 
@@ -356,41 +358,6 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
-        //#region delete
-        ////Now not allow to delete a challenge
-        //// GET: Challenges/Delete/5
-        //[Authorize(Roles = "Company")]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var challenge = await _repository.GetAll()
-        //        .Include(c => c.Company)
-        //        .FirstOrDefaultAsync(m => m.C_Id == id);
-        //    if (challenge == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(challenge);
-        //}
-
-        //// POST: Challenges/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Company")]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-
-        //    var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-        //    challenge = await _repository.DeleteAsync(challenge);
-        //    return RedirectToAction(nameof(Index));
-        //}
-        //#endregion
-
         #region Participation
  
         /// <summary>
@@ -413,6 +380,12 @@ namespace PlattformChallenge.Controllers
                     return View("Error", errorViewModel);
                 }
             }
+
+            if (challenge.Deadline < DateTime.Now) {
+                errorViewModel.RequestId = "Registration time has passed";
+                return View("Error", errorViewModel);
+            }
+
             Participation newParti = new Participation()
             {
                 C_Id = id,

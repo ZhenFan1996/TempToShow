@@ -26,6 +26,7 @@ namespace PlattformChallenge.ViewModels
 
         public string Name { get; set; }
 
+        public bool IsVaild { get; set; }
 
         public IFormFile SolutionFile { get; set; }
     }

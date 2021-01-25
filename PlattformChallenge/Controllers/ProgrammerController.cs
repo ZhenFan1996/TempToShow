@@ -63,7 +63,7 @@ namespace PlattformChallenge.Controllers
         /// <param name="id"></param> the challenge id
         /// <returns>View index</returns>
         public async Task<IActionResult> Cancel(string id) {
-            var p = await (from pc in _pRepository.GetAll()
+            var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
                     select pc).ToListAsync();
             if (p.Count !=1)
@@ -72,13 +72,14 @@ namespace PlattformChallenge.Controllers
             }
             else 
             {
-                await _pRepository.DeleteAsync(p => p.C_Id == id);
+                var par = p.FirstOrDefault();
+                await _pRepository.DeleteAsync(par);
+                await _sRepository.DeleteAsync(par.Solution);
                 return RedirectToAction("Index");
             }
         }
         [HttpGet]
         public  async Task<IActionResult> UploadSolution(string c_id) {
-
             var par = await _pRepository.GetAll()
                 .Include(p => p.Solution)
                 .Include(p =>p.Challenge)
@@ -87,12 +88,14 @@ namespace PlattformChallenge.Controllers
 
             var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == c_id);
 
+
             var model = new UploadSolutionViewModel()
             {
                 Participation = par,
                 Challenge = c,
-                Programmer =_currUser
-                
+                Programmer =_currUser,
+                IsVaild = c.Deadline >= DateTime.Now
+
             };
             return View(model);
         }
@@ -101,13 +104,17 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
             if (ModelState.IsValid)
             {
-               
+                
+          
                 var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p => p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
                 var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
                 string fileName = c.Title + "_" + _currUser.Name + ".zip";
+
+
                 if (model.SolutionFile==null||(!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed")))
                 {
                     ModelState.AddModelError("","The type is false");
+                    model.IsVaild = c.Deadline >= DateTime.Now;
                     model.Challenge = c;
                     model.Programmer = _currUser;
                     model.Participation = par;

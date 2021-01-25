@@ -36,6 +36,12 @@
             @Html.DisplayFor(model => model.Release_Date)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Deadline)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Deadline)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Max_Participant)
         </dt>
         <dd class="col-sm-10">
@@ -92,10 +98,10 @@
             <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
         </dd>*@
         <dt class="col-sm-2">
-           Winner and Solutions list
+            Winner and Solutions list
         </dt>
         <dd class="col-sm-10">
-            <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id" > View </a>
+            <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> View </a>
         </dd>
     </dl>
 </div>
