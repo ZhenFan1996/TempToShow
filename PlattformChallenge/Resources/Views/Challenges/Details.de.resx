@@ -117,13 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessDenied" xml:space="preserve">
-    <value>Zugang verboten</value>
+  <data name="Agree" xml:space="preserve">
+    <value>Zustimmen, ich bin dabei!</value>
   </data>
-  <data name="AccessDeniedInfo" xml:space="preserve">
-    <value>Sie haben keine Zugangsberechtigung zu dieser Seite, bitte melden Sie sich an oder überprüfen Sie Ihre Autorität</value>
+  <data name="AllChallengeList" xml:space="preserve">
+    <value>Zur Liste aller Challenges</value>
   </data>
-  <data name="YourRole" xml:space="preserve">
-    <value>Deine Rolle ist </value>
+  <data name="AvailableQuota" xml:space="preserve">
+    <value>Verfügbare Plätze</value>
+  </data>
+  <data name="ChallengeDetails" xml:space="preserve">
+    <value>Challenge Details</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Unternehmen</value>
+  </data>
+  <data name="ConfirmCondition" xml:space="preserve">
+    <value>Bitte bestätigen Sie die Teilnahmebedingungen:</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="DevLanguage" xml:space="preserve">
+    <value>Entwicklungssprachen</value>
+  </data>
+  <data name="Disagree" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="Discription" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="GoToMyPortal" xml:space="preserve">
+    <value>Zu meinem Portal</value>
+  </data>
+  <data name="MaxParticipants" xml:space="preserve">
+    <value>Maximale Teilnehmerzahl</value>
+  </data>
+  <data name="NoPlace" xml:space="preserve">
+    <value>Sie können nicht mehr teilnehmen. Es gibt keinen Platz mehr</value>
+  </data>
+  <data name="ParticipationCondition" xml:space="preserve">
+    <value>Ihre Lösung wird veröffentlicht, wenn Sie das Preisgeld gewinnen.</value>
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value>Preisgeld</value>
+  </data>
+  <data name="ReleaseDate" xml:space="preserve">
+    <value>Veröffentlichungsdatum</value>
+  </data>
+  <data name="TakePartIn" xml:space="preserve">
+    <value>Teilnehmen</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Aufrufen</value>
+  </data>
+  <data name="WinnerAndSolution" xml:space="preserve">
+    <value>Gewinner und Lösung</value>
   </data>
 </root>

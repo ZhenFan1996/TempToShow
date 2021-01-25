@@ -29,8 +29,8 @@ namespace PlattformChallenge.Controllers
         private readonly IStringLocalizer<SharedResource> sharedLocalizer;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
-            IStringLocalizer<ChallengesController> localizer, IStringLocalizer<SharedResource> sharedLocalizer
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository
+            
             )
         {
             _repository = repository;
@@ -38,8 +38,7 @@ namespace PlattformChallenge.Controllers
             _lRepository = lRepository;
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
-            this.localizer = localizer;
-            this.sharedLocalizer = sharedLocalizer;
+          
         }
 
         /// <summary>

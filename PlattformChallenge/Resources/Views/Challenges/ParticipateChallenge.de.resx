@@ -117,13 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessDenied" xml:space="preserve">
-    <value>Zugang verboten</value>
+  <data name="BackToDetails" xml:space="preserve">
+    <value>Zurück zu Details dieses Challenges</value>
   </data>
-  <data name="AccessDeniedInfo" xml:space="preserve">
-    <value>Sie haben keine Zugangsberechtigung zu dieser Seite, bitte melden Sie sich an oder überprüfen Sie Ihre Autorität</value>
+  <data name="BackToList" xml:space="preserve">
+    <value>Zurück zu Challengeliste</value>
   </data>
-  <data name="YourRole" xml:space="preserve">
-    <value>Deine Rolle ist </value>
+  <data name="EnrollmentSucceeded" xml:space="preserve">
+    <value>Teilnahme erfolgt</value>
+  </data>
+  <data name="EnrollmentSucceededInfo" xml:space="preserve">
+    <value>Sie haben an dieses Challenge teilgenommen:</value>
+  </data>
+  <data name="GoToPortal" xml:space="preserve">
+    <value>Zu meinem Portal</value>
   </data>
 </root>

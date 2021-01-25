@@ -1,11 +1,11 @@
-@*@model PlattformChallenge.Core.Model.Challenge*@
 @model PlattformChallenge.ViewModels.ChallengeEditViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = @Localizer["EditChallenge"];
 }
 
-<h1>Edit</h1>
+<h1>@Localizer["EditChallenge"]</h1>
 
 
 <hr />
@@ -16,12 +16,12 @@
             <input type="hidden" asp-for="Challenge.C_Id" />
 
             <div class="form-group">
-                <label asp-for="Challenge.Title" class="control-label">Title of your challenge</label>
+                <label asp-for="Challenge.Title" class="control-label">@Localizer["Title"]</label>
                 <input asp-for="Challenge.Title" class="form-control" />
                 <span asp-validation-for="Challenge.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Challenge.Content" class="control-label">Discription for your challenge</label>
+                <label asp-for="Challenge.Content" class="control-label">@Localizer["Discription"]</label>
                 <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
                 <span asp-validation-for="Challenge.Content" class="text-danger"></span>
             </div>
@@ -33,17 +33,17 @@
             <input type="hidden" asp-for="Challenge.Release_Date" />
             <input type="hidden" asp-for="Challenge.Com_ID" />
             <div class="form-group">
-                <label asp-for="Challenge.Bonus" class="control-label">Bonus for the best solution (in Euro)</label>
+                <label asp-for="Challenge.Bonus" class="control-label">@Localizer["Bonus"]</label>
                 <input asp-for="Challenge.Bonus" class="form-control" />
                 <span asp-validation-for="Challenge.Bonus" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Challenge.Max_Participant" class="control-label">Maximum Participants</label>
+                <label asp-for="Challenge.Max_Participant" class="control-label">@Localizer["MaxParticipants"]</label>
                 <input asp-for="Challenge.Max_Participant" class="form-control" />
                 <span asp-validation-for="Challenge.Max_Participant" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Languages : </label>
+                <label class="control-label">@Localizer["DevLanguage"] </label>
                 @for (int i = 0; i < Model.Languages.Count; i++)
                 {
                     <span clss="form-check m-1">
@@ -56,7 +56,7 @@
             <input type="hidden" asp-for="Challenge.Winner_Id" />
             <input type="hidden" asp-for="Challenge.Best_Solution_Id" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value=@Localizer["Save"] class="btn btn-primary" />
             </div>
 
         </form>
@@ -64,7 +64,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@Localizer["BackToList"]</a>
 </div>
 
 @section Scripts {

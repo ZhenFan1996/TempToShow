@@ -117,13 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessDenied" xml:space="preserve">
-    <value>Zugang verboten</value>
+  <data name="BackToList" xml:space="preserve">
+    <value>Back to list</value>
   </data>
-  <data name="AccessDeniedInfo" xml:space="preserve">
-    <value>Sie haben keine Zugangsberechtigung zu dieser Seite, bitte melden Sie sich an oder überprüfen Sie Ihre Autorität</value>
+  <data name="Bonus" xml:space="preserve">
+    <value>Prize for the winner (in Euro)</value>
   </data>
-  <data name="YourRole" xml:space="preserve">
-    <value>Deine Rolle ist </value>
+  <data name="DevLanguage" xml:space="preserve">
+    <value>Development Languages</value>
+  </data>
+  <data name="Discription" xml:space="preserve">
+    <value>Discription of your challenge</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Edit Challenge</value>
+  </data>
+  <data name="MaxParticipants" xml:space="preserve">
+    <value>Maximum Participants</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title of your challenge</value>
+  </data>
+  <data name="WhenRelease" xml:space="preserve">
+    <value>From which day should your challenge be published?</value>
   </data>
 </root>

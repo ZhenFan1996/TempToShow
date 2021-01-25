@@ -1,10 +1,11 @@
 @using PlattformChallenge.Core.Model;
 @model PlattformChallenge.ViewModels.ChallengeCreateViewModel
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Create Challenge";
+    ViewData["Title"] = @Localizer["CreateChallenge"];
 }
 
-<h1>Create your challenge</h1>
+<h1>@Localizer["CreateYourChallenge"]</h1>
 
 <hr />
 <div class="row">
@@ -12,22 +13,22 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label">Title of your challenge</label>
+                <label asp-for="Title" class="control-label">@Localizer["Title"]</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Content" class="control-label">Discription for your challenge</label>
+                <label asp-for="Content" class="control-label">@Localizer["Discription"]</label>
                 <textarea asp-for="Content" class="form-control" style="height:250px"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bonus" class="control-label">Bonus for the best solution (in €)</label>
+                <label asp-for="Bonus" class="control-label">@Localizer["Bonus"]</label>
                 <input asp-for="Bonus" class="form-control" />
                 <span asp-validation-for="Bonus" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Release_Date" class="control-label">From which day should your challenge be published?</label>
+                <label asp-for="Release_Date" class="control-label">@Localizer["WhenRelease"]</label>
                 <input asp-for="Release_Date" class="form-control" />
                 <span asp-validation-for="Release_Date" class="text-danger"></span>
             </div>
@@ -42,7 +43,7 @@
                 <span asp-validation-for="Max_Participant" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Languages : </label>
+                <label class="control-label">@Localizer["DevLanguage"] </label>
                 @for (int i = 0; i < Model.Languages.Count; i++)
                 {
 
@@ -57,16 +58,16 @@
 
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value=@Localizer["Create"] class="btn btn-primary" />
             </div>
         </form>
-            </div>
-        </div>
+    </div>
+</div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
+<div>
+    <a asp-action="Index">@Localizer["BackToList"]</a>
+</div>
 
-        @section Scripts {
-            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
