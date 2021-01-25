@@ -1,7 +1,7 @@
 @model PlattformChallenge.ViewModels.UploadSolutionViewModel;
 
 @inject IViewLocalizer Localizer
-
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 <h1>@Model.Challenge.Title</h1>
 <h2>@Model.Programmer.Name</h2>
 @if (Model.Participation.Solution != null)
@@ -22,5 +22,5 @@
             <span asp-validation-for="@Model.SolutionFile"></span>
         </dd>
     </dl>
-    <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="Upload" />
+    <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
 </form>
