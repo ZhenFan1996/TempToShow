@@ -1,14 +1,16 @@
 @using PlattformChallenge.Core.Model
 @model PaginatedList<Challenge>
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Current Challenges";
+    ViewData["Title"] = @Localizer["CurrentChallenges"];
 }
 
-<h1>Current Challenges</h1>
+<h1>@Localizer["CurrentChallenges"]</h1>
 @if (ViewContext.HttpContext.User.IsInRole("Company"))
 {
     <p>
-        <a asp-action="Create">Create A New Challenge</a>
+        <a asp-action="Create">@Localizer["CreateChallenge"]</a>
     </p>
 }
 
@@ -17,12 +19,12 @@
     <div class="form-actions no-color">
 
         <p>
-            Find by title: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            @Localizer["FindByTitle"] <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            <a asp-action="Index">@Localizer["ShowFullList"]</a>
         </p>
     </div>
-    </form>
+</form>
 
 
 <table class="table">
@@ -30,22 +32,22 @@
         <tr>
 
             <th>
-                Title
+                @Localizer["Title"]
                 @*@Html.DisplayNameFor(model => model.Title)*@
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">Bonus</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">@Localizer["Prize"]</a>
             </th>
             <th>
-                Company
+                @Localizer["Company"]
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">Date</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Localizer["Date"]</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">Quota</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">@Localizer["Quota"]</a>
             </th>
-            <th></th>
+           
         </tr>
     </thead>
     <tbody>
@@ -85,10 +87,10 @@
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
-    Previous
+    @Localizer["Previous"]
 </a>
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
-    Next
+    @Localizer["Next"]
 </a>

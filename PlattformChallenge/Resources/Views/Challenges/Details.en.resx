@@ -117,13 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessDenied" xml:space="preserve">
-    <value>Zugang verboten</value>
+  <data name="Agree" xml:space="preserve">
+    <value>Agree, I'm in!</value>
   </data>
-  <data name="AccessDeniedInfo" xml:space="preserve">
-    <value>Sie haben keine Zugangsberechtigung zu dieser Seite, bitte melden Sie sich an oder überprüfen Sie Ihre Autorität</value>
+  <data name="AllChallengeList" xml:space="preserve">
+    <value>Go To All Challenge List</value>
   </data>
-  <data name="YourRole" xml:space="preserve">
-    <value>Deine Rolle ist </value>
+  <data name="AvailableQuota" xml:space="preserve">
+    <value>Available Quota</value>
+  </data>
+  <data name="ChallengeDetails" xml:space="preserve">
+    <value>Challenge Details</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="ConfirmCondition" xml:space="preserve">
+    <value>Please confirm the conditions:</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="DevLanguage" xml:space="preserve">
+    <value>Development Languages</value>
+  </data>
+  <data name="Disagree" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Discription" xml:space="preserve">
+    <value>Discription</value>
+  </data>
+  <data name="GoToMyPortal" xml:space="preserve">
+    <value>Go To My portal</value>
+  </data>
+  <data name="MaxParticipants" xml:space="preserve">
+    <value>Maximum Participants</value>
+  </data>
+  <data name="NoPlace" xml:space="preserve">
+    <value>You can't participate this challenge. There's no place anymore</value>
+  </data>
+  <data name="ParticipationCondition" xml:space="preserve">
+    <value>Your solution will be published if you win the prize.</value>
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value>Prize</value>
+  </data>
+  <data name="ReleaseDate" xml:space="preserve">
+    <value>Release Date</value>
+  </data>
+  <data name="TakePartIn" xml:space="preserve">
+    <value>Take part in</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="WinnerAndSolution" xml:space="preserve">
+    <value>Winner and solution</value>
   </data>
 </root>
