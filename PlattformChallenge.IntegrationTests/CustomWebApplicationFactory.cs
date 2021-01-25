@@ -37,7 +37,8 @@ namespace PlattformChallenge.IntegrationTests
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<AppDbContext>();
                     
-                    var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
+                    var um = scopedServices.GetRequiredService<UserManager<PlatformUser>>();
+                    var rm = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
@@ -46,6 +47,7 @@ namespace PlattformChallenge.IntegrationTests
                     try
                     {
                         Utilities.InitializeDbForTests(db);
+                        Utilities.InitializeIdentity(um,rm);
                     }
                     catch (Exception ex)
                     {
