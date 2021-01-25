@@ -43,7 +43,6 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var user = new PlatformUser
                 {
                     Name = model.Name,

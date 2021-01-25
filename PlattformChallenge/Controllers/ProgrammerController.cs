@@ -101,11 +101,11 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
             if (ModelState.IsValid)
             {
-
+               
                 var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p => p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
                 var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
                 string fileName = c.Title + "_" + _currUser.Name + ".zip";
-                if (!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed"))
+                if (model.SolutionFile==null||(!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed")))
                 {
                     ModelState.AddModelError("","The type is false");
                     model.Challenge = c;
@@ -139,7 +139,11 @@ namespace PlattformChallenge.Controllers
                     await _pRepository.UpdateAsync(par);
 
                 }
-                return RedirectToAction("Index");
+                model.Challenge = c;
+                par.Solution = s;
+                model.Participation = par;
+                model.Programmer = _currUser;
+                return View(model);
             }
             else {
                 return View(model);
