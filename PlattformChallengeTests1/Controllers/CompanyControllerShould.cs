@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
+using PlattformChallenge.Models;
 
 namespace PlattformChallenge_UnitTest.Controllers
 {
@@ -117,7 +118,33 @@ namespace PlattformChallenge_UnitTest.Controllers
             Assert.Equal("c2", result.RouteValues["id"]);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 17-2]
+        /// Test if a company user fails rating solution if a challenge is closed
+        /// </summary>
+        [Fact]
+        public async Task FailRateSolutionAtClosedClg()
+        {
+            var challenges = GetAllBuildChallenge();
+            GetAllBuildSolution();
+            GetAllBuildParticipation();
+            _mockCRepo.Setup(m => m.FirstOrDefault(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+               new Challenge()
+               {
+                   Winner_Id = "winner"
+               });
+            AllSolutionsViewModel vm = new AllSolutionsViewModel
+            {
+                CurrChallengeId = "c2"
+            };
+            var result = await _sut.RateSolution(vm);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("You can't rate solution anymore because this challenge is already closed", errorInfo);
+        }
 
 
             private List<Participation> GetAllBuildParticipation()

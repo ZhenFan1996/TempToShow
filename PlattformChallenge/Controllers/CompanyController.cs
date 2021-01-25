@@ -103,7 +103,7 @@ namespace PlattformChallenge.Controllers
                                        where p.C_Id == vm.CurrChallengeId
                                        select new { s, p }
                                  ).ToListAsync();
-
+               
                 var challengeId = solItem.First().p.C_Id;
                 var challenge = _cRepository.FirstOrDefault(c => c.C_Id == challengeId);
                 if (challenge.Winner_Id != null)
@@ -115,6 +115,12 @@ namespace PlattformChallenge.Controllers
 
 
                 var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolutionId);
+                if (toUpdate.Count != 1)
+                {
+                    ErrorViewModel errorViewModel = new ErrorViewModel();
+                    errorViewModel.RequestId = "There's something wrong with data. Please contact us";
+                    return View("Error", errorViewModel);
+                }
                 toUpdate.First().Point = vm.Point;
                 toUpdate.First().Status = StatusEnum.Rated;
                     try
