@@ -1,6 +1,5 @@
 @model PlattformChallenge.ViewModels.ProgrammerIndexViewModel
 
-
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 <div class="container">
@@ -10,10 +9,10 @@
             <div class="card-body">
                 <h5 class="card-title">@Model.Programmer.Name</h5>
                 <ul>
-                    <li class="card-text"> Email: @Model.Programmer.Email</li>
-                    <li class="card-text"> participated Challenges:@Model.Challenges.Count()</li>
+                    <li class="card-text"> @SharedLocalizer["E-mail"]: @Model.Programmer.Email</li>
+                    <li class="card-text"> @Localizer["Participated Challenges"]: @Model.Challenges.Count()</li>
                 </ul>
-                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary">Change Password</a>
+                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary"> @Localizer["Change Password"]</a>
             </div>
         </div>
 
@@ -46,7 +45,7 @@
         </td>
         <td>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
-                Cancel
+                @Localizer["Cancel"]
             </button>
 
             <!-- Modal -->
@@ -63,8 +62,8 @@
                             @Localizer["Confirm"]
                         </div>
                         <div class="modal-footer">
-                            <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">Yes</a>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">@SharedLocalizer["Yes"]</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@SharedLocalizer["No"]</button>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,9 @@
 @using System.Security.Claims
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = "AccessDenied";
 }
 
-<h1>You do not have permission, please log in again</h1>
-<div>You are @ViewBag.CurrentRole</div>
+<h1>@Localizer["AccessDeniedInfo"]</h1>
+<div>@Localizer["YourRole"] @ViewBag.CurrentRole</div>
 

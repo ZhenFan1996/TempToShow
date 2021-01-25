@@ -155,7 +155,7 @@ namespace PlattformChallenge.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                var checkOk= await _userManager.CheckPasswordAsync(user,model.Orginal);
+                var checkOk= await _userManager.CheckPasswordAsync(user,model.Original);
                 if (!checkOk) {
                     ModelState.AddModelError("","please check the orgin password");
                     return View();

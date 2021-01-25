@@ -54,10 +54,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Views\Account\" />
     <Folder Include="Resources\Views\Challenges\" />
     <Folder Include="Resources\Views\Company\" />
-    <Folder Include="Resources\Views\Solution\" />
     <Folder Include="Resources\Views\Home\" />
   </ItemGroup>
 

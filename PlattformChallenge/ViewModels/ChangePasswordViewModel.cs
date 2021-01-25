@@ -14,7 +14,7 @@ namespace PlattformChallenge.ViewModels
 
         [Required]
         [DataType(DataType.Password)]
-        public string Orginal { get; set; }
+        public string Original { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

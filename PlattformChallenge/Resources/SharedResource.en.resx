@@ -120,6 +120,9 @@
   <data name="Bonus" xml:space="preserve">
     <value>Bonus</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>Company</value>
   </data>
@@ -129,10 +132,19 @@
   <data name="Date" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="E-mail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="Quota" xml:space="preserve">
     <value>Quota</value>
   </data>
   <data name="Titel" xml:space="preserve">
     <value>Titel</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

@@ -117,22 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Cancel" xml:space="preserve">
-    <value>Stornieren</value>
-  </data>
-  <data name="Change Password" xml:space="preserve">
-    <value>Passwort ändern</value>
-  </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>Bist du Sicher?</value>
-  </data>
-  <data name="Participated Challenges" xml:space="preserve">
-    <value>Teilgenommene Challenges</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Hochladen</value>
-  </data>
-  <data name="UploadItem" xml:space="preserve">
-    <value>Lösung Hochladen</value>
+  <data name="Programmer Name" xml:space="preserve">
+    <value>Programmer Name</value>
   </data>
 </root>

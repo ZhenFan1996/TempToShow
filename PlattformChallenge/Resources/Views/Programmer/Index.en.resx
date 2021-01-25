@@ -120,8 +120,14 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Are you sure?</value>
+  </data>
+  <data name="participated Challenges" xml:space="preserve">
+    <value>participated Challenges</value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Upload</value>
