@@ -1,9 +1,10 @@
 @model PlattformChallenge.ViewModels.AllSolutionsViewModel
+@inject IViewLocalizer Localizer
 
 @if (Model.Solutions.Count <= 0)
 {
     <p>
-        There's no solution yet
+        @Localizer["NoSolutionYet"]
     </p>
 }
 else
@@ -11,12 +12,12 @@ else
     <table class="table col-lg-12">
         <thead>
             <tr>
-                <th>Solution ID</th>
-                <th>Status</th>
-                <th>Submit Date</th>
-                <th>Point</th>
-                <th>Download</th>
-                <th>Rate</th>
+                <th>@Localizer["Solution ID"]</th>
+                <th>@Localizer["Status"]</th>
+                <th>@Localizer["SubmitDate"]</th>
+                <th>@Localizer["Point"]</th>
+                <th>@Localizer["Download"]</th>
+                <th>@Localizer["Rate"]</th>
             </tr>
         </thead>
         <tbody>
@@ -42,55 +43,55 @@ else
                     </td>
 
                     <td>
-                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@item.S_Id" class="btn btn-primary"> Download</a>
+                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@item.S_Id" class="btn btn-primary">@Localizer["Download"]</a>
                     </td>
 
-                    
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id"> Rate</button>
 
-                            <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel"> Rate this solution:  </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Point should be greater than 0.
-                                        </div>
-                                        <form asp-controller="Company" asp-action="RateSolution" method="post">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            <input type="hidden" asp-for="@Model.CurrChallengeId" />
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id">@Localizer["Rate"]</button>
 
-                                            <div class="form-group">
-                                                <label asp-for="@Model.Point" class="control-label">Point</label>
-                                                <input asp-for="@Model.Point" class="form-control" />
-                                                <span asp-validation-for="@Model.Point" class="text-danger"></span>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
-                                            </div>
-                                            <div class="modal-footer">
-                                                <div class="form-group">
-                                                    <input type="submit" value="Rate" class="btn btn-primary" />
-                                                </div>
-                                            </div>
-                                        </form>
+                        <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"> @Localizer["RateInfoTitle"]  </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
+                                    <div class="modal-body">
+                                        @Localizer["RateInfo"]
+                                    </div>
+                                    <form asp-controller="Company" asp-action="RateSolution" method="post">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input type="hidden" asp-for="@Model.CurrChallengeId" />
+
+                                        <div class="form-group">
+                                            <label asp-for="@Model.Point" class="control-label">Point</label>
+                                            <input asp-for="@Model.Point" class="form-control" />
+                                            <span asp-validation-for="@Model.Point" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="form-group">
+                                                <input type="submit" value="Rate" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
+                        </div>
 
-                        </td>
-                    }
-                    
+                    </td>
+
+
                 </tr>
             }
         </tbody>
 
     </table>
 }
-<div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">Go To My portal</a></div>
+<div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
