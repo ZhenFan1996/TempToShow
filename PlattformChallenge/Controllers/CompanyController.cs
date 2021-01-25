@@ -215,8 +215,7 @@ namespace PlattformChallenge.Controllers
             var memory = new MemoryStream();
             using (var stream = new FileStream(solution.URL, FileMode.Open))
             {
-
-                await stream.CopyToAsync(memory);
+                  await stream.CopyToAsync(memory);
             }
             memory.Position = 0;
             var ext = Path.GetExtension(solution.URL).ToLowerInvariant();

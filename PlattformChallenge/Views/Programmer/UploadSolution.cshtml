@@ -2,12 +2,15 @@
 
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <h1>@Model.Challenge.Title</h1>
 <h2>@Model.Programmer.Name</h2>
 @if (Model.Participation.Solution != null)
 {
     <label class="col-form-label"> @Model.Participation.Solution.FileName</label>
-
+    <label class="col-form-label"> @Localizer["Date"]@Model.Participation.Solution.Submit_Date</label>
 }
 
 <form enctype="multipart/form-data" method="post">

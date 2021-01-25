@@ -10,9 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlattformChallenge.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using PlattformChallenge.Infrastructure;
@@ -102,48 +99,68 @@ namespace PlattformChallenge.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
-            var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p=>p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
-            var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
-            string path = await Upload(model.SolutionFile);
-            Solution s = new Solution()
-            {
-                S_Id = Guid.NewGuid().ToString(),
-                URL = path,
-                Status = StatusEnum.Receive,
-                Submit_Date = DateTime.Now,
-                FileName = model.SolutionFile.FileName
-            };
-            if (par.S_Id == null)
+            if (ModelState.IsValid)
             {
 
-                await _sRepository.InsertAsync(s);
-                par.S_Id = s.S_Id;
-                await _pRepository.UpdateAsync(par);
+                var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p => p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
+                var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
+                string fileName = c.Title + "_" + _currUser.Name + ".zip";
+                if (!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed"))
+                {
+                    ModelState.AddModelError("","The type is false");
+                    model.Challenge = c;
+                    model.Programmer = _currUser;
+                    model.Participation = par;
+                    return View(model);
+                }
+                string path = await Upload(model.SolutionFile,fileName);
+                Solution s = new Solution()
+                {
+                    S_Id = Guid.NewGuid().ToString(),
+                    URL = path,
+                    Status = StatusEnum.Receive,
+                    Submit_Date = DateTime.Now,
+                    FileName = fileName
+                };
+                if (par.S_Id == null)
+                {
+
+                    await _sRepository.InsertAsync(s);
+                    par.S_Id = s.S_Id;
+                    await _pRepository.UpdateAsync(par);
+                }
+                else
+                {
+                    par.S_Id = null;
+                    await _pRepository.UpdateAsync(par);
+                    await _sRepository.DeleteAsync(x => x.S_Id == par.S_Id);
+                    await _sRepository.InsertAsync(s);
+                    par.S_Id = s.S_Id;
+                    await _pRepository.UpdateAsync(par);
+
+                }
+                return RedirectToAction("Index");
             }
             else {
-                par.S_Id = null;
-                await _pRepository.UpdateAsync(par);
-                await _sRepository.DeleteAsync(x => x.S_Id == par.S_Id);
-                await _sRepository.InsertAsync(s);
-                par.S_Id = s.S_Id;
-                await _pRepository.UpdateAsync(par);
-
+                return View(model);
             }
-            return RedirectToAction("Index");
         }
 
-        private async Task<string> Upload(IFormFile file) {
+        private async Task<string> Upload(IFormFile file,string fileName) {
+
             string dir = Path.Combine(_appcfg.AppCfg.SolutionPath, "Solutions");
+
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
-            string fileName = file.FileName;
             string filePath = Path.Combine(dir, fileName);
-            await file.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
             return filePath;
         }
-
        
     }
 }
