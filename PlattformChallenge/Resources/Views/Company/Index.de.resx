@@ -117,49 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Bonus" xml:space="preserve">
-    <value>Bonus</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Passwort ändern</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Stornieren</value>
+  <data name="Close" xml:space="preserve">
+    <value>Schließen</value>
   </data>
-  <data name="Challenge Title" xml:space="preserve">
-    <value>Challenge Titel</value>
+  <data name="Closed" xml:space="preserve">
+    <value>Geschlossen</value>
   </data>
   <data name="Company" xml:space="preserve">
     <value>Unternehmen</value>
   </data>
-  <data name="Content" xml:space="preserve">
-    <value>Inhalt</value>
+  <data name="ConfimInfo2" xml:space="preserve">
+    <value>Nach dem Schließen eines Challenges wird die Lösung mit der höchsten Punktzahl als Gewinner ausgewählt! Und Sie werden es nicht mehr ändern können! Außerdem, falls Sie nicht jede Lösung bewertet haben, können Sie dieses Challenge noch nicht abschließen.</value>
+  </data>
+  <data name="ConfirmClose" xml:space="preserve">
+    <value>Schließen bestätigen</value>
+  </data>
+  <data name="ConfirmCloseInfoTitle" xml:space="preserve">
+    <value>Bitte bestätigen Sie vor dem Schließen:</value>
+  </data>
+  <data name="ConfirmInfo1" xml:space="preserve">
+    <value>SIE KÖNNEN EIN CHALLENGE NUR EINMAL "SCHLIESSEN"!</value>
+  </data>
+  <data name="CreateNewChallenge" xml:space="preserve">
+    <value>Erstellen neues Challenge</value>
   </data>
   <data name="Date" xml:space="preserve">
     <value>Datum</value>
   </data>
-  <data name="E-mail" xml:space="preserve">
-    <value>E-mail</value>
+  <data name="Edit" xml:space="preserve">
+    <value>Bearbeiten</value>
   </data>
-  <data name="Language" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
+  <data name="Email" xml:space="preserve">
+    <value>Email:</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>Nein</value>
   </data>
-  <data name="Points" xml:space="preserve">
-    <value>Punkte</value>
+  <data name="Prize" xml:space="preserve">
+    <value>Preisgeld</value>
+  </data>
+  <data name="PublishedChallenges" xml:space="preserve">
+    <value>Veröffentlichte Challenges</value>
   </data>
   <data name="Quota" xml:space="preserve">
-    <value>Quote</value>
+    <value>Plätze</value>
   </data>
-  <data name="Titel" xml:space="preserve">
+  <data name="Solutions" xml:space="preserve">
+    <value>Lösungen</value>
+  </data>
+  <data name="Title" xml:space="preserve">
     <value>Titel</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Hochladen</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
   </data>
 </root>

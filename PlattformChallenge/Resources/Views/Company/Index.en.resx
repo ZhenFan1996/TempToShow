@@ -117,49 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Bonus" xml:space="preserve">
-    <value>Bonus</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Stornieren</value>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
   </data>
-  <data name="Challenge Title" xml:space="preserve">
-    <value>Challenge Titel</value>
+  <data name="Closed" xml:space="preserve">
+    <value>Closed</value>
   </data>
   <data name="Company" xml:space="preserve">
-    <value>Unternehmen</value>
+    <value>Company</value>
   </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Passwort bestätigen</value>
+  <data name="ConfimInfo2" xml:space="preserve">
+    <value>After closing a challenge, solution with the highest score will be selected as winner! And You will not be able to change it anymore! Furthermore, if you didn't rate every solution, you can't close this challenge.</value>
+  </data>
+  <data name="ConfirmClose" xml:space="preserve">
+    <value>Confirm close</value>
+  </data>
+  <data name="ConfirmCloseInfoTitle" xml:space="preserve">
+    <value>Please confirm before closing:</value>
+  </data>
+  <data name="ConfirmInfo1" xml:space="preserve">
+    <value>YOU CAN ONLY DO "CLOSE" ONCE!</value>
+  </data>
+  <data name="CreateNewChallenge" xml:space="preserve">
+    <value>Create A New Challenge</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Language" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
+    <value>Email:</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>Nein</value>
+    <value>No</value>
   </data>
-  <data name="Points" xml:space="preserve">
-    <value>Punkte</value>
+  <data name="Prize" xml:space="preserve">
+    <value>Prize</value>
+  </data>
+  <data name="PublishedChallenges" xml:space="preserve">
+    <value>Published Challenges:</value>
   </data>
   <data name="Quota" xml:space="preserve">
-    <value>Quote</value>
+    <value>Quota</value>
   </data>
-  <data name="Register" xml:space="preserve">
-    <value>Registrieren</value>
+  <data name="Solutions" xml:space="preserve">
+    <value>Solutions</value>
   </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Hochladen</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
   </data>
 </root>

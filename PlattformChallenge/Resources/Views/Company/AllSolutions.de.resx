@@ -117,49 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Bonus" xml:space="preserve">
-    <value>Bonus</value>
+  <data name="Download" xml:space="preserve">
+    <value>Herunterladen</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Stornieren</value>
+  <data name="GoToMyPortal" xml:space="preserve">
+    <value>Zu meinem Portal</value>
   </data>
-  <data name="Challenge Title" xml:space="preserve">
-    <value>Challenge Titel</value>
+  <data name="NoSolutionYet" xml:space="preserve">
+    <value>Es gibt noch keine Lösungen</value>
   </data>
-  <data name="Company" xml:space="preserve">
-    <value>Unternehmen</value>
-  </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Passwort bestätigen</value>
-  </data>
-  <data name="Email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Language" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nein</value>
-  </data>
-  <data name="Points" xml:space="preserve">
+  <data name="Point" xml:space="preserve">
     <value>Punkte</value>
   </data>
-  <data name="Quota" xml:space="preserve">
-    <value>Quote</value>
+  <data name="Rate" xml:space="preserve">
+    <value>Bewerten</value>
   </data>
-  <data name="Register" xml:space="preserve">
-    <value>Registrieren</value>
+  <data name="RateInfo" xml:space="preserve">
+    <value>Punkte sollte größer als 0</value>
   </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Hochladen</value>
+  <data name="RateInfoTitle" xml:space="preserve">
+    <value>Diese Lösung bewerten</value>
   </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
+  <data name="SolutionID" xml:space="preserve">
+    <value>Lösung ID</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Zustand</value>
+  </data>
+  <data name="SubmitDate" xml:space="preserve">
+    <value>Abgabedatum</value>
   </data>
 </root>

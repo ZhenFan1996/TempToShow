@@ -1,4 +1,5 @@
 ﻿@model PlattformChallenge.ViewModels.CompanyIndexViewModel;
+@inject IViewLocalizer Localizer
 
 <div class="container">
     <div class="row">
@@ -7,22 +8,22 @@
             <div class="card-body">
                 <h5 class="card-title">@Model.Company.Name</h5>
                 <ul>
-                    <li class="card-text"> Email: @Model.Company.Email</li>
-                    <li class="card-text"> participated Challenges:@Model.Challenges.Count()</li>
+                    <li class="card-text"> @Localizer["Email"]@Model.Company.Email</li>
+                    <li class="card-text"> @Localizer["PublishedChallenges"]@Model.Challenges.Count()</li>
                 </ul>
-                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Company.Email" class="btn btn-primary">Change Password</a>
-                <a asp-area="" asp-controller="Challenges" asp-action="Create" class="btn btn-primary">Create A New Challenge</a>
+                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Company.Email" class="btn btn-primary">@Localizer["ChangePassword"]</a>
+                <a asp-area="" asp-controller="Challenges" asp-action="Create" class="btn btn-primary">@Localizer["CreateNewChallenge"]</a>
             </div>
         </div>
         <table class="table col-lg-8 offset-lg-1">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Bonus</th>
-                    <th>Date</th>
-                    <th>Edit</th>
-                    <th>Solutions</th>
-                    <th>Close</th>
+                    <th>@Localizer["Title"]</th>
+                    <th>@Localizer["Prize"]</th>
+                    <th>@Localizer["Date"]</th>
+                    <th>@Localizer["Edit"]</th>
+                    <th>@Localizer["Solutions"]</th>
+                    <th>@Localizer["Close"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,17 +43,17 @@
                         {
                             <td>
 
-                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Edit</a>
+                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Edit"]</a>
                             </td>
                         }
                         else
                         {
                             <td>
-                                <span> closed </span>
+                                <span> @Localizer["Closed"] </span>
                             </td>
                         }
                         <td>
-                            <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">Solutions</a>
+                            <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Solutions"]</a>
                         </td>
 
                         @if (item.Winner_Id == null)
@@ -60,7 +61,7 @@
                             <td>
 
                                 <button type="button" class="btn-group btn-group-justified" data-toggle="modal" data-target="#tips-@item.C_Id">
-                                    Close
+                                    @Localizer["Close"]
                                 </button>
 
                                 <!-- Modal -->
@@ -68,19 +69,18 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Confirm close:</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">@Localizer["ConfirmCloseInfoTitle"]</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <strong>YOU CAN ONLY DO "CLOSE" ONCE!</strong>
-                                                After closing a challenge, solution with the highest score will be selected as winner! And You can't change it anymore!'
-                                                If you didn't rate every solution, you can't close it.
+                                                <strong>@Localizer["ConfirmInfo1"]</strong>
+                                                @Localizer["ConfirmInfo2"]
                                             </div>
                                             <div class="modal-footer">
-                                                <a asp-controller="Company" asp-action="CloseChallenge" asp-route-id="@item.C_Id" class="btn btn-primary">Confirm Close</a>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                                <a asp-controller="Company" asp-action="CloseChallenge" asp-route-id="@item.C_Id" class="btn btn-primary">@Localizer["ConfirmClose"]</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["No"]</button>
                                             </div>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                         else
                         {
                             <td>
-                                <span> closed </span>
+                                <span> @Localizer["Closed"] </span>
                             </td>
                         }
                     </tr>

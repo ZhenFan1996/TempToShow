@@ -53,9 +53,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\Views\Company\" />
-    <Folder Include="Resources\Views\Home\" />
-  </ItemGroup>
-
 </Project>
