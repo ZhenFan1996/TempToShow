@@ -151,7 +151,6 @@ namespace PlattformChallenge.Controllers
                 return View("Error", errorViewModel);
             }
 
-            //var allSolutions = await _sRepository.GetAllListAsync();
             var allSolutions = await (from p in _pRepository.GetAll()
                                  join s in _sRepository.GetAll()
                                  on p.S_Id equals s.S_Id

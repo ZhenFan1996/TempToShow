@@ -123,7 +123,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         /// Test if a company user fails rating solution if a challenge is closed
         /// </summary>
         [Fact]
-        public async Task FailRateSolutionAtClosedClg()
+        public async Task RateSolutionFailedAtClosedClg()
         {
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
@@ -146,6 +146,71 @@ namespace PlattformChallenge_UnitTest.Controllers
             Assert.Equal("You can't rate solution anymore because this challenge is already closed", errorInfo);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 64-1]
+        /// Test if a company user can close a challenge successfully
+        /// </summary>
+        [Fact]
+        public async Task CloseChallengeSuccess()
+        {
+            var challenges = GetAllBuildChallenge();
+            GetAllBuildRatedSolution();
+            var participations = GetAllBuildParticipation();
+            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(Task.FromResult(challenges));
+            _mockPRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(
+              Task.FromResult(participations.ElementAt(2)));
+            var result = await _sut.CloseChallenge("c2") as RedirectToActionResult;
+            _mockCRepo.Verify(s => s.UpdateAsync(It.IsAny<Challenge>()), Times.Once);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        /// <summary>
+        /// [TestCase-ID: 64-2]
+        /// Test if a company user fails to close a challenge if it's already closed
+        /// </summary>
+        [Fact]
+        public async Task CloseChallengeFailAlreadyClosed()
+        {
+            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).
+                Returns(Task.FromResult(new List<Challenge>()
+            {
+                    new Challenge(){
+                        C_Id="cC",
+                    Winner_Id = "winner"
+                }}));
+
+            var result = await _sut.CloseChallenge("cC");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("You already closed this challenge", errorInfo);
+        }
+
+
+        /// <summary>
+        /// [TestCase-ID: 64-3]
+        /// Test if a company user fails to close a challenge if there's a solution still not be rated
+        /// </summary>
+        [Fact]
+        public async Task CloseChallengeFailNotRatedAll()
+        {
+            var challenges = GetAllBuildChallenge();
+            GetAllBuildSolution();
+           GetAllBuildParticipation();
+            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(Task.FromResult(challenges));
+            var result = await _sut.CloseChallenge("c2");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var errorvm = value.Model as ErrorViewModel;
+            var errorInfo = errorvm.RequestId;
+            Assert.Equal("Error", value.ViewName);
+            Assert.Equal("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                        "Please rate all solutions before closing a challenge", errorInfo);
+
+        }
+
 
             private List<Participation> GetAllBuildParticipation()
         {
@@ -159,6 +224,11 @@ namespace PlattformChallenge_UnitTest.Controllers
                     C_Id="c2",
                     P_Id="test-programmer2",
                     S_Id = "s2"
+                },
+                   new Participation(){
+                    C_Id="c2",
+                    P_Id="test-programmer3",
+                    S_Id = "s3"
                 }
             };
 
@@ -182,6 +252,13 @@ namespace PlattformChallenge_UnitTest.Controllers
                     Status = StatusEnum.Receive,
                     Submit_Date = DateTime.Now.AddDays(-4),
                 },
+                  new Solution(){
+                    S_Id="s3",
+                    URL = "www.test/solution/s3",
+                    Status = StatusEnum.Rated,
+                    Submit_Date = DateTime.Now.AddDays(-3),
+                    Point = 30
+                },
 
             };
             var mockSolutions = solutions.AsQueryable().BuildMockDbSet();
@@ -189,6 +266,27 @@ namespace PlattformChallenge_UnitTest.Controllers
             return solutions;
         }
 
+        private List<Solution> GetAllBuildRatedSolution()
+        {
+            var ratedSolutions = new List<Solution>() {
+                new Solution(){
+                    S_Id="s1",
+                    Point = 10
+                },
+                  new Solution(){
+                    S_Id="s2",
+                    Point = 20
+                },
+                  new Solution(){
+                    S_Id="s3",
+                    Point = 30
+                },
+
+            };
+            var mockSolutions = ratedSolutions.AsQueryable().BuildMockDbSet();
+            _mockSRepo.Setup(s => s.GetAll()).Returns(mockSolutions.Object);
+            return ratedSolutions;
+        }
 
         private List<Challenge> GetAllBuildChallenge()
         {
@@ -227,16 +325,17 @@ namespace PlattformChallenge_UnitTest.Controllers
                 Com_ID = "test-company",
                 Company = new PlatformUser(){
                     Id = "test1.com"
-                 }
+                 },
+                Winner_Id = "Winner"
             }
             };
             var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
             _mockCRepo.Setup(c => c.GetAll()).Returns(mockChallenges.Object);
-       
+
             return challenges;
         }
 
-        
+
 
         private static Mock<UserManager<PlatformUser>> MockUserManager<TUser>()
         {
