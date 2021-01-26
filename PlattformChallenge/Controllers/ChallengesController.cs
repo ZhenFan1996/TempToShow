@@ -151,7 +151,7 @@ namespace PlattformChallenge.Controllers
             detail.Languages = await langugaes.ToListAsync();
             return View(detail);
         }
-        #endregion
+       
 
         #region Create
         /// <summary>

@@ -88,7 +88,7 @@ namespace PlattformChallenge_UnitTest.Controllers
             var view = value.Model;
             Assert.IsType<AllSolutionsViewModel>(view);
             var model = view as AllSolutionsViewModel;
-            Assert.Single(model.Solutions);
+            Assert.Equal(2, model.Solutions.Count);
             Assert.Equal(solutions.ElementAt(1), model.Solutions.ElementAt(0));
             Assert.Equal(challenges.ElementAt(1).C_Id, model.CurrChallengeId);
         }
@@ -101,12 +101,17 @@ namespace PlattformChallenge_UnitTest.Controllers
         public async Task RateSolutionSuccess()
         {
             var challenges = GetAllBuildChallenge();
-            var solutions = GetAllBuildSolution();
+            GetAllBuildSolution();
             GetAllBuildParticipation();
             _mockCRepo.Setup(m => m.FirstOrDefault(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
                challenges.ElementAt(1));
             _mockSRepo.Setup(s => s.GetAllListAsync(It.IsAny<Expression<Func<Solution, bool>>>())).Returns(
-               Task.FromResult(solutions));
+               Task.FromResult((new List<Solution>()
+            {
+                      new Solution(){
+                    S_Id="s3",
+                    Point = 30
+                }})));
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2",
