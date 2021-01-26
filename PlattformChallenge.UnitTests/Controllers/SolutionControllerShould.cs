@@ -22,14 +22,14 @@ namespace PlattformChallenge_UnitTest.Controllers
     {
 
         private readonly Mock<IRepository<Solution>> _mockSRepository;
-        private readonly Mock<IRepository<Participation>> _mockPaRepository;
+        private readonly Mock<IRepository<Challenge>> _mockCRepository;
         private readonly SolutionController _sut;
 
         public SolutionControllerShould()
         {
             _mockSRepository = new Mock<IRepository<Solution>>();
-            _mockPaRepository = new Mock<IRepository<Participation>>();
-            _sut = new SolutionController(_mockSRepository.Object, _mockPaRepository.Object);
+            _mockCRepository = new Mock<IRepository<Challenge>>();
+            _sut = new SolutionController(_mockSRepository.Object, _mockCRepository.Object);
             var mock = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
@@ -76,6 +76,42 @@ namespace PlattformChallenge_UnitTest.Controllers
                 }
                 }
             };
+
+            var c = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "test1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "test2",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+
+
+            var queryc = c.AsQueryable().BuildMockDbSet();
+            _mockCRepository
+                .Setup(n => n.GetAll())
+                .Returns((IQueryable<Challenge>)queryc.Object);
+
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
@@ -193,6 +229,42 @@ namespace PlattformChallenge_UnitTest.Controllers
                 }
                 }
             };
+
+            var c = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "test1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "test2",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+
+
+            var queryc = c.AsQueryable().BuildMockDbSet();
+            _mockCRepository
+                .Setup(n => n.GetAll())
+                .Returns((IQueryable<Challenge>)queryc.Object);
+
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
@@ -263,6 +335,43 @@ namespace PlattformChallenge_UnitTest.Controllers
                 }
                 }
             };
+            var c = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "test1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "test2",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+
+
+            var queryc = c.AsQueryable().BuildMockDbSet();
+            _mockCRepository
+                .Setup(n => n.GetAll())
+                .Returns((IQueryable<Challenge>)queryc.Object);
+
+     
+
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
@@ -283,7 +392,7 @@ namespace PlattformChallenge_UnitTest.Controllers
         //     Test if list() return correct best solution for now
         //
         [Fact]
-        public async Task bestSolutionList()
+        public async Task BestSolutionList()
         {
             var s = new List<Solution>() {
                  new Solution(){
@@ -331,10 +440,48 @@ namespace PlattformChallenge_UnitTest.Controllers
                 }
                 }
             };
+
+            var c = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "test1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "test2",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+
+
+            var queryc = c.AsQueryable().BuildMockDbSet();
+            _mockCRepository
+                .Setup(n => n.GetAll())
+                .Returns((IQueryable<Challenge>)queryc.Object);
+
+
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
+
 
             var result = await _sut.List(null, null, "test1");
             var value = result as ViewResult;
@@ -369,6 +516,42 @@ namespace PlattformChallenge_UnitTest.Controllers
                 }
                 }
             };
+
+            var c = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "test1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "test2",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+
+
+            var queryc = c.AsQueryable().BuildMockDbSet();
+            _mockCRepository
+                .Setup(n => n.GetAll())
+                .Returns((IQueryable<Challenge>)queryc.Object);
+
             var query = s.AsQueryable().BuildMockDbSet();
             _mockSRepository
                 .Setup(m => m.GetAll())
