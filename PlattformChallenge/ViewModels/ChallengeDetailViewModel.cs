@@ -20,6 +20,12 @@ namespace PlattformChallenge.ViewModels
         [Display(Name = "Date")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
+
+        [Required]
+        [Display(Name = "Deadline")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Deadline { get; set; }
+
         [Required]
         [Display(Name = "Total Quota")]
         public int Max_Participant { get; set; }

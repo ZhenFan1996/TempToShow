@@ -1,3 +1,6 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +13,7 @@
 <body>
     <header>
         @using Microsoft.AspNetCore.Identity
-        @using PlattformChallenge.Core.Model 
+        @using PlattformChallenge.Core.Model
         @inject SignInManager<PlatformUser> SignInMananger
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -33,28 +36,34 @@
                         {
                             if (ViewContext.HttpContext.User.IsInRole("Programmer"))
                             {
-                            <li class="nav-item ">
-                                <a class="nav-link text-dark" asp-controller="Programmer" asp-action="Index">Portal</a>
-                            </li>
+                                <li class="nav-item ">
+                                    <a class="nav-link text-dark" asp-controller="Programmer" asp-action="Index">Portal</a>
+                                </li>
+                            }
+                            if (ViewContext.HttpContext.User.IsInRole("Company"))
+                            {
+                                <li class="nav-item ">
+                                    <a class="nav-link text-dark" asp-controller="Company" asp-action="Index">Portal</a>
+                                </li>
                             }
                             <li class="nav-item">
                                 <form asp-controller="account" asp-action="logout" method="post">
-                                    <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link  py-0>Sign out   @User.Identity.Name</button>
+                                    <button type="submit" style="width:auto" class="btn btn-light" aria-hidden="true" btn btn-link py-0>@Localizer["Sign out"]   @User.Identity.Name</button>
                                 </form>
                             </li>
 
                         }
-                        
+
                         else
                         {
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">Log in</a>
-                        </li>
-                       
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["Register"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">@Localizer["Log in"]</a>
+                            </li>
+
                         }
                     </ul>
                 </div>
@@ -70,8 +79,15 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Challenge Plattform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
-            A Teamproject of <a href="https://kit.edu"> KIT <img src="~/images/kit.JPG" alt="" style="width:80px;height:40px"></a>.
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    &copy; 2020 - Challenge Plattform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
+                    A Teamproject of <a href="https://kit.edu"> KIT <img src="~/images/kit.JPG" alt="" style="width:80px;height:40px"></a>.
+                </div>
+                <div class="col-md-4 text-right">
+                    @await Html.PartialAsync("_SelectLanguagePartial")
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

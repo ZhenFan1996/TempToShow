@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
@@ -24,28 +25,35 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
+        private readonly IStringLocalizer<ChallengesController> localizer;
+        private readonly IStringLocalizer<SharedResource> sharedLocalizer;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository)
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository
+            
+            )
         {
             _repository = repository;
             _pRepository = pRepository;
             _lRepository = lRepository;
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
+          
         }
         #region list
 
-        //
-        // Summary:
-        //    Get the list of current active challenges with paging function
-        //
-        // Returns:
-        //    A view with list of current active challenges
+        /// <summary>
+        ///  Get the list of current active challenges with paging function
+        //    default situation is return the challenges, which descending sorted by date
+        /// </summary>
+        /// <param name="pageNumber">which page it should be shown</param>
+        /// <param name="sortOrder">which sort criteria</param>
+        /// <param name="searchString">which search keyword</param>
+        /// <returns>A view with list of current active challenges</returns>
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
-            ViewData["BonusSortParm"] = String.IsNullOrEmpty(sortOrder) ? "bonus_desc" : "Bonus";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
             var challenges = from c
@@ -83,16 +91,11 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
-        #region details
-        //
-        // Summary:
-        //    Get detail information of a certain challenge which is assigned by challenge Id
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with all available information of given challenge
+        /// <summary>
+        ///  Get detail information of a certain challenge which is assigned by challenge Id
+        /// </summary>
+        /// <param name="id"> The Id string of a challenge</param>
+        /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
@@ -124,6 +127,7 @@ namespace PlattformChallenge.Controllers
                 Release_Date = challenge.Release_Date,
                 Max_Participant = challenge.Max_Participant,
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
+                Deadline =challenge.Deadline,
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id
@@ -150,30 +154,28 @@ namespace PlattformChallenge.Controllers
         #endregion
 
         #region Create
-        //
-        // Summary:
-        //    Create a new challenge. Get the create form.
+        /// <summary>
+        /// Create a new challenge. Get the create form.
         //    This method is only authorized to company user.
-        //
-        // Returns:
-        //    A view with form which must be filled out for creating challenge.
+        /// </summary>
+        /// <returns> A view with form which must be filled out for creating challenge.</returns>
         [Authorize(Roles = "Company")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new ChallengeCreateViewModel();
-            model.Languages = _lRepository.GetAllListAsync().Result;
+            model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);
         }
 
-        //
-        // Summary:
-        //    Create a new challenge. Post the create form.
+      
+        /// Create a new challenge. Post the create form.
         //    This method is only authorized to company user.
-        //
-        // Returns:
-        //    A view with all the given details at creating challenge, if the given information passed validation check.
-        //    A view with error message, if the given information didn't pass validation check.
+        /// </summary>
+        /// <param name="model">A ChallengeCreateViewModel</param>
+        /// <returns>A view with all the given details at creating challenge, if the given information passed validation check.
+        ///   A view with error message, if the given information didn't pass validation check.
+        /// <summary></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -190,6 +192,7 @@ namespace PlattformChallenge.Controllers
                     Bonus = model.Bonus,
                     Content = model.Content,
                     Release_Date = model.Release_Date,
+                    Deadline = model.Deadline,
                     Max_Participant = model.Max_Participant,
                     Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier),
 
@@ -219,18 +222,15 @@ namespace PlattformChallenge.Controllers
 
 
         #region Edit
-        //
-        // Summary:
-        //    Check prerequisites of editing challenge and provides information for edit form
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with a edit form if passed prerequisites; Else an error view with error message
         // GET: Challenges/Edit/5
+        /// <summary>
+        /// Check prerequisites of editing challenge and provides information for edit form
+        /// </summary>
+        /// <param name="id">The Id string of a challenge</param>
+        /// <returns>A view with a edit form if passed prerequisites; Else an error view with error message</returns>
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
+
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
@@ -254,6 +254,13 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "You can't edit challenge from other company";
                 return View("Error", errorViewModel);
             }
+
+            if(challenge.Winner_Id != null)
+            {
+                errorViewModel.RequestId = "You can't edit a closed challenge";
+                return View("Error", errorViewModel);
+            }
+
             ChallengeEditViewModel model = new ChallengeEditViewModel();
             model.Challenge = challenge;
             model.Languages = await _lRepository.GetAllListAsync();
@@ -266,15 +273,13 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        //
-        // Summary:
-        //    Check if all given para are legal, if yes then update database
-        //
-        // Parameter:
-        //    A ChallengeEditViewModel with form information
-        //
-        // Returns:
-        ////    The detail view of edited challenge with updated information
+    
+       
+        /// <summary>
+        ///  Check if all given para are legal, if yes then update database
+        /// </summary>
+        /// <param name="model">A ChallengeEditViewModel with form information</param>
+        /// <returns> The detail view of edited challenge with updated information</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -355,18 +360,13 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
-        
         #region Participation
-
-        //
-        // Summary:
-        //    Add user and challenge to Participation in database and update quota of the challenge
-        //
-        // Parameter:
-        //    The Id string of a challenge
-        //
-        // Returns:
-        //    A view with participation confirmation
+ 
+        /// <summary>
+        ///  Add user and challenge to Participation in database and update quota of the challenge
+        /// </summary>
+        /// <param name="id">The Id string of a challenge</param>
+        /// <returns>A view with participation confirmation</returns>
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
@@ -382,6 +382,12 @@ namespace PlattformChallenge.Controllers
                     return View("Error", errorViewModel);
                 }
             }
+
+            if (challenge.Deadline < DateTime.Now) {
+                errorViewModel.RequestId = "Registration time has passed";
+                return View("Error", errorViewModel);
+            }
+
             Participation newParti = new Participation()
             {
                 C_Id = id,

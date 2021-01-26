@@ -73,7 +73,7 @@ namespace PlattformChallenge.Controllers.Tests
         //    Test if the view of create is the expected type.
         //
         [Fact]
-        public void ReturnViewForCreate()
+        public async Task ReturnViewForCreateAsync()
         {
             _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
             {
@@ -102,7 +102,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
-            var result = _sut.Create();
+            var result = await _sut.Create();
             Assert.IsType<ViewResult>(result);
 
 
@@ -230,6 +230,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -242,6 +243,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -280,6 +282,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-6),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -292,6 +295,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now.AddDays(-4),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -304,6 +308,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -322,7 +327,6 @@ namespace PlattformChallenge.Controllers.Tests
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
-
         }
 
         //
@@ -364,6 +368,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -400,6 +405,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-5),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -412,6 +418,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now.AddDays(-3),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -424,6 +431,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -461,6 +469,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -473,6 +482,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -485,6 +495,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now.AddDays(2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -587,7 +598,7 @@ namespace PlattformChallenge.Controllers.Tests
             {
             });
             await _sut.ParticipateChallenge("mock_challenge1");
-            Assert.ThrowsAsync<Exception>( () =>   _sut.ParticipateChallenge("mock_challenge1"));
+            Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
         }
 
         //

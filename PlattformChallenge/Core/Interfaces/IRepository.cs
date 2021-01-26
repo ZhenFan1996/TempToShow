@@ -29,7 +29,5 @@ namespace PlattformChallenge.Core.Interfaces
 
         Task DeleteAsync(Expression<Func<TEntity, bool>> predicate);
 
-
-
     }
 }

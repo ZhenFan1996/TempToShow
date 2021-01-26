@@ -1,0 +1,90 @@
+@model PlattformChallenge.ViewModels.UploadSolutionViewModel;
+
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>
+                        Challenge : @Model.Challenge.Title
+                    </h3>
+                </div>
+                <div class="col-md-4">
+                    <h3>
+                        Current User: @Model.Programmer.Name
+                    </h3>
+                </div>
+            </div>
+            @if (!Model.IsVaild && Model.Participation.Solution == null) {
+            <h2>The challenge is over and you did not submit an Solution.</h2>
+            }
+
+
+            @if (Model.Participation.Solution != null)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Id
+                                    </th>
+                                    <th>
+                                        File name
+                                    </th>
+                                    <th>
+                                        Submit Date
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Model.Participation.Solution.S_Id
+                                    </td>
+                                    <td>
+                                        @Model.Participation.Solution.FileName
+                                    </td>
+                                    <td>
+                                        @Model.Participation.Solution.Submit_Date
+                                    </td>
+                                    <td>
+                                        @Model.Participation.Solution.Status
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>}
+            @if (Model.IsVaild)
+            {
+            <div class="row">
+                <div class="col-md-6">
+                    <form enctype="multipart/form-data" method="post">
+                        <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
+                        <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
+                        <dl>
+                            <dt>
+                                <label asp-for="@Model.SolutionFile">@Localizer["SolutionFile"]</label>
+                            </dt>
+                            <dd>
+                                <input asp-for="@Model.SolutionFile" type="file">
+                                <span asp-validation-for="@Model.SolutionFile"></span>
+                            </dd>
+                        </dl>
+                        <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+                    </form>
+                </div>
+            </div>}
+        </div>
+    </div>
+</div>

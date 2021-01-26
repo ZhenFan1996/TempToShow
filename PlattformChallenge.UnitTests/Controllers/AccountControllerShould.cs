@@ -28,13 +28,7 @@ namespace PlattformChallengeTests.Controllers
 
         public AccountControllerShould()
         {
-            _userManager = MockUserManager<PlatformUser>(new List<PlatformUser>() {
-                new PlatformUser(){
-                    UserName = "ubumh@student.kit.edu",
-                    Email = "ubumh@student.kit.edu",
-                    Name = "Zhen"
-                }
-            });
+            _userManager = MockUserManager<PlatformUser>();
             _roleManager = MockRoleManager();
             _signInManager = MockSignInManager(_userManager);
             _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object);
@@ -294,7 +288,7 @@ namespace PlattformChallengeTests.Controllers
             Assert.Equal("Home", value.ControllerName);
         }
 
-        private static Mock<UserManager<PlatformUser>> MockUserManager<TUser>(List<PlatformUser> ls)
+        private static Mock<UserManager<PlatformUser>> MockUserManager<TUser>()
         {
             var mgr = new Mock<UserManager<PlatformUser>>(
             new Mock<IUserStore<PlatformUser>>().Object,
