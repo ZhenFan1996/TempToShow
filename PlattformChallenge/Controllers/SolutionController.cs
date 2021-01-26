@@ -85,17 +85,19 @@ namespace PlattformChallenge.Controllers
                     Best_Name = bestSolution.Participation.Programmer.Name,
                     Best_Point = bestSolution.Point,
                     Best_URL = bestSolution.URL,
+                    S_ID = bestSolution.S_Id
                 };
             }
             else
             {
                 bSolution = new BestSolutionViewModel()
                 {
-                    Solutions =solutions.ToPagedList(pageNumber, pageSize),
+                    Solutions = solutions.ToPagedList(pageNumber, pageSize),
                     C_ID = c_Id,
                     Best_Name = "",
                     Best_Point = null,
                     Best_URL = "",
+                    S_ID = null
                 };
             }
 
