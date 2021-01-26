@@ -16,7 +16,7 @@ using PlattformChallenge.ViewModels;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace PlattformChallengeTests.Controllers
+namespace PlattformChallenge.UnitTest.Controllers
 {
     public class AccountControllerShould
     {

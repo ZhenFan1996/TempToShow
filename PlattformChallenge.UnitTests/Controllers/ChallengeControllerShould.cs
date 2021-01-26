@@ -17,8 +17,9 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MockQueryable.Moq;
 using Microsoft.Data.SqlClient;
+using PlattformChallenge.Controllers;
 
-namespace PlattformChallenge.Controllers.Tests
+namespace PlattformChallenge.UnitTest.Controllers
 {
 
     public class ChallengeControllerShould
