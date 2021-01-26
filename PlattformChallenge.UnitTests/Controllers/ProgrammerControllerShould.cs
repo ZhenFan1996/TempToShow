@@ -22,8 +22,9 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
+using System.IO;
 
-namespace PlattformChallenge_UnitTest.Controllers
+namespace PlattformChallenge.UnitTest.Controllers
 {
     public class ProgrammerControllerShould
     {
@@ -39,7 +40,10 @@ namespace PlattformChallenge_UnitTest.Controllers
         {
             _mockCRepo = new Mock<IRepository<Challenge>>();
             _mockPRepo = new Mock<IRepository<Participation>>();
-            _mockAfg = new Mock<ConfigProviderService>();
+            var afg = new ConfigProviderService();
+            afg.SetAppCfg(new AppCfgClass() {
+                SolutionPath = "C"
+            });
             _mockSRepo = new Mock<IRepository<Solution>>();
             this._mockUseerManager = MockUserManager<PlatformUser> ();
             var mock = new Mock<HttpContext>();
@@ -51,7 +55,7 @@ namespace PlattformChallenge_UnitTest.Controllers
             };
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "Pro_1"));
             _mockUseerManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,_mockAfg.Object);
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg);
             _sut.ControllerContext = context;
         }
         /// <summary>
@@ -106,6 +110,110 @@ namespace PlattformChallenge_UnitTest.Controllers
             _mockPRepo.Verify(m => m.DeleteAsync(It.IsAny<Expression<Func<Participation, bool>>>()), Times.Never);
         }
 
+        [Fact]
+        public async Task Get_UploadSolution() {
+
+            var mockP = new List<Participation>() {
+                new Participation(){
+                    P_Id = "test-programmer",
+                    C_Id ="c1",
+                    Programmer = _user
+                }
+            }.AsQueryable();
+
+            var c = new Challenge()
+            {
+                C_Id = "c1",
+                Deadline = DateTime.Now.AddDays(30)
+
+            };
+
+            _mockPRepo.Setup(m => m.GetAll()).Returns(mockP.BuildMockDbSet().Object);
+
+            _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>()))
+                .ReturnsAsync(c);
+
+            var result=await _sut.UploadSolution("c1");
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model;
+            Assert.IsType<UploadSolutionViewModel>(model);
+            var toCheck = model as UploadSolutionViewModel;
+            Assert.Equal(toCheck.Challenge, c);
+            Assert.True(toCheck.IsVaild);
+            Assert.Equal(toCheck.Participation, mockP.FirstOrDefault());
+        }
+
+        [Fact]
+        public async Task Post_UploadSolution() {
+            var model = new UploadSolutionViewModel() {
+                C_Id = "c1",
+                SolutionFile = mockFormFile().Object
+            };
+
+            var c = new Challenge()
+            {
+                C_Id = "c1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.Now,
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser()
+                {
+                    Id = "test1.com"
+                }
+            };
+            var par = new List<Participation>() {
+                new Participation(){
+                    C_Id ="c1",
+                    P_Id ="test-programmer"
+                }
+            }.AsQueryable();
+
+            _mockCRepo
+                .Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>()))
+                .ReturnsAsync(c);
+            _mockPRepo.Setup(p => p.GetAll()).Returns(par.BuildMockDbSet().Object);
+            Solution savedSolution = null;
+            var checkedSolution = new Solution()
+            {
+                FileName = "test title 1_Zhen.zip",
+                URL = "C\\Solutions\\test title 1_Zhen.zip",
+                Status =StatusEnum.Receive
+
+            };
+            _mockSRepo.Setup(S => S.InsertAsync(It.IsAny<Solution>())).Returns(Task.CompletedTask).Callback<Solution>(x=>savedSolution=x);
+        
+            var result = await _sut.UploadSolution(model);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var m = value.Model;
+            Assert.IsType<UploadSolutionViewModel>(m);
+            var vm = m as UploadSolutionViewModel;
+            Assert.Equal(vm.C_Id, c.C_Id);
+            Assert.Equal(savedSolution.FileName, checkedSolution.FileName);
+            Assert.Equal(savedSolution.URL, checkedSolution.URL);
+            Assert.Equal(savedSolution.Status, checkedSolution.Status);
+        }
+
+        private Mock<IFormFile> mockFormFile() {
+
+            var fileMock = new Mock<IFormFile>();
+            var content = "Hello World from a Fake File";
+            var fileName = "test.zip";
+            var ms = new MemoryStream();
+            var writer = new StreamWriter(ms);
+            writer.Write(content);
+            writer.Flush();
+            ms.Position = 0;
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.FileName).Returns(fileName);
+            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            fileMock.Setup(_ => _.ContentType).Returns("application/zip");
+            return fileMock;
+        }
 
         private List<Challenge> GetAllBuild() {
             var challenges = new List<Challenge>() {

@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
 
-namespace PlattformChallenge_UnitTest.Controllers
+namespace PlattformChallenge.UnitTest.Controllers
 {
     public class CompanyControllerShould
     {

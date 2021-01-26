@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
@@ -16,7 +16,7 @@ using Moq;
 using PlattformChallenge.Controllers;
 using PlattformChallenge.ViewModels;
 
-namespace PlattformChallenge_UnitTest.Controllers
+namespace PlattformChallenge.UnitTest.Controllers
 {
     public class SolutionControllerShould
     {
