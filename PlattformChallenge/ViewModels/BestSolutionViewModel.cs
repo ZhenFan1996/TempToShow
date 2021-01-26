@@ -17,5 +17,7 @@ namespace PlattformChallenge.ViewModels
 
         public int? Best_Point { get; set; }
 
+        public string Winner_ID { get; set; }
+
     }
 }

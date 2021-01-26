@@ -14,7 +14,7 @@
                 <ul>
                     <li class="card-text"> @SharedLocalizer["Points"]: @Model.Best_Point </li>
                 </ul>
-                @if (Model.S_ID != null) 
+                @if (Model.S_ID != null && Model.Winner_ID != null) 
                 { 
                 <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@Model.S_ID" class="btn btn-primary">@Localizer["Download"]</a>
                 }
