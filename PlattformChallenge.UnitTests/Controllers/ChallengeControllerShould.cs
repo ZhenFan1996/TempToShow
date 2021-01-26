@@ -531,7 +531,8 @@ namespace PlattformChallenge.Controllers.Tests
                     Title = "title_mock_challenge_RVP",
                     Bonus = 100,
                     Content = "Content_mock_challenge_RVP",
-                    Max_Participant = 11
+                    Max_Participant = 11,
+                    Deadline = DateTime.Now.AddDays(+3)
                 }
                 ));
 
@@ -543,7 +544,8 @@ namespace PlattformChallenge.Controllers.Tests
                     Title = "title_mock_challenge_RVP",
                     Bonus = 100,
                     Content = "Content_mock_challenge_RVP",
-                    Max_Participant = 11
+                    Max_Participant = 11,
+                    Deadline = DateTime.Now.AddDays(+3)
                 }
                 }.AsQueryable().BuildMockDbSet().Object
                 );

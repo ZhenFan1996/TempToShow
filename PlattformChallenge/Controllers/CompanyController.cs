@@ -204,7 +204,7 @@ namespace PlattformChallenge.Controllers
             }
             if (challenge.Deadline <= DateTime.Now) {
 
-                errorViewModel.RequestId = "Man can not close the challenge bevor the deadline";
+                errorViewModel.RequestId = "You can not close the challenge before the deadline";
                 return View("Error", errorViewModel);
             }
             if (_currUser.Id != challenge.Com_ID)
