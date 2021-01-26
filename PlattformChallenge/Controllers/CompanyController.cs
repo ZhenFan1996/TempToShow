@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 namespace PlattformChallenge.Controllers
 {
 
-
     public class CompanyController : Controller
     {
         private readonly UserManager<PlatformUser> _userManger;

@@ -230,6 +230,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -242,6 +243,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -280,6 +282,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-6),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -292,6 +295,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now.AddDays(-4),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -304,6 +308,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -363,6 +368,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -399,6 +405,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-5),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -411,6 +418,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now.AddDays(-3),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -423,6 +431,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -460,6 +469,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -472,6 +482,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now,
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -484,6 +495,7 @@ namespace PlattformChallenge.Controllers.Tests
                 Bonus = 600,
                 Content = "test content 3",
                 Release_Date = DateTime.Now.AddDays(2),
+                Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -520,6 +532,7 @@ namespace PlattformChallenge.Controllers.Tests
                     Bonus = 600,
                     Content = "test content 3",
                     Release_Date = DateTime.Now.AddDays(2),
+                    Deadline = DateTime.Now.AddDays(30),
                     Max_Participant = 118,
                     Com_ID = "3333",
                     Company = new PlatformUser()
@@ -538,6 +551,7 @@ namespace PlattformChallenge.Controllers.Tests
                     Bonus = 600,
                     Content = "test content 3",
                     Release_Date = DateTime.Now.AddDays(2),
+                    Deadline = DateTime.Now.AddDays(30),
                     Max_Participant = 118,
                     Com_ID = "3333",
                     Company = new PlatformUser()
