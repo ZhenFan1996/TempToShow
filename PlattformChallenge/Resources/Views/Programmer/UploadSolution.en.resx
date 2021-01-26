@@ -123,4 +123,10 @@
   <data name="SolutionFile" xml:space="preserve">
     <value>SolutionFile</value>
   </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit date</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Current User: </value>
+  </data>
 </root>
