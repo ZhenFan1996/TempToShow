@@ -7,14 +7,17 @@
     <div class="row">
         <div class="card col-lg-3 " style="width: 18rem;">
             <div style="color:#0000FF">
-                <h3>@Localizer["Best Solution for now"]</h3>
+                <h3>@Localizer["Best Solution"]</h3>
             </div>
             <div class="card-body">
                 <h5 class="card-title">@Localizer["Programmer Name"]: @Model.Best_Name</h5>
                 <ul>
                     <li class="card-text"> @SharedLocalizer["Points"]: @Model.Best_Point </li>
                 </ul>
-                <a>@Model.Best_URL</a>
+                @if (Model.S_ID != null) 
+                { 
+                <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@Model.S_ID" class="btn btn-primary">@Localizer["Download"]</a>
+                }
             </div>
         </div>
         <table class="table col-lg-8 offset-lg-1">
