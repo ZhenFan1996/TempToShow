@@ -4,7 +4,8 @@
     ViewData["Title"] = @Localizer["Details"];
 }
 
-<h1>@Localizer["ChallengeDetails"] </h1>
+<h1>@Localizer["ChallengeDetails"]
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script></h1>
 
 
 <div>
@@ -85,34 +86,25 @@
             }
         </dd>
 
-        @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Winner_Id)
-            </dt>
-            <dd class="col-sm-10">
-                @if (Model.Winner_Id == null)
-                {
-                    <span> There is no winner yet </span>
-                }
-                else
-                {
-                    @Html.DisplayFor(model => model.Winner_Id)
-                }
-
-            </dd>*@
-        @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Best_Solution_Id)
-            </dt>
-            <dd class="col-sm-10">
-                <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
-            </dd>*@
-    <dt class="col-sm-2">
-        @Localizer["WinnerAndSolution"]
-    </dt>
+        <dt class="col-sm-2">
+            @Localizer["WinnerAndSolution"]
+        </dt>
         <dd class="col-sm-10">
             <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> @Localizer["View"] </a>
         </dd>
     </dl>
 </div>
+
+
+@*<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0" nonce="x2kxQ5qf"></script>
+
+<div class="fb-share-button" data-href="https://localhost:44305/Challenges/Details/@Model.C_Id" data-layout="button" data-size="small">
+    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+       @Localizer["Share"] </a>
+</div>*@
+<div class="sharethis-inline-share-buttons"></div>
+
 <div class="container">
     <div class="row">
         @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
@@ -120,9 +112,9 @@
             if (Model.Available_Quota > 0)
             {
 
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
-            @Localizer["TakePartIn"]
-        </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
+                    @Localizer["TakePartIn"]
+                </button>
 
                 <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -147,7 +139,7 @@
             }
             else
             {
-    <p>@Localizer["NoPlace"]</p>
+                <p>@Localizer["NoPlace"]</p>
             }
 
         @*<div>

@@ -32,7 +32,6 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<IRepository<Challenge>> _mockCRepo;
         private readonly Mock<IRepository<Participation>> _mockPRepo;
         private readonly ProgrammerController _sut;
-        private readonly Mock<ConfigProviderService> _mockAfg;
         private readonly Mock<IRepository<Solution>> _mockSRepo;
         private PlatformUser _user;
 

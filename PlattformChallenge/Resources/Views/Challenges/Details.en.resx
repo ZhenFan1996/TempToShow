@@ -165,6 +165,9 @@
   <data name="ReleaseDate" xml:space="preserve">
     <value>Release Date</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
   <data name="TakePartIn" xml:space="preserve">
     <value>Take part in</value>
   </data>

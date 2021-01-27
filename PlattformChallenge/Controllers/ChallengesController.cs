@@ -25,8 +25,7 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
-        private readonly IStringLocalizer<ChallengesController> localizer;
-        private readonly IStringLocalizer<SharedResource> sharedLocalizer;
+
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
             IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository
