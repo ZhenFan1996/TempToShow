@@ -135,6 +135,9 @@
   <data name="ConfirmCondition" xml:space="preserve">
     <value>Please confirm the conditions:</value>
   </data>
+  <data name="Copy URL" xml:space="preserve">
+    <value>Copy URL</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="Share" xml:space="preserve">
     <value>Share</value>
+  </data>
+  <data name="Success!" xml:space="preserve">
+    <value>Success!</value>
   </data>
   <data name="TakePartIn" xml:space="preserve">
     <value>Take part in</value>
