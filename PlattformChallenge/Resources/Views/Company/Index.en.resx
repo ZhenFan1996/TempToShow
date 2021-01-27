@@ -129,9 +129,6 @@
   <data name="Company" xml:space="preserve">
     <value>Company</value>
   </data>
-  <data name="ConfimInfo2" xml:space="preserve">
-    <value>After closing a challenge, solution with the highest score will be selected as winner! And You will not be able to change it anymore! Furthermore, if you didn't rate every solution, you can't close this challenge.</value>
-  </data>
   <data name="ConfirmClose" xml:space="preserve">
     <value>Confirm close</value>
   </data>
@@ -140,6 +137,9 @@
   </data>
   <data name="ConfirmInfo1" xml:space="preserve">
     <value>YOU CAN ONLY DO "CLOSE" ONCE!</value>
+  </data>
+  <data name="ConfirmInfo2" xml:space="preserve">
+    <value>After closing a challenge, solution with the highest score will be selected as winner! And You will not be able to change it anymore! Furthermore, if you didn't rate every solution, you can't close this challenge.</value>
   </data>
   <data name="CreateNewChallenge" xml:space="preserve">
     <value>Create A New Challenge</value>

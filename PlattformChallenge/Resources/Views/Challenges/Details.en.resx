@@ -135,6 +135,9 @@
   <data name="ConfirmCondition" xml:space="preserve">
     <value>Please confirm the conditions:</value>
   </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Deadline</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>

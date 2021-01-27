@@ -123,6 +123,9 @@
   <data name="Bonus" xml:space="preserve">
     <value>Preisgeld für den Gewinner (in Euro)</value>
   </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Abgabefrist</value>
+  </data>
   <data name="DevLanguage" xml:space="preserve">
     <value>Entwicklungssprachen</value>
   </data>

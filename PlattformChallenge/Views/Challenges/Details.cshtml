@@ -5,8 +5,6 @@
 }
 
 <h1>@Localizer["ChallengeDetails"] </h1>
-
-
 <div>
     <hr />
     <dl class="row">
@@ -23,7 +21,8 @@
             @*@Html.DisplayNameFor(model => model.Content)*@
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Content)
+            @Html.Raw(Model.Content)
+            
         </dd>
         <dt class="col-sm-2">
             @Localizer["Prize"]
@@ -40,7 +39,7 @@
             @Html.DisplayFor(model => model.Release_Date)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Deadline)
+            @Localizer["Deadline"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Deadline)
