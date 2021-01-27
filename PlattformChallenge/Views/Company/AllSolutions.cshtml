@@ -67,8 +67,8 @@ else
                                         <input type="hidden" asp-for="@Model.CurrChallengeId" />
 
                                         <div class="form-group">
-                                            <label asp-for="@Model.Point" class="control-label">Point</label>
-                                            <input asp-for="@Model.Point" class="form-control" />
+                                            <label asp-for="@Model.Point" class="control-label">@Localizer["Point"]</label>
+                                            <input asp-for="@Model.Point" class="form-control" value="@item.Point"/>
                                             <span asp-validation-for="@Model.Point" class="text-danger"></span>
                                         </div>
 
