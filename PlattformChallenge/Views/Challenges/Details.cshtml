@@ -4,164 +4,126 @@
     ViewData["Title"] = @Localizer["Details"];
 }
 
-<h1>@Localizer["ChallengeDetails"] </h1>
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Localizer["Title"]
-            @*@Html.DisplayNameFor(model => model.Title)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-        <dt class="col-sm-2 ">
-            @Localizer["Discription"]
-            @*@Html.DisplayNameFor(model => model.Content)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.Raw(Model.Content)
-            
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["Prize"]
-            @*@Html.DisplayNameFor(model => model.Bonus)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Bonus)
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["ReleaseDate"]
-            @*@Html.DisplayNameFor(model => model.Release_Date)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Release_Date)
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["Deadline"]
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["MaxParticipants"]
-            @*@Html.DisplayNameFor(model => model.Max_Participant)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Max_Participant)
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["AvailableQuota"]
-            @*@Html.DisplayNameFor(model => model.Available_Quota)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Available_Quota)
-        </dd>
-        <dt class="col-sm-2">
-            @Localizer["Company"]
-            @*@Html.DisplayNameFor(model => model.Company)*@
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Localizer["DevLanguage"]
-            @*@Html.DisplayNameFor(model => model.Languages)*@
-        </dt>
-        <dd class="col-sm-10">
-            @for (int i = 0; i < Model.Languages.Count; i++)
-            {
-                if (i < Model.Languages.Count - 1)
-                {
-                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
-                }
-                else
-                {
-                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
-                }
-            }
-        </dd>
-
-        @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Winner_Id)
-            </dt>
-            <dd class="col-sm-10">
-                @if (Model.Winner_Id == null)
-                {
-                    <span> There is no winner yet </span>
-                }
-                else
-                {
-                    @Html.DisplayFor(model => model.Winner_Id)
-                }
-
-            </dd>*@
-        @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Best_Solution_Id)
-            </dt>
-            <dd class="col-sm-10">
-                <div @{if (Model.Best_Solution_Id == null) }>There is no best solution yet </div>
-            </dd>*@
-    <dt class="col-sm-2">
-        @Localizer["WinnerAndSolution"]
-    </dt>
-        <dd class="col-sm-10">
-            <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> @Localizer["View"] </a>
-        </dd>
-    </dl>
-</div>
 <div class="container">
+    <h1 class="row">@Localizer["ChallengeDetails"] </h1>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Localizer["Title"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+
+            <dt class="col-sm-2 ">
+                @Localizer["Discription"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.Raw(Model.Content)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["Prize"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Bonus)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["ReleaseDate"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Release_Date)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["Deadline"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Deadline)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["MaxParticipants"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Max_Participant)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["AvailableQuota"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Available_Quota)
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["Company"]
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Company.Name)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Localizer["DevLanguage"]
+            </dt>
+            <dd class="col-sm-10">
+                @for (int i = 0; i < Model.Languages.Count; i++)
+                {
+                    if (i < Model.Languages.Count - 1)
+                    {
+                        <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
+                    }
+                    else
+                    {
+                        <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
+                    }
+                }
+            </dd>
+            <dt class="col-sm-2">
+                @Localizer["WinnerAndSolution"]
+            </dt>
+            <dd class="col-sm-10">
+                <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> @Localizer["View"] </a>
+            </dd>
+        </dl>
+    </div>
     <div class="row">
-        @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
+        @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
             if (Model.Available_Quota > 0)
             {
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
+                        @Localizer["TakePartIn"]
+                    </button>
 
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
-            @Localizer["TakePartIn"]
-        </button>
-
-                <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel"> @Localizer["ConfirmCondition"]   </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                @Localizer["ParticipationCondition"]
-                            </div>
-                            <div class="modal-footer">
-                                <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">@Localizer["Agree"]</a>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Disagree"]</button>
+                    <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel"> @Localizer["ConfirmCondition"]   </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    @Localizer["ParticipationCondition"]
+                                </div>
+                                <div class="modal-footer">
+                                    <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">@Localizer["Agree"]</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Disagree"]</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             }
             else
             {
-    <p>@Localizer["NoPlace"]</p>
+                <p>@Localizer["NoPlace"]</p>
             }
 
-        @*<div>
-                @if (ViewContext.HttpContext.User.IsInRole("Company"))
-                {
-                    <a   asp-action="Edit" asp-route-id="@Model.C_Id" class="btn btn-primary " >Edit</a>
-                }
-            </div>*@
-        <div class="col-3">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
+        <div class="col-md-4">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
         <div>
             @if (ViewContext.HttpContext.User.IsInRole("Company"))
             {
                 <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
             }
         </div>
-
     </div>
 </div>

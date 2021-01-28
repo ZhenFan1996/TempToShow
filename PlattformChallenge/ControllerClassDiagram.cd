@@ -3,7 +3,7 @@
   <Class Name="PlattformChallenge.Controllers.HomeController">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAIAAAAQAAAAEAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAACAAAAIAAAAQAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\HomeController.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -24,7 +24,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAI=</HashCode>
+      <HashCode>AAIAAAAAAABAAAAAAAAAEAAAAAUAAAAAAAAAAAAAAAI=</HashCode>
       <FileName>Controllers\SolutionController.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -40,7 +40,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAABAAAIAAAAAAAAABAAAIgAAABABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAIAAAgAAAAABAAAIgAAABABAAAAAAAAAAAAA=</HashCode>
       <FileName>Controllers\AccountController.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -55,7 +55,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAEgAAAABBAACAAAAAAEAgAAEAAECSAAEABAAAAAA=</HashCode>
+      <HashCode>AAAQEgAAAABBAACAAAAAAEAgAAEAAECSAAGAAAAAAAA=</HashCode>
       <FileName>Controllers\ChallengesController.cs</FileName>
     </TypeIdentifier>
   </Class>

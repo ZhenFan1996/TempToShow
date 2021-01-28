@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PagedList;
 using PlattformChallenge.Core.Interfaces;
@@ -44,8 +44,7 @@ namespace PlattformChallenge.Controllers
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (c_Id == null || c_Id == "")
             {
-                errorViewModel.RequestId = "invalid challenge id!";
-                return View("Error", errorViewModel);
+                throw new Exception("Invalid challenge id!");
             }
             var solutions = from s
                              in _repository.GetAll()

@@ -105,18 +105,14 @@ namespace PlattformChallenge.Controllers
                 var challenge = _cRepository.FirstOrDefault(c => c.C_Id == challengeId);
                 if (challenge.Winner_Id != null)
                 {
-                    ErrorViewModel errorViewModel = new ErrorViewModel();
-                    errorViewModel.RequestId = "You can't rate solution anymore because this challenge is already closed";
-                    return View("Error", errorViewModel);
+                    throw new Exception("You can't rate solution anymore because this challenge is already closed");
                 }
 
 
                 var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolutionId);
                 if (toUpdate.Count != 1)
-                {
-                    ErrorViewModel errorViewModel = new ErrorViewModel();
-                    errorViewModel.RequestId = "There's something wrong with data. Please contact us";
-                    return View("Error", errorViewModel);
+                {                  
+                    throw new Exception("There's something wrong with data. Please contact us");
                 }
                 toUpdate.First().Point = vm.Point;
                 toUpdate.First().Status = StatusEnum.Rated;
@@ -143,13 +139,11 @@ namespace PlattformChallenge.Controllers
             var toUpdate = await _cRepository.GetAllListAsync(c => c.C_Id == Id);
             if (toUpdate.First().Winner_Id != null)
             {
-                ErrorViewModel errorViewModel = new ErrorViewModel();
                 throw new Exception("You already closed this challenge");
             }
             if (toUpdate.First().Deadline <= DateTime.Now)
             {
-                ErrorViewModel errorViewModel = new ErrorViewModel();
-                throw new Exception("You can not close the challenge before the deadline");
+                throw new Exception("You can not close the challenge before the deadline");             
             }
 
             var allSolutions = await (from p in _pRepository.GetAll()
@@ -162,9 +156,7 @@ namespace PlattformChallenge.Controllers
             foreach(var s in allSolutions)
             {
                 if(s.s.Point == null || s.s.Point == 0)
-                {
-                    ErrorViewModel errorViewModel = new ErrorViewModel();
-
+                {                 
                     throw new Exception("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
                         "Please rate all solutions before closing a challenge");
                 }
