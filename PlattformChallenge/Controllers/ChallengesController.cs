@@ -101,9 +101,8 @@ namespace PlattformChallenge.Controllers
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (id == null || id == "")
             {
-                errorViewModel.RequestId = "invalid challenge id value for details";
-                return View("Error", errorViewModel);
-                //return NotFound();
+                throw new Exception("invalid challenge id value for details");
+            
             }
 
 
@@ -115,8 +114,9 @@ namespace PlattformChallenge.Controllers
 
             if (challenge == null)
             {
-                errorViewModel.RequestId = "there's no challenge with this id, please check again";
-                return View("Error", errorViewModel);
+                Response.StatusCode = 404;
+                @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
+                return View("NotFound");
             }
             var detail = new ChallengeDetailViewModel()
             {

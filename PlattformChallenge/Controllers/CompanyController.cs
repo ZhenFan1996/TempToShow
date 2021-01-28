@@ -144,14 +144,12 @@ namespace PlattformChallenge.Controllers
             if (toUpdate.First().Winner_Id != null)
             {
                 ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "You already closed this challenge";
-                return View("Error", errorViewModel);
+                throw new Exception("You already closed this challenge");
             }
             if (toUpdate.First().Deadline <= DateTime.Now)
             {
                 ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "You can not close the challenge before the deadline";
-                return View("Error", errorViewModel);
+                throw new Exception("You can not close the challenge before the deadline");
             }
 
             var allSolutions = await (from p in _pRepository.GetAll()
@@ -166,9 +164,9 @@ namespace PlattformChallenge.Controllers
                 if(s.s.Point == null || s.s.Point == 0)
                 {
                     ErrorViewModel errorViewModel = new ErrorViewModel();
-                    errorViewModel.RequestId = "There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
-                        "Please rate all solutions before closing a challenge";
-                    return View("Error", errorViewModel);
+
+                    throw new Exception("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                        "Please rate all solutions before closing a challenge");
                 }
             }
             if (allSolutions.Count > 0) {
@@ -199,9 +197,8 @@ namespace PlattformChallenge.Controllers
         {
             ErrorViewModel errorViewModel = new ErrorViewModel();
             if (Id == null || Id == "")
-            {
-                errorViewModel.RequestId = "invalid empty challenge id value";
-                return View("Error", errorViewModel);
+            {               
+                throw new Exception("invalid empty challenge id value");
             }
            Challenge challenge =  _cRepository.GetAll()
                 .Include(c => c.Company)
@@ -209,14 +206,14 @@ namespace PlattformChallenge.Controllers
                 .FirstOrDefault(c => c.C_Id == Id);
             if (challenge == null)
             {
-                errorViewModel.RequestId = "there's no challenge with this id, please check again";
-                return View("Error", errorViewModel);
+                Response.StatusCode = 404;
+                @ViewBag.ErrorMessage = $"The Challenge with id {Id} can not be found";
+                return View("NotFound");
             }
            
             if (_currUser.Id != challenge.Com_ID)
             {
-                errorViewModel.RequestId = "You don't have access to challenges from other companies";
-                return View("Error", errorViewModel);
+                throw new Exception("You don't have access to challenges from other companies");
             }
 
             return null;

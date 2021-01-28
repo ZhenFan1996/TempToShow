@@ -1,4 +1,4 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = "Error";
@@ -10,11 +10,11 @@
 @if (Model.ShowRequestId)
 {
     <p>
-        @*<strong>Request ID:</strong> <code>@Model.RequestId</code>*@
-        <strong>Reason:</strong> <code>@Model.RequestId</code>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
-}
-
+}<p>
+    <strong>Reason:</strong> <code>@ViewBag.ErrorMessage</code>
+    </p>
 <p>
     @Html.ActionLink("Click here go back to homepage.", "Index", "Home")
 </p>
