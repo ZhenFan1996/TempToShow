@@ -114,11 +114,14 @@ namespace PlattformChallenge.Controllers
             }
             bool canTakePartIn = true;
             var user = _pRepository.GetAll().Include(p => p.Participations).FirstOrDefault(p => p.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
-            foreach (var par in user.Participations)
+            if (user!=null&&user.Participations != null)
             {
-                if (par.C_Id == id)
+                foreach (var par in user.Participations)
                 {
-                    canTakePartIn = false;
+                    if (par.C_Id == id)
+                    {
+                        canTakePartIn = false;
+                    }
                 }
             }
             var detail = new ChallengeDetailViewModel()
