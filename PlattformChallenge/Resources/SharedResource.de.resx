@@ -150,6 +150,12 @@
   <data name="Points" xml:space="preserve">
     <value>Punkte</value>
   </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Letzte</value>
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value>Preisgeld</value>
+  </data>
   <data name="Quota" xml:space="preserve">
     <value>Quote</value>
   </data>

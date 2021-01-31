@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MockQueryable.Moq;
 using Microsoft.Data.SqlClient;
 using PlattformChallenge.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -29,6 +30,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<IRepository<Language>> _mockLRepository;
         private readonly Mock<IRepository<LanguageChallenge>> _mockLCRepository;
         private readonly Mock<IRepository<Participation>> _mockPaRepository;
+        private readonly Mock<HttpContext> _mockHttpContext;
 
         private readonly ChallengesController _sut;
 
@@ -40,10 +42,12 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLRepository = new Mock<IRepository<Language>>();
             _mockLCRepository = new Mock<IRepository<LanguageChallenge>>();
             _mockPaRepository = new Mock<IRepository<Participation>>();
-            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object, _mockPaRepository.Object);
-            var mock = new Mock<HttpContext>();
-            var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
-            mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
+            var logger = new Mock<ILogger<ChallengesController>>();
+            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object, _mockPaRepository.Object,logger.Object);
+            _mockHttpContext = new Mock<HttpContext>();
+            var context = new ControllerContext(new ActionContext(_mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
+            _mockHttpContext.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
+            _mockHttpContext.SetupGet(_ => _.Response.StatusCode).Returns(It.IsAny<int>);
             _mockLRepository.Setup(l => l.GetAllListAsync()).Returns(Task.FromResult(new List<Language>()
             {new Language()
                     {
@@ -186,13 +190,8 @@ namespace PlattformChallenge.UnitTest.Controllers
         [Fact]
         public async void ReturnBadRequestNoIdForDetails()
         {
-            var result = await _sut.Details("");
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("invalid challenge id value for details", errorInfo);
+              var excepetion= await Assert.ThrowsAsync<Exception>(()=> _sut.Details(""));
+              Assert.Equal("invalid challenge id value for details", excepetion.Message);
         }
 
         //
@@ -208,12 +207,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository.Setup(m => m.GetAll()).Returns(challenges.AsQueryable().BuildMockDbSet().Object);
             var result = await _sut.Details("1");
             Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("there's no challenge with this id, please check again", errorInfo);
-
+            _mockHttpContext.VerifySet(_ => _.Response.StatusCode=404, Times.Once);
         }
 
         //
@@ -578,6 +572,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Title = "title_mock_challenge1",
                     Bonus = 100,
                     Content = "Content_mock_challenge1",
+                    Deadline = DateTime.Now.AddDays(20),
                     Max_Participant = 11
                 }
                 ));
@@ -595,13 +590,13 @@ namespace PlattformChallenge.UnitTest.Controllers
                 );
             _mockPaRepository.Setup(m => m.InsertAsync(It.IsAny<Participation>()))
                .Returns(Task.CompletedTask)
-               .Callback<Participation>(x => toCheck = x);
+               .Callback<Participation>(x => toCheck = x).Throws(new InvalidOperationException());
 
             _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
             {
             });
-            await _sut.ParticipateChallenge("mock_challenge1");
-            Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
+            Assert.Equal("You have already participated this challenge", ex.Message);
         }
 
         //
@@ -624,13 +619,10 @@ namespace PlattformChallenge.UnitTest.Controllers
                 }
                 }.AsQueryable().BuildMockDbSet().Object
                 );
-            var result = await _sut.Edit("Id_mock_editNotOwnChallenge");
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("You can't edit challenge from other company", errorInfo);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.Edit("Id_mock_editNotOwnChallenge"));
+            Assert.Equal("You can't edit challenge from other company", ex.Message);
+
         }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PagedList;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
@@ -35,17 +34,16 @@ namespace PlattformChallenge.Controllers
         //    default situation is return the challenges, which descending sorted by point
         // Returns:
         //    A view with list of solutions and best solution
-        public async Task<IActionResult> List(int? page, string sortOrder, string c_Id)
+        public async Task<IActionResult> List(int? pageNumber, string sortOrder,string c_Id)
         {
             ViewData["PointSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             int pageSize = 10;
-            int pageNumber = (page ?? 1);
-            ErrorViewModel errorViewModel = new ErrorViewModel();
-            if (c_Id == null || c_Id == "")
-            {
-                throw new Exception("Invalid challenge id!");
+
+            if (c_Id == null) {
+                throw new Exception("Invaild c_id");
             }
+     
             var solutions = from s
                              in _repository.GetAll()
                              .Include(i => i.Participation) 
@@ -84,7 +82,7 @@ namespace PlattformChallenge.Controllers
             {
                 bSolution = new BestSolutionViewModel()
                 {
-                    Solutions = solutions.ToPagedList(pageNumber,pageSize),
+                    Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
                     C_ID = c_Id,
                     Best_Name = bestSolution.Participation.Programmer.Name,
                     Best_Point = bestSolution.Point,
@@ -97,7 +95,7 @@ namespace PlattformChallenge.Controllers
             {
                 bSolution = new BestSolutionViewModel()
                 {
-                    Solutions = solutions.ToPagedList(pageNumber, pageSize),
+                    Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
                     C_ID = c_Id,
                     Best_Name = "",
                     Best_Point = null,

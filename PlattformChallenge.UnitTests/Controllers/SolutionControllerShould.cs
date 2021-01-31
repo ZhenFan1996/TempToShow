@@ -167,13 +167,9 @@ namespace PlattformChallenge.UnitTest.Controllers
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
 
-            var result = await _sut.List(null, null, null);
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("invalid challenge id!", errorInfo);
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.List(null, null, null));
+            Assert.Equal("Invaild c_id", ex.Message);
+
         }
         //
         // Summary:

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PagedList;
+using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
@@ -23,12 +23,15 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Challenge> _cRepository;
         private readonly IRepository<Participation> _pRepository;
         private readonly IRepository<Solution> _sRepository;
-        public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository, IRepository<Solution> sRepository)
+        private readonly ILogger<CompanyController> logger;
+
+        public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository, IRepository<Solution> sRepository,ILogger<CompanyController> logger)
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
             this._pRepository = pRepository;
             this._sRepository = sRepository;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -38,15 +41,10 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var publishedChallenges = from c
+            var challenges = await (from c
                              in _cRepository.GetAll().Where(c => c.Com_ID==_currUser.Id).Include(c => c.Company)
-                                                       select c;
-            var challenges = new List<Challenge>();
-            foreach(var c in publishedChallenges)
-            {
-                challenges.Add(c);
-            }
-           
+                                                       select c).ToListAsync();
+                 
             var model = new CompanyIndexViewModel()
             {
                 Challenges = challenges,
@@ -102,23 +100,20 @@ namespace PlattformChallenge.Controllers
                                  ).ToListAsync();
                
                 var challengeId = solItem.First().p.C_Id;
-                var challenge = _cRepository.FirstOrDefault(c => c.C_Id == challengeId);
+                var challenge = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == challengeId);
                 if (challenge.Winner_Id != null)
                 {
                     throw new Exception("You can't rate solution anymore because this challenge is already closed");
                 }
 
 
-                var toUpdate = await _sRepository.GetAllListAsync(s => s.S_Id == vm.CurrSolutionId);
-                if (toUpdate.Count != 1)
-                {                  
-                    throw new Exception("There's something wrong with data. Please contact us");
-                }
-                toUpdate.First().Point = vm.Point;
-                toUpdate.First().Status = StatusEnum.Rated;
+                var toUpdate = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == vm.CurrSolutionId);
+                toUpdate.Point = vm.Point;
+                toUpdate.Status = StatusEnum.Rated;
                     try
                     {
-                        await _sRepository.UpdateAsync(toUpdate.First());
+                        await _sRepository.UpdateAsync(toUpdate);
+                    logger.LogInformation($"The Solution with id {toUpdate.S_Id} is rated with the point {vm.Point}");
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -136,12 +131,13 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> CloseChallenge(String Id)
         {
 
-            var toUpdate = await _cRepository.GetAllListAsync(c => c.C_Id == Id);
-            if (toUpdate.First().Winner_Id != null)
+            var toUpdate = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == Id);
+            if (toUpdate.Winner_Id != null)
             {
                 throw new Exception("You already closed this challenge");
             }
-            if (toUpdate.First().Deadline <= DateTime.Now)
+
+            if (toUpdate.Deadline >= DateTime.Now)
             {
                 throw new Exception("You can not close the challenge before the deadline");             
             }
@@ -165,16 +161,17 @@ namespace PlattformChallenge.Controllers
                 var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
                 var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
                 var winnerId = participation.P_Id;
-                toUpdate.First().Winner_Id = winnerId;
-                toUpdate.First().Best_Solution_Id = bestSolution.s.S_Id;
+                toUpdate.Winner_Id = winnerId;
+                toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
             }
             else
             {
-                toUpdate.First().Winner_Id = "NoWinner";
+                toUpdate.Winner_Id = "NoWinner";
             }
             try
             {
-                await _cRepository.UpdateAsync(toUpdate.First());
+                await _cRepository.UpdateAsync(toUpdate);
+                logger.LogInformation($"The challenge with id {toUpdate.C_Id} is closed.");
             }
             catch (DbUpdateConcurrencyException)
             {

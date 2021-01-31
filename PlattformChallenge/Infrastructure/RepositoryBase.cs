@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Models;
 
@@ -15,7 +16,7 @@ namespace PlattformChallenge.Infrastructure
 
         public virtual DbSet<TEntity> Table => _dbcontext.Set<TEntity>();
 
-        public RepositoryBase(AppDbContext dbContext)
+        public RepositoryBase(AppDbContext dbContext, ILogger<RepositoryBase<TEntity>> logger)
         {
             this._dbcontext = dbContext;
         }
@@ -66,7 +67,7 @@ namespace PlattformChallenge.Infrastructure
          }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
-        {
+        {         
             AttachIfNot(entity);
             _dbcontext.Entry(entity).State = EntityState.Modified;
             await _dbcontext.SaveChangesAsync();
@@ -100,6 +101,6 @@ namespace PlattformChallenge.Infrastructure
             Table.Attach(entity);
         }
 
-
+       
     }
 }  

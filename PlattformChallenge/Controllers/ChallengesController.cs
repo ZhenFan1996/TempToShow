@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
@@ -25,10 +26,11 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
+        private readonly ILogger<ChallengesController> logger;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository
-            
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
+            ILogger<ChallengesController> looger
             )
         {
             _repository = repository;
@@ -36,7 +38,7 @@ namespace PlattformChallenge.Controllers
             _lRepository = lRepository;
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
-          
+            this.logger = looger;
         }
         #region list
 
@@ -217,6 +219,7 @@ namespace PlattformChallenge.Controllers
                         };
                         lc.Add(toAdd);
                         await _lcRepository.InsertAsync(toAdd);
+                        logger.LogInformation($"The new Challenge with id {newChallenge.C_Id} is created");
                     }
                 }
                 return RedirectToAction("Details", new { id = newChallenge.C_Id });
@@ -339,6 +342,7 @@ namespace PlattformChallenge.Controllers
                 try
                 {
                     await _repository.UpdateAsync(model.Challenge);
+                    logger.LogInformation($"The information of Challenge {model.Challenge.C_Id} is edited");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -376,8 +380,7 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
-            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);
-            ErrorViewModel errorViewModel = new ErrorViewModel();
+            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);         
 
             if (GetAvailableQuota(id) <= 0)
             {
@@ -402,6 +405,7 @@ namespace PlattformChallenge.Controllers
             try
             {
                 await _particiRepository.InsertAsync(newParti);
+                logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");
             }
             catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)
             {             

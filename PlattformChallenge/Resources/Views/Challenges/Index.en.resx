@@ -141,12 +141,6 @@
   <data name="FindByTitle" xml:space="preserve">
     <value>Find by title</value>
   </data>
-  <data name="Next" xml:space="preserve">
-    <value>Next</value>
-  </data>
-  <data name="Previous" xml:space="preserve">
-    <value>Previous</value>
-  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>

@@ -8,6 +8,7 @@ using PlattformChallenge.Models;
 using PlattformChallenge.ViewModels;
 using System.Security.Claims;
 using PlattformChallenge.Core.Model;
+using Microsoft.Extensions.Logging;
 
 namespace PlattformChallenge.Controllers
 {
@@ -15,13 +16,15 @@ namespace PlattformChallenge.Controllers
     {
         private UserManager<PlatformUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        private ILogger<AccountController> logger;
         private SignInManager<PlatformUser> _signInManager;
 
-        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
+            this.logger = logger;
 
         }
         /// <summary>
@@ -57,6 +60,7 @@ namespace PlattformChallenge.Controllers
                     if (result2.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, false);
+                        logger.LogInformation($"A new {model.RoleName} with id {user.Id} is created");
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -99,6 +103,7 @@ namespace PlattformChallenge.Controllers
                 var result = await _signInManager.PasswordSignInAsync(logInViewModel.Email, logInViewModel.Password, logInViewModel.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    logger.LogInformation($"The account {logInViewModel.Email} is successly log in");
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Error to login, please try again");

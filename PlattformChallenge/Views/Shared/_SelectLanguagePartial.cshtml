@@ -10,7 +10,12 @@
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
         .ToList();
-    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value + Context.Request.QueryString}";
+    var returnUrl = "~/";
+    if (!Context.Request.QueryString.ToString().Contains("handler"))
+    {
+        returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value + Context.Request.QueryString}";
+    }
+
 }
 
 <div>

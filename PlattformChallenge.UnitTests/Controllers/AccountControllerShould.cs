@@ -31,7 +31,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             _userManager = MockUserManager<PlatformUser>();
             _roleManager = MockRoleManager();
             _signInManager = MockSignInManager(_userManager);
-            _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object);
+            var logger = new Mock<ILogger<AccountController>>();
+            _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object,logger.Object);
         }
 
     

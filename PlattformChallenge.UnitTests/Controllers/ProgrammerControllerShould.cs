@@ -54,9 +54,12 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Name = "Zhen"
             };
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "Pro_1"));
+            mock.SetupGet(_ => _.Response.StatusCode).Returns(It.IsAny<int>);
             _mockUseerManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg);
+            var logger = new Mock<ILogger<ProgrammerController>>();
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object);
             _sut.ControllerContext = context;
+
         }
         /// <summary>
         /// [TestCase-ID: 24-1]
