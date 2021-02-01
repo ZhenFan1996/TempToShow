@@ -129,9 +129,6 @@
   <data name="Company" xml:space="preserve">
     <value>Unternehmen</value>
   </data>
-  <data name="ConfimInfo2" xml:space="preserve">
-    <value>Nach dem Schließen eines Challenges wird die Lösung mit der höchsten Punktzahl als Gewinner ausgewählt! Und Sie werden es nicht mehr ändern können! Außerdem, falls Sie nicht jede Lösung bewertet haben, können Sie dieses Challenge noch nicht abschließen.</value>
-  </data>
   <data name="ConfirmClose" xml:space="preserve">
     <value>Schließen bestätigen</value>
   </data>
@@ -140,6 +137,9 @@
   </data>
   <data name="ConfirmInfo1" xml:space="preserve">
     <value>SIE KÖNNEN EIN CHALLENGE NUR EINMAL "SCHLIESSEN"!</value>
+  </data>
+  <data name="ConfirmInfo2" xml:space="preserve">
+    <value>Nach dem Schließen eines Challenges wird die Lösung mit der höchsten Punktzahl als Gewinner ausgewählt! Und Sie werden es nicht mehr ändern können! Außerdem, falls Sie nicht jede Lösung bewertet haben, können Sie dieses Challenge noch nicht abschließen.</value>
   </data>
   <data name="CreateNewChallenge" xml:space="preserve">
     <value>Erstellen neues Challenge</value>

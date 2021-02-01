@@ -132,6 +132,9 @@
   <data name="CreateYourChallenge" xml:space="preserve">
     <value>Create your challenge</value>
   </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>The deadline is</value>
+  </data>
   <data name="DevLanguage" xml:space="preserve">
     <value>Development Languages</value>
   </data>

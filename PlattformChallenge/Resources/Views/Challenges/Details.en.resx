@@ -138,6 +138,9 @@
   <data name="Copy URL" xml:space="preserve">
     <value>Copy URL</value>
   </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Deadline</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>

@@ -147,6 +147,12 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "You already closed this challenge";
                 return View("Error", errorViewModel);
             }
+            if (toUpdate.First().Deadline <= DateTime.Now)
+            {
+                ErrorViewModel errorViewModel = new ErrorViewModel();
+                errorViewModel.RequestId = "You can not close the challenge before the deadline";
+                return View("Error", errorViewModel);
+            }
 
             var allSolutions = await (from p in _pRepository.GetAll()
                                  join s in _sRepository.GetAll()
@@ -165,12 +171,17 @@ namespace PlattformChallenge.Controllers
                     return View("Error", errorViewModel);
                 }
             }
-
-            var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
-            var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
-            var winnerId = participation.P_Id;
-            toUpdate.First().Winner_Id = winnerId;
-            toUpdate.First().Best_Solution_Id = bestSolution.s.S_Id;
+            if (allSolutions.Count > 0) {
+                var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
+                var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
+                var winnerId = participation.P_Id;
+                toUpdate.First().Winner_Id = winnerId;
+                toUpdate.First().Best_Solution_Id = bestSolution.s.S_Id;
+            }
+            else
+            {
+                toUpdate.First().Winner_Id = "NoWinner";
+            }
             try
             {
                 await _cRepository.UpdateAsync(toUpdate.First());
@@ -179,8 +190,7 @@ namespace PlattformChallenge.Controllers
             {
                 throw;
             }
-
-
+               
             return RedirectToAction("Index");
         }
 
@@ -202,11 +212,7 @@ namespace PlattformChallenge.Controllers
                 errorViewModel.RequestId = "there's no challenge with this id, please check again";
                 return View("Error", errorViewModel);
             }
-            if (challenge.Deadline <= DateTime.Now) {
-
-                errorViewModel.RequestId = "You can not close the challenge before the deadline";
-                return View("Error", errorViewModel);
-            }
+           
             if (_currUser.Id != challenge.Com_ID)
             {
                 errorViewModel.RequestId = "You don't have access to challenges from other companies";
