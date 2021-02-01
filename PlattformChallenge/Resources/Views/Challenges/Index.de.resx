@@ -135,12 +135,6 @@
   <data name="Next" xml:space="preserve">
     <value>Nächste</value>
   </data>
-  <data name="Previous" xml:space="preserve">
-    <value>Letzte</value>
-  </data>
-  <data name="Prize" xml:space="preserve">
-    <value>Preisgeld</value>
-  </data>
   <data name="Quota" xml:space="preserve">
     <value>Plätze</value>
   </data>

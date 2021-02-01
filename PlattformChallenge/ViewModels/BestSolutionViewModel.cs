@@ -1,12 +1,12 @@
-﻿using PagedList;
 using PlattformChallenge.Core.Model;
+using PlattformChallenge.Models;
 using System.ComponentModel.DataAnnotations;
 namespace PlattformChallenge.ViewModels
 {
     public class BestSolutionViewModel
     {
 
-        public IPagedList<Solution> Solutions { get; set; }
+        public PaginatedList<Solution> Solutions { get; set; }
         [Required]
         public string C_ID { get; set; }
 

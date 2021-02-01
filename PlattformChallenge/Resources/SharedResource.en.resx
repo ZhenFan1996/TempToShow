@@ -144,11 +144,17 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
   <data name="Points" xml:space="preserve">
     <value>Points</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
   </data>
   <data name="Quota" xml:space="preserve">
     <value>Quota</value>

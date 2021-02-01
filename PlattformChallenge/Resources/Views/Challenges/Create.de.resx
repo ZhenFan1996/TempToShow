@@ -132,6 +132,9 @@
   <data name="CreateYourChallenge" xml:space="preserve">
     <value>Dein Challenge erstellen</value>
   </data>
+  <data name="Deadline" xml:space="preserve">
+    <value>Abgabefrist</value>
+  </data>
   <data name="DevLanguage" xml:space="preserve">
     <value>Entwicklungssprachen</value>
   </data>
@@ -141,7 +144,7 @@
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximale Anzahl von Teilnehmern</value>
   </data>
-  <data name="Titel" xml:space="preserve">
+  <data name="Title" xml:space="preserve">
     <value>Titel von Ihrem Challenge</value>
   </data>
   <data name="WhenRelease" xml:space="preserve">

@@ -81,7 +81,8 @@
                                 <span asp-validation-for="@Model.SolutionFile"></span>
                             </dd>
                         </dl>
-                        <input asp-page-handler="Upload" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+                        <input asp-page-handler="Upload" asp-route-c_id="@Model.Participation.C_Id"class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+
                     </form>
                 </div>
             </div>}

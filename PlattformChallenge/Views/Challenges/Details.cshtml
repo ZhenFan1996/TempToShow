@@ -14,17 +14,12 @@
             }
         </script>
 
-    
-</head>
-<h1>
-    @Localizer["ChallengeDetails"]
-</h1>
+
+    <h1 class="row">@Localizer["ChallengeDetails"] </h1>
     <div>
-        <hr />
         <dl class="row">
             <dt class="col-sm-2">
                 @Localizer["Title"]
-                @*@Html.DisplayNameFor(model => model.Title)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Title)
@@ -32,48 +27,42 @@
 
             <dt class="col-sm-2 ">
                 @Localizer["Discription"]
-                @*@Html.DisplayNameFor(model => model.Content)*@
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Content)
+                @Html.Raw(Model.Content)
             </dd>
             <dt class="col-sm-2">
                 @Localizer["Prize"]
-                @*@Html.DisplayNameFor(model => model.Bonus)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Bonus)
             </dd>
             <dt class="col-sm-2">
                 @Localizer["ReleaseDate"]
-                @*@Html.DisplayNameFor(model => model.Release_Date)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Release_Date)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Deadline)
+                @Localizer["Deadline"]
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Deadline)
             </dd>
             <dt class="col-sm-2">
                 @Localizer["MaxParticipants"]
-                @*@Html.DisplayNameFor(model => model.Max_Participant)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Max_Participant)
             </dd>
             <dt class="col-sm-2">
                 @Localizer["AvailableQuota"]
-                @*@Html.DisplayNameFor(model => model.Available_Quota)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Available_Quota)
             </dd>
             <dt class="col-sm-2">
                 @Localizer["Company"]
-                @*@Html.DisplayNameFor(model => model.Company)*@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Company.Name)
@@ -81,7 +70,6 @@
 
             <dt class="col-sm-2">
                 @Localizer["DevLanguage"]
-                @*@Html.DisplayNameFor(model => model.Languages)*@
             </dt>
             <dd class="col-sm-10">
                 @for (int i = 0; i < Model.Languages.Count; i++)
@@ -96,7 +84,6 @@
                     }
                 }
             </dd>
-
             <dt class="col-sm-2">
                 @Localizer["WinnerAndSolution"]
             </dt>
@@ -105,27 +92,12 @@
             </dd>
         </dl>
     </div>
+    <div class="row">
+        @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
-
-    @*<div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0" nonce="x2kxQ5qf"></script>
-
-        <div class="fb-share-button" data-href="https://localhost:44305/Challenges/Details/@Model.C_Id" data-layout="button" data-size="small">
-            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
-               @Localizer["Share"] </a>
-        </div>*@
-    <div class="sharethis-inline-share-buttons"></div>
-    <div id="main">
-        <center><button onclick="copyUrl()">@Localizer["Copy URL"]</button></center>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
-
-                if (Model.Available_Quota > 0)
-                {
-
+            if (Model.Available_Quota > 0)
+            {
+                <div class="col-md-2">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#p">
                         @Localizer["TakePartIn"]
                     </button>
@@ -149,26 +121,19 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            }
+            else
+            {
+                <p>@Localizer["NoPlace"]</p>
+            }
 
-                }
-                else
-                {
-                    <p>@Localizer["NoPlace"]</p>
-                }
-
-            @*<div>
-                    @if (ViewContext.HttpContext.User.IsInRole("Company"))
-                    {
-                        <a   asp-action="Edit" asp-route-id="@Model.C_Id" class="btn btn-primary " >Edit</a>
-                    }
-                </div>*@
-            <div class="col-3">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
-            <div>
-                @if (ViewContext.HttpContext.User.IsInRole("Company"))
-                {
-                    <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
-                }
-            </div>
-
+        <div class="col-md-4">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
+        <div>
+            @if (ViewContext.HttpContext.User.IsInRole("Company"))
+            {
+                <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
+            }
         </div>
     </div>
+

@@ -52,7 +52,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             };
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "test-company"));
             _mockUserManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
-            _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object);
+            var logger = new Mock<ILogger<CompanyController>>();
+            _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object,logger.Object);
             _sut.ControllerContext = context;
         }
         /// <summary>
@@ -103,15 +104,13 @@ namespace PlattformChallenge.UnitTest.Controllers
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
             GetAllBuildParticipation();
-            _mockCRepo.Setup(m => m.FirstOrDefault(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+            _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                challenges.ElementAt(1));
-            _mockSRepo.Setup(s => s.GetAllListAsync(It.IsAny<Expression<Func<Solution, bool>>>())).Returns(
-               Task.FromResult((new List<Solution>()
-            {
-                      new Solution(){
+            _mockSRepo.Setup(s => s.FirstOrDefaultAsync(It.IsAny<Expression<Func<Solution, bool>>>())).ReturnsAsync(           
+               new Solution(){
                     S_Id="s3",
                     Point = 30
-                }})));
+                });
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2",
@@ -133,7 +132,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
             GetAllBuildParticipation();
-            _mockCRepo.Setup(m => m.FirstOrDefault(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+            _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                new Challenge()
                {
                    Winner_Id = "winner"
@@ -142,13 +141,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             {
                 CurrChallengeId = "c2"
             };
-            var result = await _sut.RateSolution(vm);
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("You can't rate solution anymore because this challenge is already closed", errorInfo);
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.RateSolution(vm));
+            Assert.Equal("You can't rate solution anymore because this challenge is already closed", ex.Message);
         }
 
         /// <summary>
@@ -161,7 +155,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             var challenges = GetAllBuildChallenge();
             GetAllBuildRatedSolution();
             var participations = GetAllBuildParticipation();
-            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(Task.FromResult(challenges));
+            _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(1));
             _mockPRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(
               Task.FromResult(participations.ElementAt(2)));
             var result = await _sut.CloseChallenge("c2") as RedirectToActionResult;
@@ -176,21 +170,15 @@ namespace PlattformChallenge.UnitTest.Controllers
         [Fact]
         public async Task CloseChallengeFailAlreadyClosed()
         {
-            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).
-                Returns(Task.FromResult(new List<Challenge>()
-            {
+            _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).
+                ReturnsAsync(
+            
                     new Challenge(){
                         C_Id="cC",
                     Winner_Id = "winner"
-                }}));
-
-            var result = await _sut.CloseChallenge("cC");
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
-            Assert.Equal("You already closed this challenge", errorInfo);
+                });
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.CloseChallenge("cC"));         
+            Assert.Equal("You already closed this challenge", ex.Message);
         }
 
 
@@ -204,15 +192,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
            GetAllBuildParticipation();
-            _mockCRepo.Setup(c => c.GetAllListAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(Task.FromResult(challenges));
-            var result = await _sut.CloseChallenge("c2");
-            Assert.IsType<ViewResult>(result);
-            var value = result as ViewResult;
-            var errorvm = value.Model as ErrorViewModel;
-            var errorInfo = errorvm.RequestId;
-            Assert.Equal("Error", value.ViewName);
+            _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(1));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.CloseChallenge("c2"));
             Assert.Equal("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
-                        "Please rate all solutions before closing a challenge", errorInfo);
+                        "Please rate all solutions before closing a challenge", ex.Message);
 
         }
 
