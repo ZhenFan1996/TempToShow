@@ -48,7 +48,7 @@ namespace PlattformChallenge.Controllers
         {
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             ViewBag.ErrorMessage = exceptionHandlerPathFeature.Error.Message;
-            logger.LogError($"Path:{exceptionHandlerPathFeature.Path},ErrorMessge{exceptionHandlerPathFeature.Error}"); 
+            logger.LogError($"Path:{exceptionHandlerPathFeature.Path},ErrorMessge{exceptionHandlerPathFeature.Error.Message}"); 
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
