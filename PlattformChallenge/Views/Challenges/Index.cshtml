@@ -1,10 +1,11 @@
 @using PlattformChallenge.Core.Model
-@model PaginatedList<Challenge>
+@model PlattformChallenge.ViewModels.ChallengeIndexViewModel
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 @{
     ViewData["Title"] = @Localizer["CurrentChallenges"];
 }
+
 
 <h1>@Localizer["CurrentChallenges"]</h1>
 @if (ViewContext.HttpContext.User.IsInRole("Company"))
@@ -15,15 +16,31 @@
 }
 
 @{ViewBag.Title = "Regitser";}
-<form asp-action="Index" method="get">
+<form asp-action="Index" method="post">
     <div class="form-actions no-color">
 
         <p>
-            @Localizer["FindByTitle"] <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
+            @Localizer["FindByTitle"] <input type="text" name="SearchString" asp-for="@Model.SearchString" value="@ViewData["CurrentFilter"]" />
+
             <a asp-action="Index">@Localizer["ShowFullList"]</a>
         </p>
     </div>
+
+    <div class="form-group">
+        <label class="control-label">@Localizer["DevLanguage"] </label>
+        @for (int i = 0; i < Model.Languages.Count; i++)
+        {
+
+            <div class="form-check-inline">
+                <input class="form-check-input" asp-for="@Model.IsSelected[i]" />
+                <label class="form-check-label" asp-for="@Model.IsSelected[i]">@Model.Languages.ElementAt(i).DevelopmentLanguage</label>
+                <input type="hidden" asp-for="@Model.Languages.ElementAt(i).Language_Id" />
+            </div>
+
+
+        }
+         @*@Html.HiddenFor(model => model.Challenges)*@
+        <input type="submit" value="Search" class="btn btn-default" />
 </form>
 
 
@@ -42,6 +59,7 @@
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Localizer["Date"]</a>
+
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">@Localizer["Quota"]</a>
@@ -50,7 +68,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Challenges)
         {
             <tr>
 
@@ -76,17 +94,17 @@
 
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Challenges.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Challenges.HasNextPage ? "disabled" : "";
 }
 
 <a asp-action="Index"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-pageNumber="@(Model.Challenges.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
     @SharedLocalizer["Previous"]
 </a>
 <a asp-action="Index"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-pageNumber="@(Model.Challenges.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
     @SharedLocalizer["Next"]
 </a>

@@ -40,7 +40,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAABAAAIAAAgAAAAABAAAIgAAABABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAIAAAgAACAABAAAIgAAABABAAAAAAAAAAAAA=</HashCode>
       <FileName>Controllers\AccountController.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -55,7 +55,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAQEgAAAABBAACAAAAAAEAgAAEAAECSAAGAAAAAAAA=</HashCode>
+      <HashCode>AAAQEgAAAABBAASCAAAAAEAgAAEAAECSAAGAAAAAAAA=</HashCode>
       <FileName>Controllers\ChallengesController.cs</FileName>
     </TypeIdentifier>
   </Class>

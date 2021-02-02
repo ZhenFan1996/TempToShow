@@ -50,12 +50,14 @@ namespace PlattformChallenge.Controllers
         /// <param name="sortOrder">which sort criteria</param>
         /// <param name="searchString">which search keyword</param>
         /// <returns>A view with list of current active challenges</returns>
+        [HttpGet]
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
+            ViewData["Languages"] = await _lRepository.GetAllListAsync();
             var challenges = from c
                              in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company)
                              select c;
@@ -87,9 +89,58 @@ namespace PlattformChallenge.Controllers
                     break;
             }
             int pageSize = 10;
-            return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
+            var model = new ChallengeIndexViewModel()
+            {
+                Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
+                Languages = await _lRepository.GetAllListAsync()
+            };
+            return View(model);
         }
         #endregion
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(ChallengeIndexViewModel model) {
+
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(model.SortOrder) ? "Date" : "";
+            ViewData["BonusSortParm"] = model.SortOrder == "Bonus" ? "bonus_desc" : "Bonus";
+            ViewData["QuotaSortParm"] = model.SortOrder == "Quota" ? "quota_desc" : "Quota";
+            ViewData["CurrentFilter"] = model.SearchString;
+            ViewData["Languages"] = await _lRepository.GetAllListAsync();
+            var challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company).Include(c => c.LanguageChallenges)
+                              select c;
+            var languages = await _lRepository.GetAllListAsync();
+           
+            if (!String.IsNullOrEmpty(model.SearchString))
+            {
+                
+                challenges = challenges.Where(c => c.Title.Contains(model.SearchString));
+            }
+            //IQueryable<Challenge>  result = challenges.Skip(challenges.Count());
+            IQueryable<Challenge> result = new List<Challenge>().AsQueryable();
+         
+            for (int i = 0; i < model.IsSelected.Count(); i++) {
+                if (model.IsSelected[i])
+                {
+                    var toadd = (from c in challenges
+                                join lc in _lcRepository.GetAll()
+                                on c.C_Id equals lc.C_Id
+                                where lc.Language_Id == languages.ElementAt(i).Language_Id
+                                select c).AsNoTracking();                                 
+                        result = result.Union(toadd);                
+                }
+                if (i == model.IsSelected.Count() - 1)
+                {
+                    int pageSize = 10;
+                    model.Challenges = PaginatedList<Challenge>.Create(result.AsNoTracking(), model.PageNumber ?? 1, pageSize);
+
+                }
+            }          
+            model.Languages = languages;
+            return View(model);
+
+        }
 
         /// <summary>
         ///  Get detail information of a certain challenge which is assigned by challenge Id
@@ -464,6 +515,19 @@ namespace PlattformChallenge.Controllers
             return challenge.AsNoTracking().First().Max_Participant - partiList.Count;
         }
 
+
+        private Expression<Func<LanguageChallenge, bool>> ExpressionCreate(Expression<Func<LanguageChallenge, bool>> pre,
+            int i ,List<Language> languages) {
+
+            if (pre == null)
+            {
+                return _ => _.Language_Id == languages.ElementAt(i).Language_Id;
+            }
+            else
+            {
+                return pre.
+            }
+        }
 
     }
 }
