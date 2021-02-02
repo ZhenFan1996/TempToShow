@@ -31,8 +31,8 @@ steps:
  
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(agent.builddirectory)/s/PlattformChallenge/bin/Release'
-    includeRootFolder: true
+    rootFolderOrFile: '$(agent.builddirectory)/s/PlattformChallenge/bin/Release/netcoreapp3.1/'
+    includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
