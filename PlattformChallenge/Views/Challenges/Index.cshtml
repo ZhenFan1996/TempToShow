@@ -1,7 +1,7 @@
 @using PlattformChallenge.Core.Model
 @model PaginatedList<Challenge>
 @inject IViewLocalizer Localizer
-
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 @{
     ViewData["Title"] = @Localizer["CurrentChallenges"];
 }
@@ -33,7 +33,6 @@
 
             <th>
                 @Localizer["Title"]
-                @*@Html.DisplayNameFor(model => model.Title)*@
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">@Localizer["Prize"]</a>
@@ -47,7 +46,7 @@
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">@Localizer["Quota"]</a>
             </th>
-           
+
         </tr>
     </thead>
     <tbody>
@@ -58,9 +57,6 @@
                 <td>
                     <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Bonus)
                 </td>
@@ -87,10 +83,10 @@
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
-    @Localizer["Previous"]
+    @SharedLocalizer["Previous"]
 </a>
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
-    @Localizer["Next"]
+    @SharedLocalizer["Next"]
 </a>

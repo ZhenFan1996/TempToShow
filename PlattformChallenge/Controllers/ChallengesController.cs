@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
@@ -25,11 +26,11 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Language> _lRepository;
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
-
+        private readonly ILogger<ChallengesController> logger;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
-            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository
-            
+            IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
+            ILogger<ChallengesController> looger
             )
         {
             _repository = repository;
@@ -37,7 +38,7 @@ namespace PlattformChallenge.Controllers
             _lRepository = lRepository;
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
-          
+            this.logger = looger;
         }
         #region list
 
@@ -97,25 +98,33 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
-            ErrorViewModel errorViewModel = new ErrorViewModel();
             if (id == null || id == "")
             {
-                errorViewModel.RequestId = "invalid challenge id value for details";
-                return View("Error", errorViewModel);
-                //return NotFound();
+                throw new Exception("invalid challenge id value for details");
+            
             }
-
-
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
                 .Include(c => c.LanguageChallenges)
                 .FirstOrDefaultAsync(m => m.C_Id == id);
 
-
             if (challenge == null)
             {
-                errorViewModel.RequestId = "there's no challenge with this id, please check again";
-                return View("Error", errorViewModel);
+                Response.StatusCode = 404;
+                @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
+                return View("NotFound");
+            }
+            bool canTakePartIn = true;
+            var user = _pRepository.GetAll().Include(p => p.Participations).FirstOrDefault(p => p.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            if (user!=null&&user.Participations != null)
+            {
+                foreach (var par in user.Participations)
+                {
+                    if (par.C_Id == id)
+                    {
+                        canTakePartIn = false;
+                    }
+                }
             }
             var detail = new ChallengeDetailViewModel()
             {
@@ -129,15 +138,16 @@ namespace PlattformChallenge.Controllers
                 Deadline =challenge.Deadline,
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
-                Best_Solution_Id = challenge.Best_Solution_Id
+                Best_Solution_Id = challenge.Best_Solution_Id,
+                CanTakePartIn = canTakePartIn
             };
+
+      
 
             if (detail.Winner_Id != null)
             {
                 detail.Winner = _pRepository.FirstOrDefault(u => u.Id == challenge.Winner_Id);
             }
-
-
 
             var langugaes = from c in _repository.GetAll()
                             join lc in _lcRepository.GetAll()
@@ -209,6 +219,7 @@ namespace PlattformChallenge.Controllers
                         };
                         lc.Add(toAdd);
                         await _lcRepository.InsertAsync(toAdd);
+                        logger.LogInformation($"The new Challenge with id {newChallenge.C_Id} is created");
                     }
                 }
                 return RedirectToAction("Details", new { id = newChallenge.C_Id });
@@ -235,8 +246,7 @@ namespace PlattformChallenge.Controllers
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
             if (id == null || id == "")
             {
-                errorViewModel.RequestId = "invalid challenge id value for editing";
-                return View("Error", errorViewModel);
+                throw new Exception("invalid challenge id value for editing");
             }
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
@@ -244,20 +254,20 @@ namespace PlattformChallenge.Controllers
                 .FirstOrDefaultAsync(c => c.C_Id == id);
             if (challenge == null)
             {
-                errorViewModel.RequestId = "there's no challenge with this id, please check again";
-                return View("Error", errorViewModel);
+                Response.StatusCode = 404;
+                ViewBag.ErrorMessage = $"there's no challenge with this id ={id}, please check again";
+                return View("NotFound");
             }
 
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) != challenge.Com_ID)
             {
-                errorViewModel.RequestId = "You can't edit challenge from other company";
-                return View("Error", errorViewModel);
+                throw new Exception("You can't edit challenge from other company");
             }
 
             if(challenge.Winner_Id != null)
             {
-                errorViewModel.RequestId = "You can't edit a closed challenge";
-                return View("Error", errorViewModel);
+                throw new Exception("You can not edit a closed challenge"); 
+                
             }
 
             ChallengeEditViewModel model = new ChallengeEditViewModel();
@@ -332,6 +342,7 @@ namespace PlattformChallenge.Controllers
                 try
                 {
                     await _repository.UpdateAsync(model.Challenge);
+                    logger.LogInformation($"The information of Challenge {model.Challenge.C_Id} is edited");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -369,22 +380,21 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Programmer")]
         public async Task<IActionResult> ParticipateChallenge(string id)
         {
-            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);
-            ErrorViewModel errorViewModel = new ErrorViewModel();
+            var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);         
 
             if (GetAvailableQuota(id) <= 0)
             {
                 { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
                   // the button which links to this method will not be showed. e.g. this else-condition is not
                   // supposed to be entered
-                    errorViewModel.RequestId = "Theres no place anymore";
-                    return View("Error", errorViewModel);
+                    throw new Exception("Theres no place anymore");
+                    
                 }
             }
 
             if (challenge.Deadline < DateTime.Now) {
-                errorViewModel.RequestId = "Registration time has passed";
-                return View("Error", errorViewModel);
+                throw new Exception("Registration time has passed");
+                
             }
 
             Participation newParti = new Participation()
@@ -395,11 +405,11 @@ namespace PlattformChallenge.Controllers
             try
             {
                 await _particiRepository.InsertAsync(newParti);
+                logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");
             }
             catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)
-            {
-                errorViewModel.RequestId = "You have already participated this challenge";
-                return View("Error", errorViewModel);
+            {             
+               throw new Exception("You have already participated this challenge");            
             }
             return View(challenge);
         }

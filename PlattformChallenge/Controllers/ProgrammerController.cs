@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using PlattformChallenge.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace PlattformChallenge.Controllers
 {
@@ -25,14 +26,18 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Participation> _pRepository;
         private readonly IRepository<Solution> _sRepository;
         private readonly ConfigProviderService _appcfg;
+        private readonly ILogger<ProgrammerController> logger;
 
-        public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg)
+        public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg,
+            ILogger<ProgrammerController> logger
+            )
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
             this._pRepository = pRepository;
             this._sRepository = sRepository;
             _appcfg = appcfg;
+            this.logger = logger;
         }
         /// <summary>
         /// Get current user information and challenges participated in and return to the page
@@ -74,7 +79,11 @@ namespace PlattformChallenge.Controllers
             {
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
-                await _sRepository.DeleteAsync(par.Solution);
+                if (par.Solution != null)
+                {
+                    await _sRepository.DeleteAsync(par.Solution);
+                }
+                logger.LogInformation($"The Programmer with id {par.P_Id} cancel the challenge{par.C_Id}" );
                 return RedirectToAction("Index");
             }
         }
@@ -131,7 +140,7 @@ namespace PlattformChallenge.Controllers
 
                     await _sRepository.InsertAsync(s);
                     par.S_Id = s.S_Id;
-                    await _pRepository.UpdateAsync(par);
+                    await _pRepository.UpdateAsync(par);                  
                 }
                 else
                 {
@@ -143,6 +152,7 @@ namespace PlattformChallenge.Controllers
                     await _pRepository.UpdateAsync(par);
 
                 }
+                logger.LogInformation($"The Programmer with id{par.P_Id} update the solution with id{par.S_Id} for the challenge with id {par.C_Id}");
                 model.Challenge = c;
                 par.Solution = s;
                 model.Participation = par;
