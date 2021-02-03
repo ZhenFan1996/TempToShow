@@ -23,6 +23,8 @@ namespace PlattformChallenge.Core.Model
 
         public int? Point { get; set; }
 
+        public bool AllowUpdate { get; set;}
+
         public Participation Participation { get; set; }
     }
 }
