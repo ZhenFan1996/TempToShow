@@ -12,6 +12,7 @@ else
     <table class="table col-lg-12">
         <thead>
             <tr>
+                <th>@Localizer["Username"]</th>
                 <th>@Localizer["Solution ID"]</th>
                 <th>@Localizer["Status"]</th>
                 <th>@Localizer["SubmitDate"]</th>
@@ -21,37 +22,42 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Solutions)
-            {
 
+            @*@foreach (var item in Model.Solutions)*@
+            @for (int i = 0; i < Model.Solutions.Count; i++)
+
+            {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.S_Id)
+                        @Model.ProgrammerNameList.ElementAt(i)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => @Model.Solutions.ElementAt(i).S_Id)
 
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-
+                        @*@Html.DisplayFor(modelItem => item.Status)*@
+                        @Html.DisplayFor(modelItem => @Model.Solutions.ElementAt(i).Status)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Submit_Date)
-
+                        @*@Html.DisplayFor(modelItem => item.Submit_Date)*@
+                        @Html.DisplayFor(modelItem => @Model.Solutions.ElementAt(i).Submit_Date)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Point)
-
+                        @*@Html.DisplayFor(modelItem => item.Point)*@
+                        @Html.DisplayFor(modelItem => @Model.Solutions.ElementAt(i).Point)
                     </td>
 
                     <td>
-                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@item.S_Id" class="btn btn-primary">@Localizer["Download"]</a>
+                        <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@Model.Solutions.ElementAt(i).S_Id" class="btn btn-primary">@Localizer["Download"]</a>
                     </td>
-                    
+
                     <td>
                         @if (!Model.CurrChallenge.IsClose)
                         {
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id">@Localizer["Rate"]</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@Model.Solutions.ElementAt(i).S_Id">@Localizer["Rate"]</button>
 
-                            <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="tips-@Model.Solutions.ElementAt(i).S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -69,12 +75,12 @@ else
 
                                             <div class="form-group">
                                                 <label asp-for="@Model.Point" class="control-label">@Localizer["Point"]</label>
-                                                <input asp-for="@Model.Point" class="form-control" value="@item.Point" />
+                                                <input asp-for="@Model.Point" class="form-control" value="@Model.Solutions.ElementAt(i).Point" />
                                                 <span asp-validation-for="@Model.Point" class="text-danger"></span>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
+                                                <input type="hidden" asp-for="@Model.CurrSolutionId" value="@Model.Solutions.ElementAt(i).S_Id" />
                                             </div>
                                             <div class="modal-footer">
                                                 <div class="form-group">
@@ -93,10 +99,9 @@ else
                         }
 
                     </td>
-
-
                 </tr>
             }
+
         </tbody>
 
     </table>

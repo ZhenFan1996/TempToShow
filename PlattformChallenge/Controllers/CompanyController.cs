@@ -60,7 +60,10 @@ namespace PlattformChallenge.Controllers
         /// <returns>A View with all solution list</returns>
         public async Task<IActionResult> AllSolutions(string Id)
         {
-            IllegalOpCheck(Id);
+            if (IllegalOpCheck(Id) != null)
+            {
+                return View("Error");
+            }
             var solutions = await (from p in _pRepository.GetAll()
                                    join s in _sRepository.GetAll()
                                    on p.S_Id equals s.S_Id
@@ -73,10 +76,20 @@ namespace PlattformChallenge.Controllers
             {
                 solutionList.Add(c.s);
             }
+
+            var pNameList = new List<String>();
+            foreach (var c in solutions)
+            {
+                PlatformUser currProgrammer = _userManger.FindByIdAsync(c.p.P_Id).Result;
+                string pName = currProgrammer.Name;
+                pNameList.Add(pName);
+            }
+
             var currCha = _cRepository.FirstOrDefault(c => c.C_Id == Id);
             var model = new AllSolutionsViewModel()
             {
                 Solutions = solutionList,
+                ProgrammerNameList = pNameList,
                 CurrChallenge = currCha,
                 CurrChallengeId = Id
             };
@@ -133,10 +146,14 @@ namespace PlattformChallenge.Controllers
         /// <returns>A View back to portal index</returns>
         public async Task<IActionResult> CloseChallenge(String Id)
         {
-            IllegalOpCheck(Id);
+            if (IllegalOpCheck(Id) != null)
+            {
+                return View("Error");
+            }
+           
             var toUpdate = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == Id);
             if (toUpdate.IsClose)
-            //This should'nt suppose to happen in normal situation, because the close button will be deactived
+            //This shouldn't suppose to happen in normal situation, because the close button will be deactived
             {
                 ViewBag.Message = string.Format("You already closed this challenge");
                 return View("Index");
@@ -146,8 +163,7 @@ namespace PlattformChallenge.Controllers
             {
                 ViewBag.Message = string.Format("You can not close the challenge before the deadline");
                 return View("Index");
-                //ModelState.AddModelError("Error", "You can not close the challenge before the deadline");
-                //throw new Exception("You can not close the challenge before the deadline");             
+
             }
             else
             {
@@ -162,8 +178,9 @@ namespace PlattformChallenge.Controllers
                 {
                     if (s.s.Point == null || s.s.Point == 0)
                     {
-                        throw new Exception("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
-                            "Please rate all solutions before closing a challenge");
+                        ViewBag.Message = "There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                            "Please rate all solutions before closing a challenge";
+                        return View("Index");
                     }
                 }
                 if (allSolutions.Count > 0)
@@ -199,7 +216,7 @@ namespace PlattformChallenge.Controllers
         {
             if (Id == null || Id == "")
             {
-                Response.StatusCode = 404;
+                Response.StatusCode = 400;
                 @ViewBag.ErrorMessage = "Invalid empty challenge id value";
                 return View("NotFound");
             }
@@ -216,7 +233,7 @@ namespace PlattformChallenge.Controllers
            
             if (_currUser.Id != challenge.Com_ID)
             {
-                Response.StatusCode = 404;
+                Response.StatusCode = 403;
                 @ViewBag.ErrorMessage = "You don't have access to challenges from other companies";
                 return View("Error");
             }

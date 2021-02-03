@@ -11,6 +11,8 @@ namespace PlattformChallenge.ViewModels
     {
         public List<Solution> Solutions { get; set; }
         public Challenge CurrChallenge { get; set; }
+
+        public List<String> ProgrammerNameList { get; set; }
         public String CurrChallengeId { get; set; }
 
         public String CurrSolutionId { get; set; }
