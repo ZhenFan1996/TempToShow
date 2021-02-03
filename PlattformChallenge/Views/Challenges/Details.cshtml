@@ -4,18 +4,31 @@
     ViewData["Title"] = @Localizer["Details"];
 }
 <head>
-        <title>details</title>
-        <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
-        <script>
+    <title>details</title>
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
+    @*<script>
             function copyUrl() {
-                var url = window.location.href;
+                //var url = window.location.url;
+                urlCopied.innerHTML = window.location.href;
                 copyUrl(url);
                 alert(@Localizer["Success!"]);
             }
+        </script>*@
+       <script type="text/javascript">
+              function Copy() {
+                var Url = document.getElementById("paste-box");
+                Url.value = window.location.href;
+                Url.focus();
+                Url.select();
+                document.document.getElementById("Copy");
+    }
         </script>
 
 
-    <h1 class="row">@Localizer["ChallengeDetails"] </h1>
+</head>
+<h1>
+    @Localizer["ChallengeDetails"]
+</h1>
     <div>
         <dl class="row">
             <dt class="col-sm-2">
@@ -92,8 +105,36 @@
             </dd>
         </dl>
     </div>
-    <div class="row">
-        @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
+
+
+    @*<div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0" nonce="x2kxQ5qf"></script>
+
+        <div class="fb-share-button" data-href="https://localhost:44305/Challenges/Details/@Model.C_Id" data-layout="button" data-size="small">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+               @Localizer["Share"] </a>
+        </div>*@
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+
+
+    @*<div id="main">
+        <center><button onclick="copyUrl()">@Localizer["Copy URL"]</button></center>
+    </div>*@
+    <div>
+
+        <center>
+            <input type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
+            <br />
+        </center>
+        <center><textarea id="paste-box" rows="1" cols="60"></textarea></center>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
 
             if (Model.Available_Quota > 0)
             {
