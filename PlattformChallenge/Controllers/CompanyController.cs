@@ -163,10 +163,12 @@ namespace PlattformChallenge.Controllers
                 var winnerId = participation.P_Id;
                 toUpdate.Winner_Id = winnerId;
                 toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
+                toUpdate.IsClose = true;
             }
             else
             {
                 toUpdate.Winner_Id = "NoWinner";
+                toUpdate.IsClose = true;
             }
             try
             {

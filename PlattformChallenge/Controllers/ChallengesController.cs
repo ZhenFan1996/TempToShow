@@ -57,7 +57,8 @@ namespace PlattformChallenge.Controllers
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
             var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company)
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == false)
+                             .Include(c => c.Company)
                              select c;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -91,6 +92,7 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
+        #region details
         /// <summary>
         ///  Get detail information of a certain challenge which is assigned by challenge Id
         /// </summary>
@@ -160,7 +162,7 @@ namespace PlattformChallenge.Controllers
             detail.Languages = await langugaes.ToListAsync();
             return View(detail);
         }
-       
+        #endregion
 
         #region Create
         /// <summary>

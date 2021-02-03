@@ -127,7 +127,7 @@
     <value>Are you sure?</value>
   </data>
   <data name="participated Challenges" xml:space="preserve">
-    <value>participated Challenges</value>
+    <value>Participated Challenges: </value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Upload</value>
