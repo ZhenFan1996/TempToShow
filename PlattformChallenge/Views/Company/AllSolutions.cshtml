@@ -45,45 +45,52 @@ else
                     <td>
                         <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@item.S_Id" class="btn btn-primary">@Localizer["Download"]</a>
                     </td>
-
-
+                    
                     <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id">@Localizer["Rate"]</button>
+                        @if (!Model.CurrChallenge.IsClose)
+                        {
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.S_Id">@Localizer["Rate"]</button>
 
-                        <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel"> @Localizer["RateInfoTitle"]  </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @Localizer["RateInfo"]
-                                    </div>
-                                    <form asp-controller="Company" asp-action="RateSolution" method="post">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                        <input type="hidden" asp-for="@Model.CurrChallengeId" />
-
-                                        <div class="form-group">
-                                            <label asp-for="@Model.Point" class="control-label">@Localizer["Point"]</label>
-                                            <input asp-for="@Model.Point" class="form-control" value="@item.Point"/>
-                                            <span asp-validation-for="@Model.Point" class="text-danger"></span>
+                            <div class="modal fade" id="tips-@item.S_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"> @Localizer["RateInfoTitle"]  </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
-
-                                        <div class="form-group">
-                                            <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
+                                        <div class="modal-body">
+                                            @Localizer["RateInfo"]
                                         </div>
-                                        <div class="modal-footer">
+                                        <form asp-controller="Company" asp-action="RateSolution" method="post">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input type="hidden" asp-for="@Model.CurrChallengeId" />
+
                                             <div class="form-group">
-                                                <input type="submit" value="Rate" class="btn btn-primary" />
+                                                <label asp-for="@Model.Point" class="control-label">@Localizer["Point"]</label>
+                                                <input asp-for="@Model.Point" class="form-control" value="@item.Point" />
+                                                <span asp-validation-for="@Model.Point" class="text-danger"></span>
                                             </div>
-                                        </div>
-                                    </form>
+
+                                            <div class="form-group">
+                                                <input type="hidden" asp-for="@Model.CurrSolutionId" value="@item.S_Id" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="form-group">
+                                                    <input type="submit" value="Rate" class="btn btn-primary" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                        }
+                        else
+                        {
+                            <span> @Localizer["Closed"] </span>
+                        }
 
                     </td>
 

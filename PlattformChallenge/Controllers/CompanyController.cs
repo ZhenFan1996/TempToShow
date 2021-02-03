@@ -73,10 +73,11 @@ namespace PlattformChallenge.Controllers
             {
                 solutionList.Add(c.s);
             }
-
+            var currCha = _cRepository.FirstOrDefault(c => c.C_Id == Id);
             var model = new AllSolutionsViewModel()
             {
                 Solutions = solutionList,
+                CurrChallenge = currCha,
                 CurrChallengeId = Id
             };
             return View(model);
@@ -101,9 +102,11 @@ namespace PlattformChallenge.Controllers
                
                 var challengeId = solItem.First().p.C_Id;
                 var challenge = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == challengeId);
-                if (challenge.Winner_Id != null)
+                if (challenge.IsClose)
+                //This shouldn't suppose to happen in normal situation, because the rate button will be deactived
                 {
-                    throw new Exception("You can't rate solution anymore because this challenge is already closed");
+                    ViewBag.Message = string.Format("You can't rate solution anymore because this challenge is already closed");
+                    return View("Index");
                 }
 
 
@@ -130,54 +133,62 @@ namespace PlattformChallenge.Controllers
         /// <returns>A View back to portal index</returns>
         public async Task<IActionResult> CloseChallenge(String Id)
         {
-
+            IllegalOpCheck(Id);
             var toUpdate = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == Id);
-            if (toUpdate.Winner_Id != null)
+            if (toUpdate.IsClose)
+            //This should'nt suppose to happen in normal situation, because the close button will be deactived
             {
-                throw new Exception("You already closed this challenge");
+                ViewBag.Message = string.Format("You already closed this challenge");
+                return View("Index");
             }
 
-            if (toUpdate.Deadline >= DateTime.Now)
+            else if (toUpdate.Deadline >= DateTime.Now)
             {
-                throw new Exception("You can not close the challenge before the deadline");             
-            }
-
-            var allSolutions = await (from p in _pRepository.GetAll()
-                                 join s in _sRepository.GetAll()
-                                 on p.S_Id equals s.S_Id
-                                 where p.C_Id == Id
-                                 select new { s, p }
-                                 ).ToListAsync();
-
-            foreach(var s in allSolutions)
-            {
-                if(s.s.Point == null || s.s.Point == 0)
-                {                 
-                    throw new Exception("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
-                        "Please rate all solutions before closing a challenge");
-                }
-            }
-            if (allSolutions.Count > 0) {
-                var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
-                var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
-                var winnerId = participation.P_Id;
-                toUpdate.Winner_Id = winnerId;
-                toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
-                toUpdate.IsClose = true;
+                ViewBag.Message = string.Format("You can not close the challenge before the deadline");
+                return View("Index");
+                //ModelState.AddModelError("Error", "You can not close the challenge before the deadline");
+                //throw new Exception("You can not close the challenge before the deadline");             
             }
             else
             {
-                toUpdate.Winner_Id = "NoWinner";
-                toUpdate.IsClose = true;
-            }
-            try
-            {
-                await _cRepository.UpdateAsync(toUpdate);
-                logger.LogInformation($"The challenge with id {toUpdate.C_Id} is closed.");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
+                var allSolutions = await (from p in _pRepository.GetAll()
+                                          join s in _sRepository.GetAll()
+                                          on p.S_Id equals s.S_Id
+                                          where p.C_Id == Id
+                                          select new { s, p }
+                                     ).ToListAsync();
+
+                foreach (var s in allSolutions)
+                {
+                    if (s.s.Point == null || s.s.Point == 0)
+                    {
+                        throw new Exception("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                            "Please rate all solutions before closing a challenge");
+                    }
+                }
+                if (allSolutions.Count > 0)
+                {
+                    var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
+                    var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
+                    var winnerId = participation.P_Id;
+                    toUpdate.Winner_Id = winnerId;
+                    toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
+                    toUpdate.IsClose = true;
+                }
+                else
+                {
+                    toUpdate.Winner_Id = "NoWinner";
+                    toUpdate.IsClose = true;
+                }
+                try
+                {
+                    await _cRepository.UpdateAsync(toUpdate);
+                    logger.LogInformation($"The challenge with id {toUpdate.C_Id} is closed.");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
             }
                
             return RedirectToAction("Index");
@@ -186,10 +197,11 @@ namespace PlattformChallenge.Controllers
 
             private ViewResult IllegalOpCheck(String Id)
         {
-            ErrorViewModel errorViewModel = new ErrorViewModel();
             if (Id == null || Id == "")
-            {               
-                throw new Exception("invalid empty challenge id value");
+            {
+                Response.StatusCode = 404;
+                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                return View("NotFound");
             }
            Challenge challenge =  _cRepository.GetAll()
                 .Include(c => c.Company)
@@ -204,7 +216,9 @@ namespace PlattformChallenge.Controllers
            
             if (_currUser.Id != challenge.Com_ID)
             {
-                throw new Exception("You don't have access to challenges from other companies");
+                Response.StatusCode = 404;
+                @ViewBag.ErrorMessage = "You don't have access to challenges from other companies";
+                return View("Error");
             }
 
             return null;
