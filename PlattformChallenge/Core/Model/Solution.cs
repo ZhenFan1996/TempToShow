@@ -21,9 +21,7 @@ namespace PlattformChallenge.Core.Model
 
         public string FileName { get; set; }
 
-        public int? Point { get; set; }
-
-        public bool AllowUpdate { get; set;}
+        public int? Point { get; set; }     
 
         public Participation Participation { get; set; }
     }
