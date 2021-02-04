@@ -57,7 +57,8 @@ namespace PlattformChallenge.Controllers
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
             var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company)
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == false)
+                             .Include(c => c.Company)
                              select c;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -91,6 +92,7 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
+        #region details
         /// <summary>
         ///  Get detail information of a certain challenge which is assigned by challenge Id
         /// </summary>
@@ -100,8 +102,10 @@ namespace PlattformChallenge.Controllers
         {
             if (id == null || id == "")
             {
-                throw new Exception("invalid challenge id value for details");
-            
+                Response.StatusCode = 400;
+                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                return View("NotFound");
+
             }
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
@@ -160,7 +164,7 @@ namespace PlattformChallenge.Controllers
             detail.Languages = await langugaes.ToListAsync();
             return View(detail);
         }
-       
+        #endregion
 
         #region Create
         /// <summary>
@@ -190,10 +194,26 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
+            if (model.Release_Date < DateTime.Now)
+            {
+                ViewBag.Message = "You can only release challenge in the future";
+                return View("Create");
+                //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                //return View(model);
+            }
+            if (model.Deadline <= model.Release_Date)
+            {
+                ViewBag.Message = "Deadline must be after release date";
+                return View("Create");
+                //ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                //return View(model);
+            }
+
             if (ModelState.IsValid)
             {
+                
                 List<Language> languages = await _lRepository.GetAllListAsync();
-
+            
                 Challenge newChallenge = new Challenge
                 {
                     C_Id = Guid.NewGuid().ToString(),
@@ -242,11 +262,13 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Edit(string id)
 
         {
-            ErrorViewModel errorViewModel = new ErrorViewModel();
+           
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
             if (id == null || id == "")
             {
-                throw new Exception("invalid challenge id value for editing");
+                Response.StatusCode = 400;
+                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                return View("NotFound");
             }
             var challenge = await _repository.GetAll()
                 .Include(c => c.Company)
@@ -261,13 +283,17 @@ namespace PlattformChallenge.Controllers
 
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) != challenge.Com_ID)
             {
-                throw new Exception("You can't edit challenge from other company");
+                Response.StatusCode = 403;
+                ViewBag.ErrorMessage = "You don't have access to challenges from other companies";
+                return View("Error");
             }
 
-            if(challenge.Winner_Id != null)
+            if(challenge.IsClose)
             {
-                throw new Exception("You can not edit a closed challenge"); 
-                
+                Response.StatusCode = 403;
+                ViewBag.Message = string.Format("You already closed this challenge, can't edit anymore");
+                return View("Error");
+
             }
 
             ChallengeEditViewModel model = new ChallengeEditViewModel();
@@ -294,7 +320,7 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-
+            
             if (ModelState.IsValid)
             {
                 int bonus = GetCurrentBonus(model.Challenge.C_Id);
@@ -310,6 +336,11 @@ namespace PlattformChallenge.Controllers
                 if (alreadyParticiCount > model.Challenge.Max_Participant)
                 {
                     ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
+                    return View(model);
+                }
+                if (model.Challenge.Deadline <= model.Challenge.Release_Date)
+                {
+                    ModelState.AddModelError(string.Empty, "Deadline must be after release date");
                     return View(model);
                 }
 

@@ -7,14 +7,15 @@
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">@Localizer["An error occurred while processing your request"].</h2>
 
-@if (Model.ShowRequestId)
+@*@if (Model.ShowRequestId)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
-}<p>
-    <strong>Reason:</strong> <code>@ViewBag.ErrorMessage</code>
-    </p>
+}*@
+<p>
+    <strong><code>@ViewBag.ErrorMessage</code></strong>
+</p>
 <p>
     @Html.ActionLink("Click here go back to homepage.", "Index", "Home")
 </p>

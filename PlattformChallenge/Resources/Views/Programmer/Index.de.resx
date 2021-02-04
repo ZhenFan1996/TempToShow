@@ -127,7 +127,7 @@
     <value>Bist du Sicher?</value>
   </data>
   <data name="Participated Challenges" xml:space="preserve">
-    <value>Teilgenommene Challenges</value>
+    <value>Teilgenommene Challenges: </value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Hochladen</value>
