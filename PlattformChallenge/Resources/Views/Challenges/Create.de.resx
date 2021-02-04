@@ -148,6 +148,6 @@
     <value>Titel von Ihrem Challenge</value>
   </data>
   <data name="WhenRelease" xml:space="preserve">
-    <value>Ab welchen Tag soll das Challenge veröffentlichen?</value>
+    <value>Ab wann soll das Challenge veröffentlichen?</value>
   </data>
 </root>

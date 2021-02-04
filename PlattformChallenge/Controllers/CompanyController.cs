@@ -118,7 +118,7 @@ namespace PlattformChallenge.Controllers
                 if (challenge.IsClose)
                 //This shouldn't suppose to happen in normal situation, because the rate button will be deactived
                 {
-                    ViewBag.Message = string.Format("You can't rate solution anymore because this challenge is already closed");
+                    ViewBag.Message = "You can't rate solution anymore because this challenge is already closed";
                     return View("Index");
                 }
 
