@@ -51,13 +51,14 @@ namespace PlattformChallenge.Controllers
         /// <param name="searchString">which search keyword</param>
         /// <returns>A view with list of current active challenges</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString)
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
             ViewData["Languages"] = await _lRepository.GetAllListAsync();
+            ViewData["LanguagesFilter"] = isSelected;
             var challenges = from c
                              in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company)
                              select c;
@@ -65,8 +66,6 @@ namespace PlattformChallenge.Controllers
             {
                 challenges = challenges.Where(c => c.Title.Contains(searchString));
             }
-
-
             switch (sortOrder)
             {
                 case "Bonus":
@@ -88,6 +87,17 @@ namespace PlattformChallenge.Controllers
                     challenges = challenges.OrderByDescending(c => c.Release_Date);
                     break;
             }
+            if (isSelected.Count() != 0)
+            {
+                IEnumerable<string> lId = isSelected.Select((sel, idx) => (sel, (idx + 1).ToString())).Where(l => l.ToTuple().Item1).Select(l => l.Item2);
+                challenges = from ch in(from c in challenges
+                             join lc in _lcRepository.GetAll()
+                             on c.C_Id equals lc.C_Id
+                             where lId.Contains(lc.Language_Id)
+                             select c).Distinct()
+                             orderby ch.Release_Date descending
+                             select ch;               
+            }
             int pageSize = 10;
             var model = new ChallengeIndexViewModel()
             {
@@ -99,48 +109,6 @@ namespace PlattformChallenge.Controllers
         #endregion
 
 
-        [HttpPost]
-        public async Task<IActionResult> Index(ChallengeIndexViewModel model) {
-
-            ViewData["DateSortParm"] = String.IsNullOrEmpty(model.SortOrder) ? "Date" : "";
-            ViewData["BonusSortParm"] = model.SortOrder == "Bonus" ? "bonus_desc" : "Bonus";
-            ViewData["QuotaSortParm"] = model.SortOrder == "Quota" ? "quota_desc" : "Quota";
-            ViewData["CurrentFilter"] = model.SearchString;
-            ViewData["Languages"] = await _lRepository.GetAllListAsync();
-            var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now).Include(c => c.Company).Include(c => c.LanguageChallenges)
-                              select c;
-            var languages = await _lRepository.GetAllListAsync();
-           
-            if (!String.IsNullOrEmpty(model.SearchString))
-            {
-                
-                challenges = challenges.Where(c => c.Title.Contains(model.SearchString));
-            }
-            //IQueryable<Challenge>  result = challenges.Skip(challenges.Count());
-            IQueryable<Challenge> result = new List<Challenge>().AsQueryable();
-         
-            for (int i = 0; i < model.IsSelected.Count(); i++) {
-                if (model.IsSelected[i])
-                {
-                    var toadd = (from c in challenges
-                                join lc in _lcRepository.GetAll()
-                                on c.C_Id equals lc.C_Id
-                                where lc.Language_Id == languages.ElementAt(i).Language_Id
-                                select c).AsNoTracking();                                 
-                        result = result.Union(toadd);                
-                }
-                if (i == model.IsSelected.Count() - 1)
-                {
-                    int pageSize = 10;
-                    model.Challenges = PaginatedList<Challenge>.Create(result.AsNoTracking(), model.PageNumber ?? 1, pageSize);
-
-                }
-            }          
-            model.Languages = languages;
-            return View(model);
-
-        }
 
         /// <summary>
         ///  Get detail information of a certain challenge which is assigned by challenge Id
@@ -516,18 +484,18 @@ namespace PlattformChallenge.Controllers
         }
 
 
-        private Expression<Func<LanguageChallenge, bool>> ExpressionCreate(Expression<Func<LanguageChallenge, bool>> pre,
-            int i ,List<Language> languages) {
+        //private Expression<Func<LanguageChallenge, bool>> ExpressionCreate(Expression<Func<LanguageChallenge, bool>> pre,
+        //    int i ,List<Language> languages) {
 
-            if (pre == null)
-            {
-                return _ => _.Language_Id == languages.ElementAt(i).Language_Id;
-            }
-            else
-            {
-                return pre.
-            }
-        }
+        //    if (pre == null)
+        //    {
+        //        return _ => _.Language_Id == languages.ElementAt(i).Language_Id;
+        //    }
+        //    else
+        //    {
+        //        return pre.
+        //    }
+        //}
 
     }
 }

@@ -8,6 +8,8 @@
 
 
 <h1>@Localizer["CurrentChallenges"]</h1>
+<div class="container">
+
 @if (ViewContext.HttpContext.User.IsInRole("Company"))
 {
     <p>
@@ -16,7 +18,7 @@
 }
 
 @{ViewBag.Title = "Regitser";}
-<form asp-action="Index" method="post">
+<form asp-action="Index" method="get">
     <div class="form-actions no-color">
 
         <p>
@@ -30,17 +32,19 @@
         <label class="control-label">@Localizer["DevLanguage"] </label>
         @for (int i = 0; i < Model.Languages.Count; i++)
         {
-
             <div class="form-check-inline">
-                <input class="form-check-input" asp-for="@Model.IsSelected[i]" />
+                <input class="form-check-input" type="checkbox" asp-for="@Model.IsSelected[i]" />
                 <label class="form-check-label" asp-for="@Model.IsSelected[i]">@Model.Languages.ElementAt(i).DevelopmentLanguage</label>
                 <input type="hidden" asp-for="@Model.Languages.ElementAt(i).Language_Id" />
+
             </div>
 
 
         }
-         @*@Html.HiddenFor(model => model.Challenges)*@
+
+        @*@Html.HiddenFor(model => model.Challenges)*@
         <input type="submit" value="Search" class="btn btn-default" />
+    </div>
 </form>
 
 
@@ -90,14 +94,12 @@
             </tr>
         }
     </tbody>
+
 </table>
-
-
 @{
     var prevDisabled = !Model.Challenges.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Challenges.HasNextPage ? "disabled" : "";
 }
-
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.Challenges.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
@@ -108,3 +110,7 @@
    class="btn btn-default @nextDisabled">
     @SharedLocalizer["Next"]
 </a>
+ </div>
+
+
+
