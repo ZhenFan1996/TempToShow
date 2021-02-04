@@ -204,7 +204,7 @@ namespace PlattformChallenge.Controllers
                     Deadline = model.Deadline,
                     Max_Participant = model.Max_Participant,
                     Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier),
-
+                    AllowOpen = model.Visible
                 };
                 await _repository.InsertAsync(newChallenge);
                 List<LanguageChallenge> lc = new List<LanguageChallenge>();
