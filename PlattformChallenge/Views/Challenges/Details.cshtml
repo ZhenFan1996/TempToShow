@@ -6,13 +6,16 @@
 <head>
     <title>details</title>
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
-    <script>
-            function copyUrl() {
-                //var url = window.location.url;
-                urlCopied.innerHTML = window.location.href;
-                copyUrl(url);
-                alert(@Localizer["Success!"]);
-            }
+    <script type="text/javascript">
+        function Copy() {
+            var Url = document.getElementById("paste-box");
+            Url.value = window.location.href;
+            Url.focus();
+            Url.select();
+            document.execCommand("Copy");
+            document.getElementById("Copy");
+
+        }
     </script>
 </head>
 
@@ -94,9 +97,16 @@
     </dl>
 </div>
 <div class="sharethis-inline-share-buttons"></div>
-<div id="main">
-    <center><button onclick="copyUrl()">@Localizer["Copy URL"]</button></center>
+<div>
+
+    <center>
+        <input type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
+        <br />
+    </center>
+    <center><textarea id="paste-box" rows="1" cols="60"></textarea></center>
 </div>
+
+
 <div class="container">
     <div class="row">
         @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
