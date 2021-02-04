@@ -118,7 +118,7 @@ namespace PlattformChallenge.Controllers
                 if (challenge.IsClose)
                 //This shouldn't suppose to happen in normal situation, because the rate button will be deactived
                 {
-                    ViewBag.Message = "You can't rate solution anymore because this challenge is already closed";
+                    ViewBag.Message = "You can not rate solution anymore because this challenge is already closed";
                     return View("Index");
                 }
 
@@ -178,7 +178,7 @@ namespace PlattformChallenge.Controllers
                 {
                     if (s.s.Point == null || s.s.Point == 0)
                     {
-                        ViewBag.Message = "There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
+                        ViewBag.Message = "There is at least one challenge you did not rate, therefore you can not close this challenge yet. " +
                             "Please rate all solutions before closing a challenge";
                         return View("Index");
                     }
@@ -186,17 +186,28 @@ namespace PlattformChallenge.Controllers
                 if (allSolutions.Count > 0)
                 {
                     var bestSolution = allSolutions.OrderByDescending(s => s.s.Point).First();
+                    List<Solution> solList = new List<Solution>();
+                    foreach(var s in allSolutions)
+                    {
+                        solList.Add(s.s);
+                    }
+                    int bestScore = (int)bestSolution.s.Point;
+                    if(!checkIfOnlyBest(solList, bestScore))
+                    {
+                        ViewBag.Message = "There are at least two solutions with same score. Only one solution can have the best score";
+                        return View("Index");
+                    }
+                    
                     var participation = await _pRepository.FirstOrDefaultAsync(w => w.S_Id == bestSolution.s.S_Id);
                     var winnerId = participation.P_Id;
                     toUpdate.Winner_Id = winnerId;
                     toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
-                    toUpdate.IsClose = true;
-                }
+ }
                 else
                 {
                     toUpdate.Winner_Id = "NoWinner";
-                    toUpdate.IsClose = true;
                 }
+                toUpdate.IsClose = true;
                 try
                 {
                     await _cRepository.UpdateAsync(toUpdate);
@@ -211,8 +222,24 @@ namespace PlattformChallenge.Controllers
             return RedirectToAction("Index");
         }
 
+        private bool checkIfOnlyBest(List<Solution> solList, int bestScore)
+        {
+            int count = 0;
+            foreach(Solution s in solList)
+            {
+                if (s.Point == bestScore)
+                {
+                    count++;
+                }
+            }
+            if (count > 1)
+            {
+                return false;
+            }
+            return true;
+        }
 
-            private ViewResult IllegalOpCheck(String Id)
+        private ViewResult IllegalOpCheck(String Id)
         {
             if (Id == null || Id == "")
             {
@@ -234,7 +261,7 @@ namespace PlattformChallenge.Controllers
             if (_currUser.Id != challenge.Com_ID)
             {
                 Response.StatusCode = 403;
-                @ViewBag.ErrorMessage = "You don't have access to challenges from other companies";
+                @ViewBag.ErrorMessage = "You have no access to challenges from other companies";
                 return View("Error");
             }
 
