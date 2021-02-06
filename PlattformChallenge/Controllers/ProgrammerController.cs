@@ -162,6 +162,9 @@ namespace PlattformChallenge.Controllers
             }
         }
 
+ 
+
+
         private async Task<string> Upload(IFormFile file,string fileName) {
 
             string dir = Path.Combine(_appcfg.AppCfg.SolutionPath, "Solutions");
