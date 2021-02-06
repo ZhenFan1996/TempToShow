@@ -13,6 +13,7 @@
                     <li class="card-text"> @Localizer["Participated Challenges"]: @Model.Challenges.Count()</li>
                 </ul>
                 <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary"> @Localizer["Change Password"]</a>
+                <a  asp-action="ProfileSetting"  class="btn btn-primary"> Profile Setting</a>
             </div>
         </div>
 

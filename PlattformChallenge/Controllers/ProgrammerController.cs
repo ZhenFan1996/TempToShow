@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using PlattformChallenge.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace PlattformChallenge.Controllers
 {
@@ -25,17 +26,19 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Challenge> _cRepository;
         private readonly IRepository<Participation> _pRepository;
         private readonly IRepository<Solution> _sRepository;
+        private readonly IWebHostEnvironment _env;
         private readonly ConfigProviderService _appcfg;
         private readonly ILogger<ProgrammerController> logger;
 
         public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg,
-            ILogger<ProgrammerController> logger
+            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment
             )
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
             this._pRepository = pRepository;
             this._sRepository = sRepository;
+            this._env = webHostEnvironment;
             _appcfg = appcfg;
             this.logger = logger;
         }
@@ -123,7 +126,8 @@ namespace PlattformChallenge.Controllers
                     model.Participation = par;
                     return View(model);
                 }
-                string path = await Upload(model.SolutionFile,fileName);
+                string dir = Path.Combine(_appcfg.AppCfg.SolutionPath, "Solutions");
+                string path = await Upload(model.SolutionFile,fileName,dir);
                 Solution s = new Solution()
                 {
                     S_Id = Guid.NewGuid().ToString(),
@@ -162,12 +166,53 @@ namespace PlattformChallenge.Controllers
             }
         }
 
- 
 
 
-        private async Task<string> Upload(IFormFile file,string fileName) {
+        [HttpGet]
+        public  IActionResult ProfileSetting() {
 
-            string dir = Path.Combine(_appcfg.AppCfg.SolutionPath, "Solutions");
+
+            ProfileSettingViewModel model = new ProfileSettingViewModel()
+            {
+                Name = _currUser.Name,
+                Address = _currUser.Address,
+                Bio = _currUser.Bio,
+                Phone = _currUser.PhoneNumber,
+                Hobby = _currUser.Hobby,
+                Birthday = _currUser.Birthday,
+                LogoPath = "/images/" + (_currUser.Logo ?? "user.jpg")
+            };
+            
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
+        {
+            string dir = Path.Combine(_env.WebRootPath, "images");
+            string logoName = Guid.NewGuid().ToString() + Path.GetExtension(model.Logo.FileName);
+            string path = await Upload(model.Logo, logoName, dir);
+            _currUser.Name = model.Name;
+            _currUser.Address = model.Address;
+            _currUser.Bio = model.Bio;
+            _currUser.PhoneNumber = model.Phone;
+            _currUser.Birthday = model.Birthday;
+            _currUser.Hobby = model.Hobby;
+            _currUser.Logo = logoName;
+            var result = await _userManger.UpdateAsync(_currUser);
+            if (result.Succeeded)
+            {
+                return RedirectToAction();
+            }
+            else {
+
+                throw new Exception("The setting failed");
+            }
+        }
+
+        private async Task<string> Upload(IFormFile file,string fileName, string dir) {
+           
 
             if (!Directory.Exists(dir))
             {
