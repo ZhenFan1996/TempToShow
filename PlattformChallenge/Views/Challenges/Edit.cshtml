@@ -1,22 +1,23 @@
 @model PlattformChallenge.ViewModels.ChallengeEditViewModel
 @inject IViewLocalizer Localizer
-    <script src="https://cdn.tiny.cloud/1/vec3hy3gfy6rcqrhfkinrb5uyzvogsw2iewjccmgzr9vimx9/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+<script src="https://cdn.tiny.cloud/1/vec3hy3gfy6rcqrhfkinrb5uyzvogsw2iewjccmgzr9vimx9/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <script>
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'a11ychecker advcode casechange formatpainter linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tinycomments tinymcespellchecker',
-            toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
-            toolbar_mode: 'floating',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name'
-        });
-    </script>
-    @{
-        ViewData["Title"] = @Localizer["EditChallenge"];
-    }
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'a11ychecker advcode casechange formatpainter linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tinycomments tinymcespellchecker',
+        toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name'
+    });
+</script>
+@{
+    ViewData["Title"] = @Localizer["EditChallenge"];
+}
 
-    <h1>@Localizer["EditChallenge"]</h1>
+<h1>@Localizer["EditChallenge"]</h1>
 
 
     <hr />
@@ -36,12 +37,20 @@
                     <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
                     <span asp-validation-for="Challenge.Content" class="text-danger"></span>
                 </div>
+                <input type="hidden" asp-for="Challenge.Release_Date" />
+                <div class="form-group">
+                    <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["WhenRelease"]</label>
+                    @*<input asp-for="Challenge.Release_Date" class="form-control" />*@
+                    <span asp-validation-for="Challenge.Release_Date">@Model.Challenge.Release_Date</span>
+                </div>
                 <div class="form-group">
                     <label asp-for="Challenge.Deadline" class="control-label"></label>
                     <input asp-for="Challenge.Deadline" class="form-control" />
                     <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
                 </div>
-                <input type="hidden" asp-for="Challenge.Release_Date" />
+
+
+
                 <input type="hidden" asp-for="Challenge.Com_ID" />
                 <div class="form-group">
                     <label asp-for="Challenge.Bonus" class="control-label">@Localizer["Bonus"]</label>
@@ -64,6 +73,14 @@
                         </span>
                     }
                 </div>
+                <div>
+                    <label class="control-label">@Localizer["BestSichtbarkeit"]:  </label>
+                    <span clss="form-check m-1">
+                        <input asp-for="@Model.Challenge.AllowOpen" class="from-check-input" />
+                        <label class="form-check-label" asp-for="@Model.Challenge.AllowOpen">@SharedLocalizer["Yes"]</label>
+
+                    </span>
+                </div>
                 <input type="hidden" asp-for="Challenge.Winner_Id" />
                 <input type="hidden" asp-for="Challenge.Best_Solution_Id" />
                 <div class="form-group">
@@ -71,13 +88,13 @@
                 </div>
 
             </form>
-        </div>
     </div>
+</div>
 
-    <div>
-        <a asp-action="Index">@Localizer["BackToList"]</a>
-    </div>
+<div>
+    <a asp-action="Index">@Localizer["BackToList"]</a>
+</div>
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

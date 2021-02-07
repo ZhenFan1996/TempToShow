@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlattformChallenge.Infrastructure;
 
 namespace PlattformChallenge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210203124840_AddAttribute")]
+    partial class AddAttribute
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,9 +228,6 @@ namespace PlattformChallenge.Migrations
                     b.Property<string>("C_Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("AllowOpen")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Best_Solution_Id")
                         .HasColumnType("nvarchar(max)");
 
@@ -324,6 +323,9 @@ namespace PlattformChallenge.Migrations
                     b.Property<string>("S_Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("AllowUpdate")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 
@@ -349,18 +351,6 @@ namespace PlattformChallenge.Migrations
             modelBuilder.Entity("PlattformChallenge.Core.Model.PlatformUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Hobby")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActiv")
                         .HasColumnType("bit");

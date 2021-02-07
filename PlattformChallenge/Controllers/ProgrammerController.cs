@@ -84,7 +84,10 @@ namespace PlattformChallenge.Controllers
             {
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
-                await _sRepository.DeleteAsync(par.Solution);
+                if (par.Solution != null)
+                {
+                    await _sRepository.DeleteAsync(par.Solution);
+                }
                 logger.LogInformation($"The Programmer with id {par.P_Id} cancel the challenge{par.C_Id}" );
                 return RedirectToAction("Index");
             }

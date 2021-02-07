@@ -3,85 +3,111 @@
 @{
     ViewData["Title"] = @Localizer["Details"];
 }
+<head>
+    <title>details</title>
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
+    <script type="text/javascript">
+        function Copy() {
+            var Url = document.getElementById("paste-box");
+            Url.value = window.location.href;
+            Url.focus();
+            Url.select();
+            document.execCommand("Copy");
+            document.getElementById("Copy");
 
+        }
+    </script>
+</head>
 
-    <h1 class="row">@Localizer["ChallengeDetails"] </h1>
-    <div>
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Localizer["Title"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
+<h1 class="row">@Localizer["ChallengeDetails"] </h1>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Localizer["Title"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
 
-            <dt class="col-sm-2 ">
-                @Localizer["Discription"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.Raw(Model.Content)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["Prize"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Bonus)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["ReleaseDate"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Release_Date)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["Deadline"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Deadline)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["MaxParticipants"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Max_Participant)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["AvailableQuota"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Available_Quota)
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["Company"]
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Company.Name)
-            </dd>
+        <dt class="col-sm-2 ">
+            @Localizer["Discription"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.Raw(Model.Content)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["Prize"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bonus)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["ReleaseDate"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Release_Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["Deadline"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Deadline)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["MaxParticipants"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Max_Participant)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["AvailableQuota"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Available_Quota)
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["Company"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Company.Name)
+        </dd>
 
-            <dt class="col-sm-2">
-                @Localizer["DevLanguage"]
-            </dt>
-            <dd class="col-sm-10">
-                @for (int i = 0; i < Model.Languages.Count; i++)
+        <dt class="col-sm-2">
+            @Localizer["DevLanguage"]
+        </dt>
+        <dd class="col-sm-10">
+            @for (int i = 0; i < Model.Languages.Count; i++)
+            {
+                if (i < Model.Languages.Count - 1)
                 {
-                    if (i < Model.Languages.Count - 1)
-                    {
-                        <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
-                    }
-                    else
-                    {
-                        <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
-                    }
+                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage , </span>
                 }
-            </dd>
-            <dt class="col-sm-2">
-                @Localizer["WinnerAndSolution"]
-            </dt>
-            <dd class="col-sm-10">
-                <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> @Localizer["View"] </a>
-            </dd>
-        </dl>
-    </div>
+                else
+                {
+                    <span>  @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Localizer["WinnerAndSolution"]
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id"> @Localizer["View"] </a>
+        </dd>
+    </dl>
+</div>
+<div class="sharethis-inline-share-buttons"></div>
+<div>
+
+    <center>
+        <input type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
+        <br />
+    </center>
+    <center><textarea id="paste-box" rows="1" cols="60"></textarea></center>
+</div>
+
+
+<div class="container">
     <div class="row">
         @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
@@ -126,4 +152,4 @@
             }
         </div>
     </div>
-
+</div>

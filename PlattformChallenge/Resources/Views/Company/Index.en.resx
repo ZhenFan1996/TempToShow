@@ -160,7 +160,7 @@
     <value>Prize</value>
   </data>
   <data name="PublishedChallenges" xml:space="preserve">
-    <value>Published Challenges:</value>
+    <value>Published Challenges: </value>
   </data>
   <data name="Quota" xml:space="preserve">
     <value>Quota</value>

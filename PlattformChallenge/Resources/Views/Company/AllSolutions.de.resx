@@ -147,4 +147,7 @@
   <data name="SubmitDate" xml:space="preserve">
     <value>Abgabedatum</value>
   </data>
+  <data name="Username" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
 </root>

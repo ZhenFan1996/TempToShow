@@ -36,6 +36,10 @@ namespace PlattformChallenge.Core.Model
         [Required]
         public string Com_ID { get; set; }
 
+        public bool IsClose { get; set; }
+
+        public bool AllowOpen { get; set; }
+
         public List<Participation> Participations { get; set; }
 
         public List<LanguageChallenge> LanguageChallenges { get; set; }

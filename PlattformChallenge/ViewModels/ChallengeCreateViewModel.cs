@@ -38,5 +38,7 @@ namespace PlattformChallenge.ViewModels
         public List<Language> Languages { get; set; }
 
         public bool[] IsSelected { get; set; }
+
+        public bool Visible { get; set; }
     }
 }

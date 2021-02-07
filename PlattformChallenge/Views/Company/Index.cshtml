@@ -1,6 +1,20 @@
 ﻿@model PlattformChallenge.ViewModels.CompanyIndexViewModel;
 @inject IViewLocalizer Localizer
 
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+                history.go(-1);
+        };
+        
+    </script>
+    
+}
+
+else
+{
 <div class="container">
     <div class="row">
         <div class="card col-lg-3 " style="width: 18rem;">
@@ -39,7 +53,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Release_Date)
                         </td>
-                        @if (item.Winner_Id == null)
+                        @if (!item.IsClose)
                         {
                             <td>
 
@@ -56,7 +70,7 @@
                             <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Solutions"]</a>
                         </td>
 
-                        @if (item.Winner_Id == null)
+                        @if (!item.IsClose)
                         {
                             <td>
 
@@ -99,9 +113,10 @@
             </tbody>
 
         </table>
-
     </div>
 
 
 
 </div>
+}
+

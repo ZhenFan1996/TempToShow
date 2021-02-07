@@ -160,7 +160,7 @@
     <value>Preisgeld</value>
   </data>
   <data name="PublishedChallenges" xml:space="preserve">
-    <value>Veröffentlichte Challenges</value>
+    <value>Veröffentlichte Challenges: </value>
   </data>
   <data name="Quota" xml:space="preserve">
     <value>Plätze</value>

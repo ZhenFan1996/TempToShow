@@ -120,6 +120,9 @@
   <data name="BackToList" xml:space="preserve">
     <value>Zurück zu Liste</value>
   </data>
+  <data name="BestSichtbarkeit" xml:space="preserve">
+    <value>Kann die beste Antwort heruntergeladen werden?</value>
+  </data>
   <data name="Bonus" xml:space="preserve">
     <value>Preisgeld für den Gewinner (in Euro)</value>
   </data>
@@ -148,6 +151,6 @@
     <value>Titel von Ihrem Challenge</value>
   </data>
   <data name="WhenRelease" xml:space="preserve">
-    <value>Ab welchen Tag soll das Challenge veröffentlichen?</value>
+    <value>Ab wann soll das Challenge veröffentlichen?</value>
   </data>
 </root>

@@ -77,7 +77,11 @@ namespace PlattformChallenge.Controllers
                             in _cRepository.GetAll()
                             .Where(c => c.C_Id == c_Id)
                          select c.Winner_Id).Single();
-            
+            bool visible=  (from c
+                             in _cRepository.GetAll()
+                             .Where(c => c.C_Id == c_Id)
+                                  select c.AllowOpen).Single();
+
             if (bestSolution != null && bestSolution.Point!=null)
             {
                 bSolution = new BestSolutionViewModel()
@@ -88,7 +92,8 @@ namespace PlattformChallenge.Controllers
                     Best_Point = bestSolution.Point,
                     Best_URL = bestSolution.URL,
                     S_ID = bestSolution.S_Id,
-                    Winner_ID = winner
+                    Winner_ID = winner,
+                    Visible = visible
                 };
             }
             else
@@ -101,7 +106,9 @@ namespace PlattformChallenge.Controllers
                     Best_Point = null,
                     Best_URL = "",
                     S_ID = null,
-                    Winner_ID = winner
+                    Winner_ID = winner,
+                    Visible = visible
+
                 };
             }
 
