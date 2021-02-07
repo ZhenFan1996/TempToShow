@@ -136,7 +136,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(1),
+                Deadline = DateTime.Now.AddDays(3),
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
@@ -620,9 +621,12 @@ namespace PlattformChallenge.UnitTest.Controllers
                 }.AsQueryable().BuildMockDbSet().Object
                 );
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.Edit("Id_mock_editNotOwnChallenge"));
-            Assert.Equal("You can't edit challenge from other company", ex.Message);
-
+            //var ex = await Assert.ThrowsAsync<Exception>(() => _sut.Edit("Id_mock_editNotOwnChallenge"));
+            //Assert.Equal("You can't edit challenge from other company", ex.Message);
+            var result = await _sut.Edit("Id_mock_editNotOwnChallenge");
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("Error", value.ViewName);
         }
     }
 }
