@@ -120,6 +120,9 @@
   <data name="BackToList" xml:space="preserve">
     <value>Back to list</value>
   </data>
+  <data name="BestSichtbarkeit" xml:space="preserve">
+    <value>Can the best solution be downloaded?</value>
+  </data>
   <data name="Bonus" xml:space="preserve">
     <value>Prize for the winner (in Euro)</value>
   </data>

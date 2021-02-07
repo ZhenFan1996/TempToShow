@@ -19,5 +19,7 @@ namespace PlattformChallenge.ViewModels
 
         public string Winner_ID { get; set; }
 
+        public bool Visible { get; set; }
+
     }
 }

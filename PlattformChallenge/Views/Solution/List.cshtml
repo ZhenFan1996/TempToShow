@@ -16,7 +16,9 @@
                 </ul>
                 @if (Model.S_ID != null && Model.Winner_ID != null)
                 {
+                     @if (Model.Visible == true) { 
                     <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@Model.S_ID" class="btn btn-primary">@Localizer["Download"]</a>
+                    }
                 }
             </div>
         </div>
