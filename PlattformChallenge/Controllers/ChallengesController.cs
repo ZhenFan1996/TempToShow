@@ -90,7 +90,24 @@ namespace PlattformChallenge.Controllers
             int pageSize = 10;
             return View(await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
+        /// <summary>
+        /// Show a list of already closed challenges. Order by descending release date.
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> PastList(int? pageNumber)
+        {
+            var challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == true)
+                             .Include(c => c.Company)
+                             select c;
+            challenges = challenges.OrderByDescending(c => c.Release_Date);
+            int pageSize = 10;
+            return View("Index", await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
         #endregion
+
 
         #region details
         /// <summary>

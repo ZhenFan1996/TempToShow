@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ClosedChallenges" xml:space="preserve">
+    <value>Geschlossene Challenges</value>
+  </data>
   <data name="Company" xml:space="preserve">
     <value>Unternehmen</value>
   </data>
@@ -135,8 +138,20 @@
   <data name="Next" xml:space="preserve">
     <value>Nächste</value>
   </data>
+  <data name="NoChallengesInThisCategory" xml:space="preserve">
+    <value>Keine Challenges in dieser Kategorie</value>
+  </data>
   <data name="Quota" xml:space="preserve">
     <value>Plätze</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="ShowClosedList" xml:space="preserve">
+    <value>Geschlossene Challenges anzeigen</value>
+  </data>
+  <data name="ShowCurrentList" xml:space="preserve">
+    <value>Aktuelle Challenges anzeigen</value>
   </data>
   <data name="ShowFullList" xml:space="preserve">
     <value>Vollständige Liste</value>

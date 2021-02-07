@@ -124,7 +124,10 @@
     <value>Cancel</value>
   </data>
   <data name="Challenge Title" xml:space="preserve">
-    <value>Challenge Title</value>
+    <value>Challenge title</value>
+  </data>
+  <data name="ClosedChallenges" xml:space="preserve">
+    <value>Closed Challenges</value>
   </data>
   <data name="Company" xml:space="preserve">
     <value>Company</value>
@@ -133,7 +136,7 @@
     <value>Create a new challenge</value>
   </data>
   <data name="CurrentChallenges" xml:space="preserve">
-    <value>Current Challenges</value>
+    <value>Current active challenges</value>
   </data>
   <data name="Date" xml:space="preserve">
     <value>Date</value>
@@ -150,11 +153,23 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="NoChallengesInThisCategory" xml:space="preserve">
+    <value>No challenges in this category</value>
+  </data>
   <data name="Points" xml:space="preserve">
     <value>Points</value>
   </data>
   <data name="Quota" xml:space="preserve">
     <value>Quota</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ShowClosedList" xml:space="preserve">
+    <value>Show closed past challenges</value>
+  </data>
+  <data name="ShowCurrentList" xml:space="preserve">
+    <value>Show current challenges</value>
   </data>
   <data name="ShowFullList" xml:space="preserve">
     <value>Show full list</value>
