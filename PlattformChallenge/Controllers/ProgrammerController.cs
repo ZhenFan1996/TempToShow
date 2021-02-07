@@ -61,7 +61,9 @@ namespace PlattformChallenge.Controllers
             var model = new ProgrammerIndexViewModel() {
                 Challenges = challenges,
                 Participations = participations,
-                Programmer = _currUser
+                Programmer = _currUser,
+                LogoPath = "/images/" + (_currUser.Logo ?? "user.jpg")
+
             };
             return View(model);
         }
@@ -170,7 +172,6 @@ namespace PlattformChallenge.Controllers
 
         [HttpGet]
         public  IActionResult ProfileSetting() {
-
 
             ProfileSettingViewModel model = new ProfileSettingViewModel()
             {

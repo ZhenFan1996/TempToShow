@@ -9,13 +9,22 @@
     <title>@ViewData["Title"] - Programming Challenge Plattform</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <style>
+        .footer-my-style p {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            color: darkgray;
+            font-size: small;
+        }
+    </style>
 </head>
 <body>
     <header>
         @using Microsoft.AspNetCore.Identity
         @using PlattformChallenge.Core.Model
         @inject SignInManager<PlatformUser> SignInMananger
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 col-md-12">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
                 <img src="~/images/logo_small.png" width="40" height="40" alt="Alternate Text" />
@@ -76,19 +85,20 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted  navbar-fixed-bottom">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 text-left">
+                <div class="col-md-8 text-md-left col-sm-auto" >
                     &copy; 2020 - Challenge Plattform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
                     A Teamproject of <a href="https://kit.edu"> KIT <img src="~/images/kit.JPG" alt="" style="width:80px;height:40px"></a>.
                 </div>
-                <div class="col-md-4 text-right">
+                <div class="col-md-4 text-md-right col-sm-auto text-sm-center">
                     @await Html.PartialAsync("_SelectLanguagePartial")
                 </div>
             </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -15,6 +15,7 @@ namespace PlattformChallenge.ViewModels
 
         public List<Participation> Participations { get; set; }
 
+        public string LogoPath { get; set; }
 
     }
     }

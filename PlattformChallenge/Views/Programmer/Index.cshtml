@@ -4,81 +4,150 @@
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 <div class="container">
     <div class="row">
-        <div class="card col-md-2 align-content-center col-sm-2" style="width: 15rem;">
-            <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">@Model.Programmer.Name</h5>
-                <ul class="list-unstyled">
-                    <li class="card-text"> @SharedLocalizer["E-mail"]: @Model.Programmer.Email</li>
-                    <li class="card-text"> @Localizer["Participated Challenges"]: @Model.Challenges.Count()</li>
-                </ul>
-                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-primary"> @Localizer["Change Password"]</a>
-                <a  asp-action="ProfileSetting"  class="btn btn-primary"> Profile Setting</a>
-            </div>
-        </div>
-
-        <table class="table col-md-9 offset-md-1 col-sm-9 offset-sm-1 ">
-            <thead>
-                <tr>
-                    <th>@SharedLocalizer["Titel"]</th>
-                    <th>@SharedLocalizer["Bonus"]</th>
-                    <th>@SharedLocalizer["Company"]</th>
-                    <th>@SharedLocalizer["Date"]</th>
-                    <th>@Localizer["Cancel"]</th>
-                    <th>@Localizer["UploadItem"]</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Challenges)
-                {
-    <tr>
-        <td>
-            <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Bonus)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Company.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Release_Date)
-        </td>
-        <td>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
-                @Localizer["Cancel"]
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            @Localizer["Confirm"]
-                        </div>
-                        <div class="modal-footer">
-                            <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">@SharedLocalizer["Yes"]</a>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@SharedLocalizer["No"]</button>
-                        </div>
-                    </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3">
+                    <img class="rounded-circle" src="@Model.LogoPath" alt="Card image cap" width="120" height="120">
+                </div>
+                <div class="offset-md-1  col-md-8 mt-4" >
+                    <h1 class=" flex-column justify-content-center">
+                        Hallo, @Model.Programmer.Name
+                    </h1>
                 </div>
             </div>
-        </td>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="card bg-white  box-shadow col-md-8 col-sm-8">
+            <div class="row">
+                <div class="col-md-6 mt-5 flex-sm-row">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_Newsletter_re_wrob.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Email</h5>
+                                @Model.Programmer.Email
+                            </div>
+                        </li>
+                        <li class="media my-4">
+                            <img class="mr-3" src="/images/undraw_online_posts_h475.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Phone</h5>
+                                @Model.Programmer.PhoneNumber
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 mt-5 flex-sm-row mt-sm-auto">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_Upvote_re_qn2k.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">In progress</h5>
+                                @Model.Programmer
+                            </div>
+                        </li>
+                        <li class="media my-4">
+                            <img class="mr-3" src="/images/undraw_finish_line_katerina_limpitsouni_xy20.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Completed</h5>
+                                @Model.Programmer.PhoneNumber
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 card bg-white  box-shadow offset-md-1 col-sm-4 ">
+            <ul class="list-unstyled mt-5">
+                <li class="media">
+                    <img class="mr-3" src="~/images/undraw_my_password_d6kg.png" alt="Generic placeholder image" width="65" height="65">
+                    <div class="media-body">
+                        <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-danger mt-2"> @Localizer["Change Password"]</a>
+                    </div>
+                </li>
+                <li class="media my-4">
+                    <img class="mr-3" src="/images/undraw_profile_6l1l.png" alt="Generic placeholder image" width="65" height="65">
+                    <div class="media-body">
+                        <a asp-action="ProfileSetting" class="btn btn-dark mt-2">Edit Profile</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
 
-        <td>
-            <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">@Localizer["Upload"]</a>
+    </div>
 
-        </td>
-    </tr>
-}
-            </tbody>
-        </table>
+    <div class="row mt-4">
+        <h5 class="text-muted">
+            Challenges of Participation:
+        </h5>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12 table-responsive">
+            <table class="table col-md-12 table-striped table-hover" id="challenge">
+                <thead>
+                    <tr>
+                        <th>@SharedLocalizer["Titel"]</th>
+                        <th>@SharedLocalizer["Bonus"]</th>
+                        <th>@SharedLocalizer["Company"]</th>
+                        <th>@SharedLocalizer["Date"]</th>
+                        <th>@Localizer["Cancel"]</th>
+                        <th>@Localizer["UploadItem"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Challenges)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Bonus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Company.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Release_Date)
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
+                                    @Localizer["Cancel"]
+                                </button>
 
+                                <!-- Modal -->
+                                <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @Localizer["Confirm"]
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">@SharedLocalizer["Yes"]</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@SharedLocalizer["No"]</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">@Localizer["Upload"]</a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
