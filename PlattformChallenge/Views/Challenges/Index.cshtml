@@ -26,14 +26,7 @@ else if (@Model.Challenges.FirstOrDefault() != null && !@Model.Challenges.First(
 
 @if (@Model.Challenges.FirstOrDefault() != null)
 {<form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-
-        <p>
-            @Localizer["FindByTitle"] <input type="text" name="SearchString" asp-for="@Model.SearchString" value="@ViewData["CurrentFilter"]" />
-
-            <a asp-action="Index">@Localizer["ShowFullList"]</a>
-        </p>
-    </div>
+       
 
     <div class="form-group">
         <label class="control-label">@Localizer["DevLanguage"] </label>
@@ -49,15 +42,20 @@ else if (@Model.Challenges.FirstOrDefault() != null && !@Model.Challenges.First(
 
         }
 
-        @*@Html.HiddenFor(model => model.Challenges)*@
-        <input type="submit" value="Search" class="btn btn-default" />
-    </div>
-</form>
 
-
-<table class="table">
-    <thead>
-        <tr>
+            @if (!@Model.Challenges.First().IsClose)
+            {
+            <p>
+                @Localizer["FindByTitle"] <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="@Localizer["Search"]" class="btn btn-primary" /> |
+                <a asp-action="Index">@Localizer["ShowFullList"]</a>
+            </p>
+            }
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
 
                 <th>
                     @Localizer["Title"]

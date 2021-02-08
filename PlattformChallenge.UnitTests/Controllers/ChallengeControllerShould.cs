@@ -136,7 +136,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(1),
+                Deadline = DateTime.Now.AddDays(3),
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
@@ -250,16 +251,16 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, null);
+            var result = await _sut.Index(null, null, null,null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
-            var savedChallengeList = value.Model as PaginatedList<Challenge>;
-            Assert.Equal("test title 1", savedChallengeList.ElementAt<Challenge>(1).Title);
-            Assert.Equal("1111", savedChallengeList.ElementAt<Challenge>(1).Com_ID);
-            Assert.Equal(200, savedChallengeList.ElementAt<Challenge>(1).Bonus);
-            Assert.Equal("2cde", savedChallengeList.ElementAt<Challenge>(0).C_Id);
-            Assert.Equal(18, savedChallengeList.ElementAt<Challenge>(0).Max_Participant);
-            Assert.Equal(DateTime.Now.Day, savedChallengeList.ElementAt<Challenge>(0).Release_Date.Day);
+            var model = value.Model as  ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(1).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(1).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(1).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
+            Assert.Equal(DateTime.Now.Day, model.Challenges.ElementAt<Challenge>(0).Release_Date.Day);
         }
 
         //
@@ -315,10 +316,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "bonus_desc", null);
-            PaginatedList<Challenge> sorted = null;
+            var result = await _sut.Index(null, "bonus_desc", null,null);
             var value = result as ViewResult;
-            sorted = (PaginatedList<Challenge>)value.Model;
+            var model = value.Model as ChallengeIndexViewModel;
+            var sorted = model.Challenges;
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
@@ -375,10 +376,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "quota_desc", null);
-            PaginatedList<Challenge> sorted = null;
+            var result = await _sut.Index(null, "quota_desc", null,null);         
             var value = result as ViewResult;
-            sorted = (PaginatedList<Challenge>)value.Model;
+            var model = value.Model as ChallengeIndexViewModel;
+           sorted = (PaginatedList<Challenge>)value.Model;
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
@@ -620,9 +621,12 @@ namespace PlattformChallenge.UnitTest.Controllers
                 }.AsQueryable().BuildMockDbSet().Object
                 );
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.Edit("Id_mock_editNotOwnChallenge"));
-            Assert.Equal("You can't edit challenge from other company", ex.Message);
-
+            //var ex = await Assert.ThrowsAsync<Exception>(() => _sut.Edit("Id_mock_editNotOwnChallenge"));
+            //Assert.Equal("You can't edit challenge from other company", ex.Message);
+            var result = await _sut.Edit("Id_mock_editNotOwnChallenge");
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("Error", value.ViewName);
         }
     }
 }

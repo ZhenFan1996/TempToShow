@@ -53,7 +53,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "test-company"));
             _mockUserManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
             var logger = new Mock<ILogger<CompanyController>>();
-            _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object,logger.Object);
+            _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object, logger.Object);
             _sut.ControllerContext = context;
         }
         /// <summary>
@@ -106,11 +106,12 @@ namespace PlattformChallenge.UnitTest.Controllers
             GetAllBuildParticipation();
             _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                challenges.ElementAt(1));
-            _mockSRepo.Setup(s => s.FirstOrDefaultAsync(It.IsAny<Expression<Func<Solution, bool>>>())).ReturnsAsync(           
-               new Solution(){
-                    S_Id="s3",
-                    Point = 30
-                });
+            _mockSRepo.Setup(s => s.FirstOrDefaultAsync(It.IsAny<Expression<Func<Solution, bool>>>())).ReturnsAsync(
+               new Solution()
+               {
+                   S_Id = "s3",
+                   Point = 30
+               });
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2",
@@ -135,14 +136,17 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                new Challenge()
                {
-                   Winner_Id = "winner"
+                   IsClose = true
                });
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2"
             };
-            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.RateSolution(vm));
-            Assert.Equal("You can't rate solution anymore because this challenge is already closed", ex.Message);
+            //var ex = await Assert.ThrowsAsync<Exception>(() => _sut.RateSolution(vm));
+            //Assert.Equal("You can't rate solution anymore because this challenge is already closed", ex.Message);
+            var result = await _sut.RateSolution(vm);
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("You can not rate solution anymore because this challenge is already closed", _sut.ViewBag.Message);
         }
 
         /// <summary>
@@ -172,13 +176,26 @@ namespace PlattformChallenge.UnitTest.Controllers
         {
             _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).
                 ReturnsAsync(
-            
-                    new Challenge(){
-                        C_Id="cC",
-                    Winner_Id = "winner"
-                });
-            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.CloseChallenge("cC"));         
-            Assert.Equal("You already closed this challenge", ex.Message);
+                    new Challenge()
+                    {
+                        C_Id = "cC",
+                        IsClose = true,
+                        Com_ID = "test-company"
+                    });
+            _mockCRepo.Setup(m => m.GetAll()).Returns(
+              new List<Challenge>()
+              {  new Challenge()
+                {
+                   C_Id = "cC",
+                    IsClose = true,
+                     Com_ID = "test-company"
+                }
+              }.AsQueryable().BuildMockDbSet().Object
+              );
+
+            var result = await _sut.CloseChallenge("cC");
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("You already closed this challenge", _sut.ViewBag.Message);
         }
 
 
@@ -191,16 +208,33 @@ namespace PlattformChallenge.UnitTest.Controllers
         {
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
-           GetAllBuildParticipation();
+            GetAllBuildParticipation();
             _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(1));
-            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.CloseChallenge("c2"));
-            Assert.Equal("There's at least one challenge you didn't rate, therefore you can't close this challenge yet. " +
-                        "Please rate all solutions before closing a challenge", ex.Message);
+
+            var result = await _sut.CloseChallenge("c2");
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("There is at least one challenge you did not rate, therefore you can not close this challenge yet. " +
+                            "Please rate all solutions before closing a challenge", _sut.ViewBag.Message);
 
         }
 
+        /// <summary>
+        /// [TestCase-ID: 64-4]
+        /// Test if a company user fails to close a challenge if there's at least two solutions have the same best score
+        /// </summary>
+        [Fact]
+        public async Task TestOnlyOneWinnerAllowed()
+        {
+            var challenges = GetAllBuildChallenge();
+            GetAllBuildRatedSolution();
+            GetAllBuildParticipation();
+            _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(0));
+            var result = await _sut.CloseChallenge("c4");
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score", _sut.ViewBag.Message);
+        }
 
-            private List<Participation> GetAllBuildParticipation()
+        private List<Participation> GetAllBuildParticipation()
         {
             var participations = new List<Participation>() {
                 new Participation(){
@@ -217,6 +251,16 @@ namespace PlattformChallenge.UnitTest.Controllers
                     C_Id="c2",
                     P_Id="test-programmer3",
                     S_Id = "s3"
+                },
+                    new Participation(){
+                    C_Id="c4",
+                    P_Id="test-programmer4",
+                    S_Id = "s4"
+                }, 
+                new Participation(){
+                    C_Id="c4",
+                    P_Id="test-programmer5",
+                    S_Id = "s5"
                 }
             };
 
@@ -234,6 +278,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Status = StatusEnum.Receive,
                     Submit_Date = DateTime.Now.AddDays(-2),
                 },
+          
                   new Solution(){
                     S_Id="s2",
                     URL = "www.test/solution/s2",
@@ -268,6 +313,14 @@ namespace PlattformChallenge.UnitTest.Controllers
                   new Solution(){
                     S_Id="s3",
                     Point = 30
+                },
+                   new Solution(){
+                    S_Id="s4",
+                    Point = 99
+                },
+                   new Solution(){
+                    S_Id="s5",
+                    Point = 99
                 },
 
             };
@@ -315,6 +368,12 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Id = "test1.com"
                  },
                 Winner_Id = "Winner"
+            },
+                new Challenge(){
+                C_Id = "c4",
+                Title = "test title 4",
+                Com_ID = "test-company",
+
             }
             };
             var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
