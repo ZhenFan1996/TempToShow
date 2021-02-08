@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="row mt-3">
-        <div class="card bg-white  box-shadow col-md-8 col-sm-8">
+        <div class="card bg-white  box-shadow col-md-7 col-sm-8">
             <div class="row">
                 <div class="col-md-6 mt-5 flex-sm-row">
                     <ul class="list-unstyled">
@@ -60,18 +60,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 card bg-white  box-shadow offset-md-1 col-sm-4 ">
+        <div class="col-md-4 card bg-white  box-shadow offset-md-1 col-sm-4 ">
             <ul class="list-unstyled mt-5">
                 <li class="media">
                     <img class="mr-3" src="~/images/undraw_my_password_d6kg.png" alt="Generic placeholder image" width="65" height="65">
                     <div class="media-body">
-                        <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-danger mt-2"> @Localizer["Change Password"]</a>
+                        <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Programmer.Email" class="btn btn-danger mt-2 ml-auto"> @Localizer["Change Password"]</a>
                     </div>
                 </li>
                 <li class="media my-4">
                     <img class="mr-3" src="/images/undraw_profile_6l1l.png" alt="Generic placeholder image" width="65" height="65">
                     <div class="media-body">
-                        <a asp-action="ProfileSetting" class="btn btn-dark mt-2">Edit Profile</a>
+                        <a asp-action="ProfileSetting" class="btn btn-dark mt-2">@Localizer["Edit Profile"]</a>
                     </div>
                 </li>            
             </ul>
