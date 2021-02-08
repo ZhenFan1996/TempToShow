@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace PlattformChallenge.Controllers
 {
-    [Authorize(Roles="Programmer")]
+    [Authorize(Roles = "Programmer")]
     public class ProgrammerController :Controller
     {
         private readonly UserManager<PlatformUser> _userManger;
@@ -71,6 +71,8 @@ namespace PlattformChallenge.Controllers
             };
             return View(model);
         }
+
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Profile(string p_id) {
 
@@ -105,6 +107,7 @@ namespace PlattformChallenge.Controllers
         /// </summary>
         /// <param name="id"></param> the challenge id
         /// <returns>View index</returns>
+        
         public async Task<IActionResult> Cancel(string id) {
             var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
@@ -125,6 +128,8 @@ namespace PlattformChallenge.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        
         [HttpGet]
         public  async Task<IActionResult> UploadSolution(string c_id) {
             var par = await _pRepository.GetAll()
@@ -147,6 +152,7 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
             if (ModelState.IsValid)
@@ -205,7 +211,7 @@ namespace PlattformChallenge.Controllers
         }
 
 
-
+        
         [HttpGet]
         public  IActionResult ProfileSetting() {
 
@@ -223,7 +229,7 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-
+        
         [HttpPost]
         public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
         {

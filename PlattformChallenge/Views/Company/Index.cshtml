@@ -113,7 +113,7 @@ else
                     @if (item.IsClose)
                     {
                         <td>
-                            <a asp-controller="Programmer" asp-action="xxx" asp-route-id="@item.Winner_Id" class="btn btn-primary">@Localizer["Winner"]</a>
+                            <a asp-controller="Programmer" asp-action="Profile" asp-route-p_id="@item.Winner_Id" class="btn btn-primary">@Localizer["Winner"]</a>
                         </td>
                     }
                     else

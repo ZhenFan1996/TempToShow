@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Controllers
 {
-
+    [Authorize(Roles = "Company")]
     public class CompanyController : Controller
     {
         private readonly UserManager<PlatformUser> _userManger;
@@ -267,6 +268,8 @@ namespace PlattformChallenge.Controllers
 
             return null;
         }
+
+        [AllowAnonymous]
         public async Task<FileResult> DownloadSolution(string s_id)
         {
             Solution solution = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == s_id);
