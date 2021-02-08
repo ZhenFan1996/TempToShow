@@ -130,8 +130,6 @@ namespace PlattformChallenge.Controllers
             return View("Index", model);
         }
         #endregion
-
-
         #region details
         /// <summary>
         ///  Get detail information of a certain challenge which is assigned by challenge Id
@@ -234,24 +232,25 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
-            if (model.Release_Date < DateTime.Now)
-            {
-                ViewBag.Message = "You can only release challenge in the future";
-                return View("Create");
-                //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
-                //return View(model);
-            }
-            if (model.Deadline <= model.Release_Date)
-            {
-                ViewBag.Message = "Deadline must be after release date";
-                return View("Create");
-                //ModelState.AddModelError(string.Empty, "Deadline must be after release date");
-                //return View(model);
-            }
+            
 
             if (ModelState.IsValid)
             {
-                
+                if (model.Release_Date < DateTime.Now)
+                {
+                    ViewBag.Message = "You can only release challenge in the future";
+                    return View("Create");
+                    //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                    //return View(model);
+                }
+                if (model.Deadline <= model.Release_Date)
+                {
+                    ViewBag.Message = "Deadline must be after release date";
+                    return View("Create");
+                    //ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                    //return View(model);
+                }
+
                 List<Language> languages = await _lRepository.GetAllListAsync();
             
                 Challenge newChallenge = new Challenge
@@ -289,7 +288,6 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
         #endregion
-
 
         #region Edit
         // GET: Challenges/Edit/5

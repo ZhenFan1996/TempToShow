@@ -169,7 +169,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.Now.AddDays(2),
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
@@ -191,8 +191,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         [Fact]
         public async void ReturnBadRequestNoIdForDetails()
         {
-              var excepetion= await Assert.ThrowsAsync<Exception>(()=> _sut.Details(""));
-              Assert.Equal("invalid challenge id value for details", excepetion.Message);
+            var result = await _sut.Details("");         
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("Invalid empty challenge id value", _sut.ViewBag.ErrorMessage);
         }
 
         //
@@ -251,7 +252,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, null,null);
+            var result = await _sut.Index(null, null, null,new bool[0]);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var model = value.Model as  ChallengeIndexViewModel;
@@ -316,7 +317,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "bonus_desc", null,null);
+            var result = await _sut.Index(null, "bonus_desc", null,new bool[0]);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -376,10 +377,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "quota_desc", null,null);         
+            var result = await _sut.Index(null, "quota_desc", null,new bool[0]);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
-           sorted = (PaginatedList<Challenge>)value.Model;
+            var sorted = model.Challenges;
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
@@ -439,10 +440,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "", null);
-            PaginatedList<Challenge> sorted = null;
+            var result = await _sut.Index(null, "", null,new bool[0]);
             var value = result as ViewResult;
-            sorted = (PaginatedList<Challenge>)value.Model;
+            var model = value.Model as ChallengeIndexViewModel;
+            var sorted = model.Challenges;
             Assert.Equal(l.ElementAt(0).Bonus, sorted.ElementAt(2).Bonus);
             Assert.Equal(l.ElementAt(1).Bonus, sorted.ElementAt(1).Bonus);
             Assert.Equal(l.ElementAt(2).Bonus, sorted.ElementAt(0).Bonus);
@@ -500,13 +501,14 @@ namespace PlattformChallenge.UnitTest.Controllers
                 },
             };
             var query = l.AsQueryable().BuildMockDbSet();
+            var isSelected = new bool[0];
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, "2");
-            PaginatedList<Challenge> searched = null;
+            var result = await _sut.Index(null, null, "2",isSelected);
             var value = result as ViewResult;
-            searched = (PaginatedList<Challenge>)value.Model;
+            var model = value.Model as ChallengeIndexViewModel;
+            var searched = model.Challenges;
             Assert.Equal(l.ElementAt(1).C_Id, searched.ElementAt(0).C_Id);
             Assert.Single(searched);
         }

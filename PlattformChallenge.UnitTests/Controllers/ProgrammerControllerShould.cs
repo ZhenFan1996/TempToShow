@@ -56,7 +56,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             mock.SetupGet(_ => _.Response.StatusCode).Returns(It.IsAny<int>);
             _mockUseerManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
             var logger = new Mock<ILogger<ProgrammerController>>();
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object);
+            var env = new Mock<IWebHostEnvironment>();
+            env.SetupGet(e => e.WebRootPath).Returns("");
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object,env.Object);
             _sut.ControllerContext = context;
 
         }
@@ -198,6 +200,30 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(savedSolution.FileName, checkedSolution.FileName);
             Assert.Equal(savedSolution.URL, checkedSolution.URL);
             Assert.Equal(savedSolution.Status, checkedSolution.Status);
+        }
+
+        [Fact]
+        public async Task ProfileGet() {
+            GetAllBuild();
+            _mockUseerManager.Setup(_ => _.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser {
+                Id = "test-programmer",
+                Name = "Zhen",
+                Email ="ubumh@student.kit.edu",
+                Address ="test address",
+                Bio ="test bio",
+                Hobby ="test Hobby",
+                Birthday = DateTime.Now
+            });
+
+            var result = await _sut.Profile("test-programmer");
+            var vr = result as ViewResult;
+            var model = (ProfileViewModel)vr.Model;
+            Assert.Equal("test address", model.Address);
+            Assert.Equal("Zhen", model.Name);
+            Assert.Equal("ubumh@student.kit.edu", model.Email);
+            Assert.Equal("test bio", model.Bio);
+            Assert.Equal("test Hobby", model.Hobby);
+            Assert.Equal(2, model.TakePartInNummber);
         }
 
         private Mock<IFormFile> mockFormFile() {
