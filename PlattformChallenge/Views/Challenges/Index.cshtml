@@ -1,25 +1,32 @@
 @using PlattformChallenge.Core.Model
+@using System.Linq
 @model PlattformChallenge.ViewModels.ChallengeIndexViewModel
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
-@{
-    ViewData["Title"] = @Localizer["CurrentChallenges"];
+
+@if (@Model.Challenges.FirstOrDefault() != null && @Model.Challenges.First().IsClose)
+{
+    ViewBag.Title = @Localizer["ClosedChallenges"];
+    <h1>@Localizer["ClosedChallenges"]</h1>
 }
-
-
-<h1>@Localizer["CurrentChallenges"]</h1>
-<div class="container">
-
+else if (@Model.Challenges.FirstOrDefault() != null && !@Model.Challenges.First().IsClose)
+{
+    ViewBag.Title = @Localizer["CurrentChallenges"];
+    <h1>@Localizer["CurrentChallenges"]</h1>
+}
 @if (ViewContext.HttpContext.User.IsInRole("Company"))
 {
     <p>
         <a asp-action="Create">@Localizer["CreateChallenge"]</a>
     </p>
 }
+<div>
+    <a asp-action="PastList">@Localizer["ShowClosedList"]</a> | <a asp-action="Index">@Localizer["ShowCurrentList"]</a>
+</div>
 
-@{ViewBag.Title = @Localizer["CurrentChallenges"];}
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
+@if (@Model.Challenges.FirstOrDefault() != null)
+{<form asp-action="Index" method="get">
+        <div class="form-actions no-color">
 
         <p>
             @Localizer["FindByTitle"] <input type="text" name="SearchString" asp-for="@Model.SearchString" value="@ViewData["CurrentFilter"]" />
@@ -52,54 +59,61 @@
     <thead>
         <tr>
 
-            <th>
-                @Localizer["Title"]
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">@Localizer["Prize"]</a>
-            </th>
-            <th>
-                @Localizer["Company"]
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Localizer["Date"]</a>
+                <th>
+                    @Localizer["Title"]
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["BonusSortParm"]">@Localizer["Prize"]</a>
+                </th>
+                <th>
+                    @Localizer["Company"]
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Localizer["Date"]</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">@Localizer["Quota"]</a>
+                </th>
 
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["QuotaSortParm"]">@Localizer["Quota"]</a>
-            </th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Challenges)
-        {
-            <tr>
-
-                <td>
-                    <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Bonus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Release_Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Max_Participant)
-                </td>
             </tr>
-        }
-    </tbody>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Challenges)
+            {
+                <tr>
 
-</table>
+                    <td>
+                        <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bonus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Company.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Release_Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Max_Participant)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        @Localizer["NoChallengesInThisCategory"]
+    </div>
+}
+
 @{
     var prevDisabled = !Model.Challenges.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Challenges.HasNextPage ? "disabled" : "";
 }
+<div>
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.Challenges.PageIndex - 1)"
    class="btn btn-default @prevDisabled">

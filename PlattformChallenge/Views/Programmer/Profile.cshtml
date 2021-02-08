@@ -1,0 +1,104 @@
+@model PlattformChallenge.ViewModels.ProfileViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3">
+                    <img class="rounded-circle" src="@Model.LogoPath" alt="Card image cap" width="120" height="120">
+                </div>
+                <div class="offset-md-1  col-md-8 mt-4">
+                    <h1 class=" flex-column justify-content-center">
+                        @Model.Name
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="card bg-white  box-shadow col-md-12 col-sm-12">
+            <div class="row">
+                <div class="col-md-4 mt-5 flex-sm-row">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_Newsletter_re_wrob.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Email</h5>
+                                @Model.Email
+                            </div>
+                        </li>
+                        <li class="media my-4">
+                            <img class="mr-3" src="/images/undraw_online_posts_h475.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Phone</h5>
+                                @Model.Phone
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mt-5 flex-sm-row">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_Birthday_cake_2wxy.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Birthday</h5>
+                                @if (Model.Birthday.Equals(DateTime.MinValue)) {
+                                    <span>*****</span>
+                                }
+                                else {
+                                @Html.DisplayFor(model=> model.Birthday)
+                                }
+                            </div>
+                        </li>
+                        <li class="media my-4">
+                            <img class="mr-3" src="/images/undraw_happy_feeling_slmw.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Hobby</h5>
+                                @Model.Hobby
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mt-5 flex-sm-row">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_location_review_dmxd.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Address</h5>
+                                <address> @Model.Address</address>
+                            </div>
+                        </li>
+                        <li class="media my-4">
+                            <img class="mr-3" src="~/images/undraw_finish_line_katerina_limpitsouni_xy20.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Number of Challenges</h5>
+                                <address> @Model.TakePartInNummber</address>
+                            </div>
+                        </li>
+                    </ul>
+                </div>            
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="card bg-white  box-shadow col-md-12 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 mt-5 flex-sm-row">
+                    <ul class="list-unstyled">
+                        <li class="media">
+                            <img class="mr-3" src="~/images/undraw_Newsletter_re_wrob.png" alt="Generic placeholder image" width="65" height="65">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">Bio</h5>
+                                @Html.Raw(Model.Bio)
+                            </div>
+                        </li>
+                    </ul>
+                </div>              
+            </div>
+        </div>
+    </div>
+
+</div>

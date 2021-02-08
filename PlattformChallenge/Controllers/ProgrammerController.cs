@@ -48,7 +48,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Index() {
 
             var cp = await (from c in _cRepository.GetAll().Include(c => c.Company).Include(c => c.LanguageChallenges)
-                             join p in _pRepository.GetAll()
+                             join p in _pRepository.GetAll().Include(p => p.Challenge).Include(p => p.Solution)
                              on c.C_Id equals p.C_Id
                              where p.P_Id == _currUser.Id
                              select new { c,p}).ToListAsync();
@@ -58,15 +58,48 @@ namespace PlattformChallenge.Controllers
                 challenges.Add(e.c);
                 participations.Add(e.p);
             }
+            int inProgress = challenges.Where(c => !c.IsClose).Count();
+
             var model = new ProgrammerIndexViewModel() {
                 Challenges = challenges,
                 Participations = participations,
                 Programmer = _currUser,
-                LogoPath = "/images/" + (_currUser.Logo ?? "user.jpg")
-
+                Phone = _currUser.PhoneNumber ?? "***",
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png"),
+                InProgress = inProgress,
+                Completet = challenges.Count() - inProgress                
             };
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> Profile(string p_id) {
+
+            var programmer = await _userManger.FindByIdAsync(p_id);
+            if (programmer == null) {
+                Response.StatusCode = 400;
+                return View("NotFound");
+            }
+
+            var num = _pRepository.GetAll().Where(p => p.P_Id == p_id).Count();
+
+            var model = new ProfileViewModel()
+            {
+                Email = programmer.Email,
+                Name = programmer.Name,
+                Address = programmer.Address ??"*****",
+                Bio = programmer.Bio,
+                Phone = programmer.PhoneNumber ??"*****",
+                Hobby = programmer.Hobby ??"*****",
+                Birthday = programmer.Birthday,
+                TakePartInNummber = num,
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+            };
+
+            return View(model);
+        }
+
+
+
         /// <summary>
         /// Exit the currently selected challenge
         /// </summary>
@@ -184,7 +217,7 @@ namespace PlattformChallenge.Controllers
                 Phone = _currUser.PhoneNumber,
                 Hobby = _currUser.Hobby,
                 Birthday = _currUser.Birthday,
-                LogoPath = "/images/" + (_currUser.Logo ?? "user.jpg")
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
             };
             
             return View(model);
@@ -195,15 +228,19 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
         {
             string dir = Path.Combine(_env.WebRootPath, "images");
-            string logoName = Guid.NewGuid().ToString() + Path.GetExtension(model.Logo.FileName);
-            string path = await Upload(model.Logo, logoName, dir);
+            if (model.Logo != null)
+            {
+                string logoName = Guid.NewGuid().ToString() + Path.GetExtension(model.Logo.FileName);
+                string path = await Upload(model.Logo, logoName, dir);
+                _currUser.Logo = logoName;
+            }
             _currUser.Name = model.Name;
             _currUser.Address = model.Address;
             _currUser.Bio = model.Bio;
             _currUser.PhoneNumber = model.Phone;
             _currUser.Birthday = model.Birthday;
             _currUser.Hobby = model.Hobby;
-            _currUser.Logo = logoName;
+            
             var result = await _userManger.UpdateAsync(_currUser);
             if (result.Succeeded)
             {

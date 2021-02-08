@@ -107,7 +107,30 @@ namespace PlattformChallenge.Controllers
             };
             return View(model);
         }
+
+        /// <summary>
+        /// Show a list of already closed challenges. Order by descending release date.
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> PastList(int? pageNumber)
+        {
+            var challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == true)
+                             .Include(c => c.Company)
+                             select c;
+            challenges = challenges.OrderByDescending(c => c.Release_Date);
+            int pageSize = 10;
+
+            var model = new ChallengeIndexViewModel()
+            {
+                Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
+                Languages = await _lRepository.GetAllListAsync()
+            };
+            return View("Index", model);
+        }
         #endregion
+
 
         #region details
         /// <summary>
@@ -513,18 +536,7 @@ namespace PlattformChallenge.Controllers
         }
 
 
-        //private Expression<Func<LanguageChallenge, bool>> ExpressionCreate(Expression<Func<LanguageChallenge, bool>> pre,
-        //    int i ,List<Language> languages) {
 
-        //    if (pre == null)
-        //    {
-        //        return _ => _.Language_Id == languages.ElementAt(i).Language_Id;
-        //    }
-        //    else
-        //    {
-        //        return pre.
-        //    }
-        //}
 
     }
 }
