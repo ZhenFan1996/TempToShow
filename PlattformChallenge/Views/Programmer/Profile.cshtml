@@ -1,5 +1,5 @@
 @model PlattformChallenge.ViewModels.ProfileViewModel
-
+@inject IViewLocalizer Localizer
 <div class="container">
     <div class="row">
         <div class="col-md-8">
@@ -43,12 +43,14 @@
                         <li class="media">
                             <img class="mr-3" src="~/images/undraw_Birthday_cake_2wxy.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Birthday</h5>
-                                @if (Model.Birthday.Equals(DateTime.MinValue)) {
+                                <h5 class="mt-0 mb-1">@Localizer["Birthday"]</h5>
+                                @if (Model.Birthday.Equals(DateTime.MinValue))
+                                {
                                     <span>*****</span>
                                 }
-                                else {
-                                @Html.DisplayFor(model=> model.Birthday)
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.Birthday)
                                 }
                             </div>
                         </li>
@@ -73,12 +75,12 @@
                         <li class="media my-4">
                             <img class="mr-3" src="~/images/undraw_finish_line_katerina_limpitsouni_xy20.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Number of Challenges</h5>
+                                <h5 class="mt-0 mb-1">@Localizer["Nummber of Challenges"]</h5>
                                 <address> @Model.TakePartInNummber</address>
                             </div>
                         </li>
                     </ul>
-                </div>            
+                </div>
             </div>
         </div>
     </div>
@@ -96,7 +98,7 @@
                             </div>
                         </li>
                     </ul>
-                </div>              
+                </div>
             </div>
         </div>
     </div>
