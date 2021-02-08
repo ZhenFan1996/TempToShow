@@ -23,7 +23,7 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'   
+    arguments: '--configuration $(buildConfiguration)'       
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
@@ -32,14 +32,6 @@ steps:
     zipAfterPublish: True
      
  
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(agent.builddirectory)/s/PlattformChallenge/bin/Release/netcoreapp3.1/'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
-
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
