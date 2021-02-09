@@ -159,6 +159,9 @@
   <data name="NotClosed" xml:space="preserve">
     <value>Unbeendet</value>
   </data>
+  <data name="NoWinner" xml:space="preserve">
+    <value>Kein Gewinner</value>
+  </data>
   <data name="Prize" xml:space="preserve">
     <value>Preisgeld</value>
   </data>

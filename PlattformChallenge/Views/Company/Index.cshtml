@@ -8,128 +8,135 @@
                 alert("@ViewBag.Message");
                 history.go(-1);
         };
-        
+
     </script>
-    
+
 }
 
 else
 {
-<div class="container">
-    <div class="row">
-        <div class="card col-lg-3 " style="width: 18rem;">
-            <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">@Model.Company.Name</h5>
-                <ul>
-                    <li class="card-text"> @Localizer["Email"]@Model.Company.Email</li>
-                    <li class="card-text"> @Localizer["PublishedChallenges"]@Model.Challenges.Count()</li>
-                </ul>
-                <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Company.Email" class="btn btn-primary">@Localizer["ChangePassword"]</a>
-                <a asp-area="" asp-controller="Challenges" asp-action="Create" class="btn btn-primary">@Localizer["CreateNewChallenge"]</a>
+    <div class="container">
+        <div class="row">
+            <div class="card col-lg-3 " style="width: 18rem;">
+                <img class="card-img-top" src="~/images/user.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Company.Name</h5>
+                    <ul>
+                        <li class="card-text"> @Localizer["Email"]@Model.Company.Email</li>
+                        <li class="card-text"> @Localizer["PublishedChallenges"]@Model.Challenges.Count()</li>
+                    </ul>
+                    <a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-email="@Model.Company.Email" class="btn btn-primary">@Localizer["ChangePassword"]</a>
+                    <a asp-area="" asp-controller="Challenges" asp-action="Create" class="btn btn-primary">@Localizer["CreateNewChallenge"]</a>
+                </div>
             </div>
-        </div>
-        <table class="table col-lg-8 offset-lg-1">
-            <thead>
-                <tr>
-                    <th>@Localizer["Title"]</th>
-                    <th>@Localizer["Prize"]</th>
-                    <th>@Localizer["Date"]</th>
-                    <th>@Localizer["Edit"]</th>
-                    <th>@Localizer["Solutions"]</th>
-                    <th>@Localizer["Close"]</th>
-                    <th>@Localizer["Winner"]</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Challenges)
-                {
-                <tr>
-                    <td>
-                        <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Bonus)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Release_Date)
-                    </td>
-                    @if (!item.IsClose)
+            <table class="table col-lg-8 offset-lg-1">
+                <thead>
+                    <tr>
+                        <th>@Localizer["Title"]</th>
+                        <th>@Localizer["Prize"]</th>
+                        <th>@Localizer["Date"]</th>
+                        <th>@Localizer["Edit"]</th>
+                        <th>@Localizer["Solutions"]</th>
+                        <th>@Localizer["Close"]</th>
+                        <th>@Localizer["Winner"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Challenges)
                     {
-                        <td>
+                        <tr>
+                            <td>
+                                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title) </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Bonus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Release_Date)
+                            </td>
+                            @if (!item.IsClose)
+                            {
+                                <td>
 
-                            <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Edit"]</a>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <span> @Localizer["Closed"] </span>
-                        </td>
-                    }
-                    <td>
-                        <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Solutions"]</a>
-                    </td>
+                                    <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Edit"]</a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <span> @Localizer["Closed"] </span>
+                                </td>
+                            }
+                            <td>
+                                <a asp-controller="Company" asp-action="AllSolutions" asp-route-id="@item.C_Id" class="btn-group btn-group-justified">@Localizer["Solutions"]</a>
+                            </td>
 
-                    @if (!item.IsClose)
-                    {
-                        <td>
+                            @if (!item.IsClose)
+                            {
+                                <td>
 
-                            <button type="button" class="btn-group btn-group-justified" data-toggle="modal" data-target="#tips-@item.C_Id">
-                                @Localizer["Close"]
-                            </button>
+                                    <button type="button" class="btn-group btn-group-justified" data-toggle="modal" data-target="#tips-@item.C_Id">
+                                        @Localizer["Close"]
+                                    </button>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">@Localizer["ConfirmCloseInfoTitle"]</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <strong>@Localizer["ConfirmInfo1"]</strong>
-                                            @Localizer["ConfirmInfo2"]
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a asp-controller="Company" asp-action="CloseChallenge" asp-route-id="@item.C_Id" class="btn btn-primary">@Localizer["ConfirmClose"]</a>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["No"]</button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">@Localizer["ConfirmCloseInfoTitle"]</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <strong>@Localizer["ConfirmInfo1"]</strong>
+                                                    @Localizer["ConfirmInfo2"]
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a asp-controller="Company" asp-action="CloseChallenge" asp-route-id="@item.C_Id" class="btn btn-primary">@Localizer["ConfirmClose"]</a>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["No"]</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </td>
+                                </td>
 
-                    }
-                    else
-                    {
-                        <td>
-                            <span> @Localizer["Closed"] </span>
-                        </td>
-                    }
+                            }
+                            else
+                            {
+                                <td>
+                                    <span> @Localizer["Closed"] </span>
+                                </td>
+                            }
 
-                    @if (item.IsClose)
-                    {
-                        <td>
-                            <a asp-controller="Programmer" asp-action="Profile" asp-route-p_id="@item.Winner_Id" class="btn btn-primary">@Localizer["Winner"]</a>
-                        </td>
+                            @if (item.Winner_Id != null)
+                            {
+                                <td>
+                                    <a asp-controller="Programmer" asp-action="Profile" asp-route-p_id="@item.Winner_Id" class="btn btn-primary">@Localizer["Winner"]</a>
+                                </td>
+                            }
+                            else if (!item.IsClose)
+                            {
+                                <td>
+                                    <span> @Localizer["NotClosed"] </span>
+                                </td>
+                            }
+                            else if (item.IsClose && item.Winner_Id == null)
+                            {
+                                <td>
+                                    <span> @Localizer["NoWinner"] </span>
+                                </td>
+                            }
+                        </tr>
                     }
-                    else
-                    { <td>
-                          <span> @Localizer["NotClosed"] </span>
-                    </td>
-                    }
-                </tr>
-                }
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+        </div>
+
+
+
     </div>
-
-
-
-</div>
 }
 
