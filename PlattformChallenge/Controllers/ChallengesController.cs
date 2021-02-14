@@ -234,8 +234,6 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
-            
-
             if (ModelState.IsValid)
             {
                 if (model.Release_Date < DateTime.Now)
@@ -300,9 +298,7 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with a edit form if passed prerequisites; Else an error view with error message</returns>
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
-
         {
-           
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
             if (id == null || id == "")
             {
@@ -340,6 +336,10 @@ namespace PlattformChallenge.Controllers
             model.Challenge = challenge;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
+            if (challenge.Release_Date > DateTime.Now) //if the challenge is not published yet
+            {
+                model.AllowEditDate = true;
+            }
             for (int i = 0; i < challenge.LanguageChallenges.Count(); i++)
             {
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
@@ -347,9 +347,7 @@ namespace PlattformChallenge.Controllers
             }
             return View(model);
         }
-
-    
-       
+   
         /// <summary>
         ///  Check if all given para are legal, if yes then update database
         /// </summary>
@@ -378,13 +376,21 @@ namespace PlattformChallenge.Controllers
                     ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
                     return View(model);
                 }
+                if (model.Challenge.Release_Date < DateTime.Now)
+                {
+                    ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                    model.AllowEditDate = true;
+                    return View(model);
+                }
                 if (model.Challenge.Deadline <= model.Challenge.Release_Date)
                 {
                     ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                    model.AllowEditDate = true;
                     return View(model);
                 }
+                
 
-                var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
+              var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
                 for (int i = 0; i < model.IsSelected.Count(); i++)
                 {
                     var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id && lc.C_Id == model.Challenge.C_Id);

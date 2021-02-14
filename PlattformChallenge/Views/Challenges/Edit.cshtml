@@ -18,15 +18,12 @@
 }
 
 <h1>@Localizer["EditChallenge"]</h1>
-
-
     <hr />
     <div class="row">
         <div class="col-md-8">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Challenge.C_Id" />
-
                 <div class="form-group">
                     <label asp-for="Challenge.Title" class="control-label">@Localizer["Title"]</label>
                     <input asp-for="Challenge.Title" class="form-control" />
@@ -37,18 +34,37 @@
                     <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
                     <span asp-validation-for="Challenge.Content" class="text-danger"></span>
                 </div>
-                <input type="hidden" asp-for="Challenge.Release_Date" />
-                <div class="form-group">
-                    <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["WhenRelease"]</label>
-                    @*<input asp-for="Challenge.Release_Date" class="form-control" />*@
-                    <span asp-validation-for="Challenge.Release_Date">@Model.Challenge.Release_Date</span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Challenge.Deadline" class="control-label"></label>
-                    <input asp-for="Challenge.Deadline" class="form-control" />
-                    <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
-                </div>
 
+                @if (Model.AllowEditDate)
+                {
+                    <div class="form-group">
+                        <label asp-for="Challenge.Release_Date" class="control-label"></label>
+                        <input asp-for="Challenge.Release_Date" class="form-control" />
+                        <span asp-validation-for="Challenge.Release_Date" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Challenge.Deadline" class="control-label"></label>
+                        <input asp-for="Challenge.Deadline" class="form-control" />
+                        <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Challenge.Release_Date" />
+                    <div class="form-group">
+                        <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["Deadline"]</label>
+                        @*<input asp-for="Challenge.Release_Date" class="form-control" />*@
+                        <span asp-validation-for="Challenge.Release_Date">@Model.Challenge.Release_Date</span>
+                        <div><span>@Localizer["NoEditInfo"]</span></div>
+                    </div>
+                    <input type="hidden" asp-for="Challenge.Deadline" />
+                    <div class="form-group">
+                        <label asp-for="Challenge.Deadline" class="control-label">@Localizer["Deadline"]</label>
+                        <span asp-validation-for="Challenge.Deadline">@Model.Challenge.Deadline</span>
+                        <div><span>@Localizer["NoEditInfo"]</span></div>
+                    </div>
+
+                }
 
 
                 <input type="hidden" asp-for="Challenge.Com_ID" />
