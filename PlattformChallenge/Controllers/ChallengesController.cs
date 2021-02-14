@@ -214,6 +214,8 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Create()
         {
             var model = new ChallengeCreateViewModel();
+            model.Release_Date = DateTime.Now.Date;
+            model.Deadline = DateTime.Now.Date;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);

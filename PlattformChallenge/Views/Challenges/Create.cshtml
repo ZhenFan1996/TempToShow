@@ -55,7 +55,7 @@ else
                 <div class="form-group">
                     <label asp-for="Release_Date" class="control-label">@Localizer["WhenRelease"]</label>
                     <input asp-for="Release_Date" class="form-control" />
-                    <span asp-validation-for="Release_Date" class="text-danger"></span>
+                    <span asp-validation-for="Release_Date" class="text-danger" value=@Model.Release_Date></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Deadline" class="control-label">@Localizer["Deadline"]</label>
