@@ -240,7 +240,11 @@ namespace PlattformChallenge.Controllers
                 return View("NotFound");
             }
 
-            var num = _cRepository.GetAll().Where(c => c.C_Id == c_id).Count();
+            var challenges = await (from c
+                             in _cRepository.GetAll().Where(c => c.Com_ID == _currUser.Id).Include(c => c.Company)
+                                    select c).ToListAsync();
+            
+            var num = challenges.Count();
 
             var model = new ProfileViewModel()
             {

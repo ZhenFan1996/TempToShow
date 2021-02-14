@@ -10,7 +10,6 @@
         };
 
     </script>
-
 }
 
 else
@@ -30,8 +29,12 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-        </div>
+        @*<div class="col-md-6">
+        </div>*@
+    <div >
+        <a asp-controller="Challenges" asp-action="Create" class="btn btn-primary" width="65" height="20" >@Localizer["CreateNewChallenge"]</a>
+    </div>
+        
     </div>
     <div class="row mt-3">
         <div class="card bg-white  box-shadow col-md-7 col-sm-8">
@@ -88,9 +91,13 @@ else
                         <a asp-controller="Company" asp-action="ProfileSetting" class="btn btn-dark mt-2">@Localizer["EditProfile"]</a>
                     </div>
                 </li>
+
             </ul>
         </div>
     </div>
+    @*<div class="btn-group btn-group-justified">
+        <a asp-controller="Company" asp-action="Create" class="btn btn-primary " margin-top="20">@Localizer["CreateNewChallenge"]</a>
+    </div>*@
     <div class="row mt-4">
         <h5 class="text-muted">
             @Localizer["PublishedChallenges"]
