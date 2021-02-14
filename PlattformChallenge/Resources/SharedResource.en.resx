@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutMe" xml:space="preserve">
+    <value>About Me</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adress</value>
+  </data>
   <data name="Bonus" xml:space="preserve">
     <value>Bonus</value>
   </data>
@@ -138,8 +144,17 @@
   <data name="E-mail" xml:space="preserve">
     <value>E-mail</value>
   </data>
+  <data name="FoundationDate" xml:space="preserve">
+    <value>Foundation date</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Hello</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
+  </data>
+  <data name="MainDomain" xml:space="preserve">
+    <value>Core domain</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -150,6 +165,12 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="NumberOfChallenge" xml:space="preserve">
+    <value>Number Of Challenge</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
   <data name="Points" xml:space="preserve">
     <value>Points</value>
   </data>
@@ -159,8 +180,14 @@
   <data name="Quota" xml:space="preserve">
     <value>Quota</value>
   </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
   <data name="Titel" xml:space="preserve">
     <value>Titel</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Upload</value>

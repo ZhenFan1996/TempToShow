@@ -23,7 +23,7 @@ namespace PlattformChallenge.ViewModels
         [Phone]
         public string Phone { get; set; }
 
-        public int TakePartInNummber { get; set; }
+        public int InvolvedChallengeNumber { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Birthday { get; set; }

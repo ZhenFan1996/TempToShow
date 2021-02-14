@@ -93,7 +93,7 @@ namespace PlattformChallenge.Controllers
                 Phone = programmer.PhoneNumber ??"*****",
                 Hobby = programmer.Hobby ??"*****",
                 Birthday = programmer.Birthday,
-                TakePartInNummber = num,
+                InvolvedChallengeNumber = num,
                 LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
             };
 
