@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using PlattformChallenge.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using PlattformChallenge.Services;
 
 namespace PlattformChallenge.Controllers
 {
@@ -29,9 +30,10 @@ namespace PlattformChallenge.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly ConfigProviderService _appcfg;
         private readonly ILogger<ProgrammerController> logger;
+        private readonly IEmailSender _sender;
 
         public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg,
-            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment
+            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment, IEmailSender sender
             )
         {
             this._userManger = userManager;
@@ -41,6 +43,7 @@ namespace PlattformChallenge.Controllers
             this._env = webHostEnvironment;
             _appcfg = appcfg;
             this.logger = logger;
+            this._sender = sender;
         }
         /// <summary>
         /// Get current user information and challenges participated in and return to the page
@@ -109,7 +112,7 @@ namespace PlattformChallenge.Controllers
         /// <returns>View index</returns>
         
         public async Task<IActionResult> Cancel(string id) {
-            var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution)
+            var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution).Include(p => p.Challenge)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
                     select pc).ToListAsync();
             if (p.Count !=1)
@@ -120,9 +123,19 @@ namespace PlattformChallenge.Controllers
             {
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
+                string subject = $"Successfuly Cancel for {par.Challenge.Title} ";
+                string body =
+                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                    $"<p>Dear {_currUser.Name} ,</p>" +
+                    $"<p>Your have successfully cancel the challenge {par.Challenge.Title} </p>" +
+                    "<p></p>" +
+                    "<p>Kind regards</p>" +
+                    "<p>TES-Challenge Teams</p>"
+                    + "</div>";
+                await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 if (par.Solution != null)
                 {
-                    await _sRepository.DeleteAsync(par.Solution);
+                    await _sRepository.DeleteAsync(par.Solution);                   
                 }
                 logger.LogInformation($"The Programmer with id {par.P_Id} cancel the challenge{par.C_Id}" );
                 return RedirectToAction("Index");
@@ -203,6 +216,17 @@ namespace PlattformChallenge.Controllers
                 model.Participation = par;
                 model.Programmer = _currUser;
                 model.IsVaild = c.Deadline >= DateTime.Now;
+                string subject = $"Your Solution for {c.Title} has successfully uploaded";
+                string body =
+                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                    $"<p>Dear {_currUser.Name} ,</p>" +
+                    $"<p>Your Solution for {c.Title} has successfully uploaded</p>" +
+                    $"<p>The solution id is {par.S_Id}</p>"+
+                    "<p></p>" +
+                    "<p>Kind regards</p>" +
+                    "<p>TES-Challenge Teams</p>"
+                    +"</div>";
+                await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 return View(model);
             }
             else {

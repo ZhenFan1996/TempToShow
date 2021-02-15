@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Models;
+using PlattformChallenge.Services;
 using PlattformChallenge.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,10 +29,11 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Solution> _sRepository;
         private readonly ILogger<CompanyController> logger;
         private readonly IWebHostEnvironment _env;
+        private readonly IEmailSender _sender;
 
         public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository,
             IRepository<Participation> pRepository, IRepository<Solution> sRepository,ILogger<CompanyController> logger,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment, IEmailSender sender)
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
@@ -39,6 +41,7 @@ namespace PlattformChallenge.Controllers
             this._sRepository = sRepository;
             this.logger = logger;
             this._env = webHostEnvironment;
+            this._sender = sender;
         }
 
         /// <summary>
@@ -136,6 +139,21 @@ namespace PlattformChallenge.Controllers
                     try
                     {
                         await _sRepository.UpdateAsync(toUpdate);
+
+                    var pro =await  _userManger.FindByIdAsync(solItem.First().p.P_Id);
+
+                    string subject = $"The Challenge  {challenge.Title} is noted";
+                    string body =
+                         "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                        $"<p>Dear {pro.Name}</p>" +
+                        $"<p>Your Challenge {challenge.Title} was noted</p>" +
+                        $"<p>The point is :<strong>{vm.Point}</strong></p>" +
+                        "<p> </p>"+
+                        "<p>Kind regards</p>" +
+                        "<p>TES-Challenge Teams</p>"
+                        +"</div>";
+
+                    await _sender.SendEmailAsync(pro.Email, subject, body);
                     logger.LogInformation($"The Solution with id {toUpdate.S_Id} is rated with the point {vm.Point}");
                     }
                     catch (DbUpdateConcurrencyException)
@@ -158,7 +176,7 @@ namespace PlattformChallenge.Controllers
                 return View("Error");
             }
            
-            var toUpdate = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == Id);
+            var toUpdate = await _cRepository.GetAll().Include(c=> c.Participations).FirstOrDefaultAsync(c => c.C_Id == Id);
             if (toUpdate.IsClose)
             //This shouldn't suppose to happen in normal situation, because the close button will be deactived
             {
@@ -209,15 +227,34 @@ namespace PlattformChallenge.Controllers
                     var winnerId = participation.P_Id;
                     toUpdate.Winner_Id = winnerId;
                     toUpdate.Best_Solution_Id = bestSolution.s.S_Id;
- }
+                 }
                 else
                 {
                     toUpdate.Winner_Id = "NoWinner";
                 }
                 toUpdate.IsClose = true;
+
+                
                 try
                 {
                     await _cRepository.UpdateAsync(toUpdate);
+                    foreach (var p in toUpdate.Participations) {
+                        var user = await _userManger.FindByIdAsync(p.P_Id);
+                        string subject = $"The Challenge {toUpdate.Title} is closed";
+                        string body =
+                             "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                            $"<p>Dear {user.Name} ,</p>" +
+                            $"<p>You  challenge {toUpdate.Title} is closed. You can see the results in your protal</p>" +
+                            "<p></p>" +
+                            "<p>Kind regards</p>" +
+                            "<p>TES-Challenge Teams</p>"
+                            +"</div>";
+
+                        await _sender.SendEmailAsync(user.Email, subject, body);
+
+
+                    }
+
                     logger.LogInformation($"The challenge with id {toUpdate.C_Id} is closed.");
                 }
                 catch (DbUpdateConcurrencyException)

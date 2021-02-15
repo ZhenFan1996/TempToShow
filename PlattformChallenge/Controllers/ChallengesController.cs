@@ -507,9 +507,22 @@ namespace PlattformChallenge.Controllers
             try
             {
                 await _particiRepository.InsertAsync(newParti);
-                await _sender.SendEmailAsync("ubumh@student.kit.edu","aaa","aaaaa");
+                var user = await _pRepository.FirstOrDefaultAsync(p => p.Id == newParti.P_Id);
+                string subject = $"Success take part in the Challenge {challenge.Title}";
+                string body =
+                    "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                    $"<p>Dear {user.Name} ,</p>" +
+                    $"<p>You habe successfully taken part in the challenge {challenge.Title} </p>" +
+                    "<p></p>" +
+                    "<p>Kind regards</p>" +
+                    "<p>TES-Challenge Teams</p>"
+                    +"</div>";
+
+                await _sender.SendEmailAsync(user.Email,subject,body);
                 logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");
             }
+
+            
             catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)
             {             
                throw new Exception("You have already participated this challenge");            
