@@ -24,6 +24,7 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Challenge.C_Id" />
+                <input type="hidden" asp-for="AllowEditDate" />
                 <div class="form-group">
                     <label asp-for="Challenge.Title" class="control-label">@Localizer["Title"]</label>
                     <input asp-for="Challenge.Title" class="form-control" />
@@ -38,12 +39,12 @@
                 @if (Model.AllowEditDate)
                 {
                     <div class="form-group">
-                        <label asp-for="Challenge.Release_Date" class="control-label"></label>
+                        <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
                         <input asp-for="Challenge.Release_Date" class="form-control" />
                         <span asp-validation-for="Challenge.Release_Date" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Challenge.Deadline" class="control-label"></label>
+                        <label asp-for="Challenge.Deadline" class="control-label">@Localizer["Deadline"]</label>
                         <input asp-for="Challenge.Deadline" class="form-control" />
                         <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
                     </div>
@@ -52,7 +53,7 @@
                 {
                     <input type="hidden" asp-for="Challenge.Release_Date" />
                     <div class="form-group">
-                        <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["Deadline"]</label>
+                        <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
                         @*<input asp-for="Challenge.Release_Date" class="form-control" />*@
                         <span asp-validation-for="Challenge.Release_Date">@Model.Challenge.Release_Date</span>
                         <div><span>@Localizer["NoEditInfo"]</span></div>
