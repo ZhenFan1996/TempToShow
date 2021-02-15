@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,7 @@ using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
+using PlattformChallenge.Services;
 using PlattformChallenge.ViewModels;
 
 namespace PlattformChallenge.Controllers
@@ -27,10 +29,11 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<LanguageChallenge> _lcRepository;
         private readonly IRepository<Participation> _particiRepository;
         private readonly ILogger<ChallengesController> logger;
+        private readonly IEmailSender _sender;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
             IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
-            ILogger<ChallengesController> looger
+            ILogger<ChallengesController> looger,IEmailSender sender
             )
         {
             _repository = repository;
@@ -39,6 +42,7 @@ namespace PlattformChallenge.Controllers
             _lcRepository = lcRepository;
             _particiRepository = particiRepository;
             this.logger = looger;
+            this._sender = sender;
         }
         #region list
 
@@ -138,6 +142,9 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
+
+
+
             if (id == null || id == "")
             {
                 Response.StatusCode = 400;
@@ -156,6 +163,7 @@ namespace PlattformChallenge.Controllers
                 @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
                 return View("NotFound");
             }
+  
             bool canTakePartIn = true;
             var user = _pRepository.GetAll().Include(p => p.Participations).FirstOrDefault(p => p.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
             if (user!=null&&user.Participations != null)
@@ -167,24 +175,22 @@ namespace PlattformChallenge.Controllers
                         canTakePartIn = false;
                     }
                 }
-            }
+            }               
             var detail = new ChallengeDetailViewModel()
             {
                 C_Id = challenge.C_Id,
                 Title = challenge.Title,
                 Bonus = challenge.Bonus,
                 Content = challenge.Content,
-                Release_Date = challenge.Release_Date,
+                Release_Date = TimeZoneInfo.ConvertTimeFromUtc(challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
                 Max_Participant = challenge.Max_Participant,
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
-                Deadline =challenge.Deadline,
+                Deadline = TimeZoneInfo.ConvertTimeFromUtc(challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
                 CanTakePartIn = canTakePartIn
             };
-
-      
 
             if (detail.Winner_Id != null)
             {
@@ -236,14 +242,20 @@ namespace PlattformChallenge.Controllers
 
             if (ModelState.IsValid)
             {
-                if (model.Release_Date < DateTime.Now)
+
+
+                TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+                DateTime zone_release = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, zone);
+                DateTime zone_deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, zone);
+
+                if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.Now))
                 {
                     ViewBag.Message = "You can only release challenge in the future";
                     return View("Create");
                     //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
                     //return View(model);
                 }
-                if (model.Deadline <= model.Release_Date)
+                if (zone_deadline <= zone_release)
                 {
                     ViewBag.Message = "Deadline must be after release date";
                     return View("Create");
@@ -259,8 +271,8 @@ namespace PlattformChallenge.Controllers
                     Title = model.Title,
                     Bonus = model.Bonus,
                     Content = model.Content,
-                    Release_Date = model.Release_Date,
-                    Deadline = model.Deadline,
+                    Release_Date = zone_release,
+                    Deadline = zone_deadline,
                     Max_Participant = model.Max_Participant,
                     Com_ID = User.FindFirstValue(ClaimTypes.NameIdentifier),
                     AllowOpen = model.Visible
@@ -277,10 +289,10 @@ namespace PlattformChallenge.Controllers
                             Language_Id = languages.ElementAt(i).Language_Id,
                         };
                         lc.Add(toAdd);
-                        await _lcRepository.InsertAsync(toAdd);
-                        logger.LogInformation($"The new Challenge with id {newChallenge.C_Id} is created");
+                       await _lcRepository.InsertAsync(toAdd);                                            
                     }
                 }
+                logger.LogInformation($"The new Challenge with id {newChallenge.C_Id} is created");         
                 return RedirectToAction("Details", new { id = newChallenge.C_Id });
             }
             //if modelstate is not valid
@@ -474,6 +486,7 @@ namespace PlattformChallenge.Controllers
             try
             {
                 await _particiRepository.InsertAsync(newParti);
+                await _sender.SendEmailAsync("ubumh@student.kit.edu","aaa","aaaaa");
                 logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");
             }
             catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)

@@ -41,10 +41,10 @@
                 <div class="form-group">
                     <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["WhenRelease"]</label>
                     @*<input asp-for="Challenge.Release_Date" class="form-control" />*@
-                    <span asp-validation-for="Challenge.Release_Date">@Model.Challenge.Release_Date</span>
+                    <span asp-validation-for="Challenge.Release_Date">@TimeZoneInfo.ConvertTimeFromUtc(Model.Challenge.Release_Date,TimeZoneInfo.Local)</span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Challenge.Deadline" class="control-label"></label>
+                    <label asp-for="Challenge.Deadline" class="control-label">@TimeZoneInfo.ConvertTimeFromUtc(Model.Challenge.Deadline, TimeZoneInfo.Local)</label>
                     <input asp-for="Challenge.Deadline" class="form-control" />
                     <span asp-validation-for="Challenge.Deadline" class="text-danger"></span>
                 </div>
