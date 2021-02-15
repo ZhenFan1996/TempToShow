@@ -185,7 +185,7 @@ namespace PlattformChallenge.Controllers
                 Release_Date = TimeZoneInfo.ConvertTimeFromUtc(challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
                 Max_Participant = challenge.Max_Participant,
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
-                Deadline = TimeZoneInfo.ConvertTimeFromUtc(challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
+                Deadline = TimeZoneInfo.ConvertTimeFromUtc(challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
@@ -357,6 +357,8 @@ namespace PlattformChallenge.Controllers
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
                 model.IsSelected[int.Parse(lId) - 1] = true;
             }
+            model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+            model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
             return View(model);
         }
    
@@ -379,6 +381,8 @@ namespace PlattformChallenge.Controllers
                 if (errMsg != null)
                 {
                     ModelState.AddModelError(string.Empty, errMsg);
+                    //model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+                    //model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
                     return View(model);
                 }
                 else
@@ -414,6 +418,8 @@ namespace PlattformChallenge.Controllers
                         }
                     }
 
+                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
 
                     try
                     {
@@ -444,6 +450,7 @@ namespace PlattformChallenge.Controllers
             int bonus = GetCurrentBonus(model.Challenge.C_Id);
             var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
             int alreadyParticiCount = partiList.Count;
+
             if (!model.AllowEditDate && bonus > model.Challenge.Bonus)
             {
                 return "You can't change to a less bonus for a already published challenge";
@@ -452,7 +459,9 @@ namespace PlattformChallenge.Controllers
             {
                 return "You can't change maximal participation to this number, there's already more users participated";
             }
-            if (model.Challenge.Release_Date < DateTime.Now && model.AllowEditDate)
+            
+            if (TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")) < DateTime.Now
+                && model.AllowEditDate)
             {
                 //model.AllowEditDate = true;
                 return "You can only release challenge in the future";
