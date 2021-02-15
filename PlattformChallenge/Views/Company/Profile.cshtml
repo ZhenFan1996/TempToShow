@@ -1,5 +1,6 @@
 @model PlattformChallenge.ViewModels.ProfileViewModel
 @inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 <div class="container">
     <div class="row">
         <div class="col-md-8">
@@ -25,14 +26,14 @@
                         <li class="media">
                             <img class="mr-3" src="~/images/undraw_Newsletter_re_wrob.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Email</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["E-mail"]</h5>
                                 @Model.Email
                             </div>
                         </li>
                         <li class="media my-4">
                             <img class="mr-3" src="/images/undraw_online_posts_h475.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Phone</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["Phone"]</h5>
                                 @Model.Phone
                             </div>
                         </li>
@@ -43,10 +44,10 @@
                         <li class="media">
                             <img class="mr-3" src="~/images/undraw_Birthday_cake_2wxy.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">@Localizer["Birthday"]</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["FoundationDate"]</h5>
                                 @if (Model.Birthday.Equals(DateTime.MinValue))
                                 {
-                                    <span>*****</span>
+                            <span>@SharedLocalizer["Unknown"]</span>
                                 }
                                 else
                                 {
@@ -57,7 +58,7 @@
                         <li class="media my-4">
                             <img class="mr-3" src="/images/undraw_happy_feeling_slmw.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Hobby</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["MainDomain"]</h5>
                                 @Model.Hobby
                             </div>
                         </li>
@@ -68,15 +69,15 @@
                         <li class="media">
                             <img class="mr-3" src="~/images/undraw_location_review_dmxd.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Address</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["Address"]</h5>
                                 <address> @Model.Address</address>
                             </div>
                         </li>
                         <li class="media my-4">
                             <img class="mr-3" src="~/images/undraw_finish_line_katerina_limpitsouni_xy20.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">@Localizer["Number of Challenges"]</h5>
-                                <address> @Model.InvolvedChallengeNumber</address>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["NumberOfChallenge"]</h5>
+                                 @Model.InvolvedChallengeNumber
                             </div>
                         </li>
                     </ul>
@@ -93,7 +94,7 @@
                         <li class="media">
                             <img class="mr-3" src="~/images/undraw_Newsletter_re_wrob.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">Bio</h5>
+                                <h5 class="mt-0 mb-1">@SharedLocalizer["AboutMe"]</h5>
                                 @Html.Raw(Model.Bio)
                             </div>
                         </li>

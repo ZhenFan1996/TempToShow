@@ -163,7 +163,7 @@
     <value>Sie können nicht mehr teilnehmen. Es gibt keinen Platz mehr</value>
   </data>
   <data name="ParticipationCondition" xml:space="preserve">
-    <value>Ihre Lösung wird veröffentlicht, wenn Sie das Preisgeld gewinnen.</value>
+    <value>Ihre Lösung wird eventuell veröffentlicht, wenn Sie das Preisgeld gewinnen.</value>
   </data>
   <data name="Prize" xml:space="preserve">
     <value>Preisgeld</value>

@@ -141,13 +141,16 @@
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximum Participants</value>
   </data>
+  <data name="NoEditInfo" xml:space="preserve">
+    <value>Your Challenge is already published, you can not change this field now</value>
+  </data>
+  <data name="ReleaseDate" xml:space="preserve">
+    <value>Release Date: </value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title of your challenge</value>
-  </data>
-  <data name="WhenRelease" xml:space="preserve">
-    <value>Release Date: </value>
   </data>
 </root>

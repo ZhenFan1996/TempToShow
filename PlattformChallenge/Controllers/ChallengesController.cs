@@ -220,6 +220,8 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Create()
         {
             var model = new ChallengeCreateViewModel();
+            model.Release_Date = DateTime.Now.Date;
+            model.Deadline = DateTime.Now.Date;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);
@@ -238,8 +240,6 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Create(ChallengeCreateViewModel model)
         {
-            
-
             if (ModelState.IsValid)
             {
 
@@ -310,9 +310,7 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with a edit form if passed prerequisites; Else an error view with error message</returns>
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(string id)
-
         {
-           
             //these three if-cases prevent someone tries to edit a challenge through giving id in route 
             if (id == null || id == "")
             {
@@ -350,6 +348,10 @@ namespace PlattformChallenge.Controllers
             model.Challenge = challenge;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
+            if (model.Challenge.Release_Date > DateTime.Now)
+            {
+                model.AllowEditDate = true;
+            }
             for (int i = 0; i < challenge.LanguageChallenges.Count(); i++)
             {
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
@@ -357,9 +359,7 @@ namespace PlattformChallenge.Controllers
             }
             return View(model);
         }
-
-    
-       
+   
         /// <summary>
         ///  Check if all given para are legal, if yes then update database
         /// </summary>
@@ -370,78 +370,99 @@ namespace PlattformChallenge.Controllers
         [Authorize(Roles = "Company")]
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
-            
+
             if (ModelState.IsValid)
             {
-                int bonus = GetCurrentBonus(model.Challenge.C_Id);
-                var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
-                int alreadyParticiCount = partiList.Count;
                 List<Language> languages = await _lRepository.GetAllListAsync();
                 model.Languages = languages;
-                if (bonus > model.Challenge.Bonus)
+                string errMsg = checkIllegalOp(model);
+                if (errMsg != null)
                 {
-                    ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
+                    ModelState.AddModelError(string.Empty, errMsg);
                     return View(model);
                 }
-                if (alreadyParticiCount > model.Challenge.Max_Participant)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, "You can't change maximal participation to this number, there's already more users participated");
-                    return View(model);
-                }
-                if (model.Challenge.Deadline <= model.Challenge.Release_Date)
-                {
-                    ModelState.AddModelError(string.Empty, "Deadline must be after release date");
-                    return View(model);
-                }
-
-                var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
-                for (int i = 0; i < model.IsSelected.Count(); i++)
-                {
-                    var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id && lc.C_Id == model.Challenge.C_Id);
-                    if (model.IsSelected[i])
+                    //if (bonus > model.Challenge.Bonus)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
+                    //    return View(model);
+                    //}
+                   
+                    var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
+                    for (int i = 0; i < model.IsSelected.Count(); i++)
                     {
-                        if (item == null)
+                        var item = await _lcRepository.FirstOrDefaultAsync(lc => lc.Language_Id == languages.ElementAt(i).Language_Id && lc.C_Id == model.Challenge.C_Id);
+                        if (model.IsSelected[i])
                         {
-                            item = new LanguageChallenge()
+                            if (item == null)
                             {
-                                C_Id = model.Challenge.C_Id,
-                                Language_Id = languages.ElementAt(i).Language_Id
-                            };
-                            await _lcRepository.InsertAsync(item);
+                                item = new LanguageChallenge()
+                                {
+                                    C_Id = model.Challenge.C_Id,
+                                    Language_Id = languages.ElementAt(i).Language_Id
+                                };
+                                await _lcRepository.InsertAsync(item);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (item != null)
+                        else
                         {
-                            await _lcRepository.DeleteAsync(item);
+                            if (item != null)
+                            {
+                                await _lcRepository.DeleteAsync(item);
+                            }
                         }
                     }
-                }
 
 
-                try
-                {
-                    await _repository.UpdateAsync(model.Challenge);
-                    logger.LogInformation($"The information of Challenge {model.Challenge.C_Id} is edited");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChallengeExists(model.Challenge.C_Id))
+                    try
                     {
-                        return NotFound();
+                        await _repository.UpdateAsync(model.Challenge);
+                        logger.LogInformation($"The information of Challenge {model.Challenge.C_Id} is edited");
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!ChallengeExists(model.Challenge.C_Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction("Details", new { id = model.Challenge.C_Id });
                 }
-                return RedirectToAction("Details", new { id = model.Challenge.C_Id });
             }
-
             //if modelstate is not valid
             ModelState.AddModelError(string.Empty, "failed to edit the challenge, please try again");
             return View(model);
+        }
+
+        private string checkIllegalOp(ChallengeEditViewModel model)
+        {
+            int bonus = GetCurrentBonus(model.Challenge.C_Id);
+            var partiList = _particiRepository.GetAllList(c => c.C_Id == model.Challenge.C_Id);
+            int alreadyParticiCount = partiList.Count;
+            if (!model.AllowEditDate && bonus > model.Challenge.Bonus)
+            {
+                return "You can't change to a less bonus for a already published challenge";
+            }
+            if (alreadyParticiCount > model.Challenge.Max_Participant)
+            {
+                return "You can't change maximal participation to this number, there's already more users participated";
+            }
+            if (model.Challenge.Release_Date < DateTime.Now && model.AllowEditDate)
+            {
+                //model.AllowEditDate = true;
+                return "You can only release challenge in the future";
+            }
+            if (model.Challenge.Deadline <= model.Challenge.Release_Date && model.AllowEditDate)
+            {
+                return "Deadline must be after release date";
+            }
+            return null;
+
         }
 
         private int GetCurrentBonus(string c_Id)

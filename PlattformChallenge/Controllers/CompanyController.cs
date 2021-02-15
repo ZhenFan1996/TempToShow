@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PlattformChallenge.Controllers
 {
-
+    [Authorize(Roles = "Company")]
     public class CompanyController : Controller
     {
         private readonly UserManager<PlatformUser> _userManger;
@@ -24,14 +27,18 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Participation> _pRepository;
         private readonly IRepository<Solution> _sRepository;
         private readonly ILogger<CompanyController> logger;
+        private readonly IWebHostEnvironment _env;
 
-        public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository, IRepository<Solution> sRepository,ILogger<CompanyController> logger)
+        public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository,
+            IRepository<Participation> pRepository, IRepository<Solution> sRepository,ILogger<CompanyController> logger,
+            IWebHostEnvironment webHostEnvironment)
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
             this._pRepository = pRepository;
             this._sRepository = sRepository;
             this.logger = logger;
+            this._env = webHostEnvironment;
         }
 
         /// <summary>
@@ -44,7 +51,7 @@ namespace PlattformChallenge.Controllers
             var challenges = await (from c
                              in _cRepository.GetAll().Where(c => c.Com_ID==_currUser.Id).Include(c => c.Company)
                                                        select c).ToListAsync();
-                 
+            _currUser.Logo = "/images/" + (_currUser.Logo ?? "default.png");
             var model = new CompanyIndexViewModel()
             {
                 Challenges = challenges,
@@ -222,6 +229,86 @@ namespace PlattformChallenge.Controllers
             return RedirectToAction("Index");
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Profile(string c_id)
+        {
+            var company = await _userManger.FindByIdAsync(c_id);
+            if (company == null)
+            {
+                Response.StatusCode = 400;
+                return View("NotFound");
+            }
+
+            var challenges = await (from c
+                             in _cRepository.GetAll().Where(c => c.Com_ID == _currUser.Id).Include(c => c.Company)
+                                    select c).ToListAsync();
+            
+            var num = challenges.Count();
+
+            var model = new ProfileViewModel()
+            {
+                Email = company.Email,
+                Name = company.Name,
+                Address = company.Address ?? "*****",
+                Bio = company.Bio,
+                Phone = company.PhoneNumber ?? "*****",
+                Hobby = company.Hobby ?? "*****",
+                Birthday = company.Birthday,
+                InvolvedChallengeNumber = num, 
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+            };
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public IActionResult ProfileSetting()
+        {
+            ProfileSettingViewModel model = new ProfileSettingViewModel()
+            {
+                Name = _currUser.Name,
+                Address = _currUser.Address,
+                Bio = _currUser.Bio,
+                Phone = _currUser.PhoneNumber,
+                Hobby = _currUser.Hobby,
+                Birthday = _currUser.Birthday,
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+            };
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
+        {
+            string dir = Path.Combine(_env.WebRootPath, "images");
+            if (model.Logo != null)
+            {
+                string logoName = Guid.NewGuid().ToString() + Path.GetExtension(model.Logo.FileName);
+                string path = await Upload(model.Logo, logoName, dir);
+                _currUser.Logo = logoName;
+            }
+            _currUser.Name = model.Name;
+            _currUser.Address = model.Address;
+            _currUser.Bio = model.Bio;
+            _currUser.PhoneNumber = model.Phone;
+            _currUser.Birthday = model.Birthday;
+            _currUser.Hobby = model.Hobby;
+
+            var result = await _userManger.UpdateAsync(_currUser);
+            if (result.Succeeded)
+            {
+                logger.LogInformation($"{_currUser.Id} edited profile.");
+                return View("Index");
+            }
+            else
+            {
+                throw new Exception("The setting failed");
+            }
+        }
+
+
         private bool checkIfOnlyBest(List<Solution> solList, int bestScore)
         {
             int count = 0;
@@ -267,6 +354,8 @@ namespace PlattformChallenge.Controllers
 
             return null;
         }
+
+        [AllowAnonymous]
         public async Task<FileResult> DownloadSolution(string s_id)
         {
             Solution solution = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == s_id);
@@ -278,6 +367,20 @@ namespace PlattformChallenge.Controllers
             memory.Position = 0;
             var ext = Path.GetExtension(solution.URL).ToLowerInvariant();
             return File(memory, "application/zip", Path.GetFileName(solution.URL));
+        }
+
+        private async Task<string> Upload(IFormFile file, string fileName, string dir)
+        {
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            string filePath = Path.Combine(dir, fileName);
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            return filePath;
         }
     }
 }

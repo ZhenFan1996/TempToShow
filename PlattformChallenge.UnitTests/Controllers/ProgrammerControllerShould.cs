@@ -223,7 +223,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("ubumh@student.kit.edu", model.Email);
             Assert.Equal("test bio", model.Bio);
             Assert.Equal("test Hobby", model.Hobby);
-            Assert.Equal(2, model.TakePartInNummber);
+            Assert.Equal(2, model.InvolvedChallengeNumber);
         }
 
         private Mock<IFormFile> mockFormFile() {
