@@ -136,25 +136,24 @@ namespace PlattformChallenge.Controllers
 
                 var toUpdate = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == vm.CurrSolutionId);
                 toUpdate.Point = vm.Point;
+                var pro = await _userManger.FindByIdAsync(solItem.First().p.P_Id);
+
+                string subject = $"The Challenge  {challenge.Title} is noted";
+                string body =
+                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                    $"<p>Dear {pro.Name}</p>" +
+                    $"<p>Your Challenge {challenge.Title} was noted</p>" +
+                    $"<p>The point is :<strong>{vm.Point}</strong></p>" +
+                    "<p> </p>" +
+                    "<p>Kind regards</p>" +
+                    "<p>TES-Challenge Teams</p>"
+                    + "</div>";
+
+                await _sender.SendEmailAsync(pro.Email, subject, body);
                 toUpdate.Status = StatusEnum.Rated;
                     try
                     {
                         await _sRepository.UpdateAsync(toUpdate);
-
-                    var pro =await  _userManger.FindByIdAsync(solItem.First().p.P_Id);
-
-                    string subject = $"The Challenge  {challenge.Title} is noted";
-                    string body =
-                         "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                        $"<p>Dear {pro.Name}</p>" +
-                        $"<p>Your Challenge {challenge.Title} was noted</p>" +
-                        $"<p>The point is :<strong>{vm.Point}</strong></p>" +
-                        "<p> </p>"+
-                        "<p>Kind regards</p>" +
-                        "<p>TES-Challenge Teams</p>"
-                        +"</div>";
-
-                    await _sender.SendEmailAsync(pro.Email, subject, body);
                     logger.LogInformation($"The Solution with id {toUpdate.S_Id} is rated with the point {vm.Point}");
                     }
                     catch (DbUpdateConcurrencyException)
