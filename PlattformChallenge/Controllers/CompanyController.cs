@@ -54,11 +54,12 @@ namespace PlattformChallenge.Controllers
             var challenges = await (from c
                              in _cRepository.GetAll().Where(c => c.Com_ID==_currUser.Id).Include(c => c.Company)
                                                        select c).ToListAsync();
-            _currUser.Logo = "/images/" + (_currUser.Logo ?? "default.png");
+       
             var model = new CompanyIndexViewModel()
             {
                 Challenges = challenges,
-                Company = _currUser
+                Company = _currUser,
+                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
             };
             return View(model);
         }
@@ -325,7 +326,7 @@ namespace PlattformChallenge.Controllers
                 string logoName = Guid.NewGuid().ToString() + Path.GetExtension(model.Logo.FileName);
                 string path = await Upload(model.Logo, logoName, dir);
                 _currUser.Logo = logoName;
-            }
+            }          
             _currUser.Name = model.Name;
             _currUser.Address = model.Address;
             _currUser.Bio = model.Bio;
@@ -337,7 +338,7 @@ namespace PlattformChallenge.Controllers
             if (result.Succeeded)
             {
                 logger.LogInformation($"{_currUser.Id} edited profile.");
-                return View("Index");
+                return RedirectToAction();
             }
             else
             {

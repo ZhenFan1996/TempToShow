@@ -242,8 +242,6 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
-
-
                 TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
                 DateTime zone_release = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, zone);
                 DateTime zone_deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, zone);
@@ -297,6 +295,7 @@ namespace PlattformChallenge.Controllers
             }
             //if modelstate is not valid
             ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            model.Languages = await _lRepository.GetAllListAsync();
             return View(model);
         }
         #endregion

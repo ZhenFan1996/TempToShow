@@ -183,7 +183,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(challenge, value.Model);
             IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
             Assert.Equal("failed to create the challenge, please try again", allErrors.ElementAt(0).ErrorMessage);
-            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Never);
+            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Once);
             _mockRepository.Verify(l => l.InsertAsync(It.IsAny<Challenge>()), Times.Never);
             _mockLCRepository.Verify(l => l.InsertAsync(It.IsAny<LanguageChallenge>()), Times.Never);
         }
