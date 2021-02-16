@@ -136,8 +136,7 @@ namespace PlattformChallenge.Controllers
 
                 var toUpdate = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == vm.CurrSolutionId);
                 toUpdate.Point = vm.Point;
-                var pro = await _userManger.FindByIdAsync(solItem.First().p.P_Id);
-
+                var pro = await _userManger.FindByIdAsync( (await _pRepository.FirstOrDefaultAsync(p => p.S_Id ==vm.CurrSolutionId)).P_Id);
                 string subject = $"The Challenge  {challenge.Title} is noted";
                 string body =
                      "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +

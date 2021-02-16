@@ -110,7 +110,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         {
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
-            GetAllBuildParticipation();
+           var pars = GetAllBuildParticipation();
             _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                challenges.ElementAt(1));
             _mockSRepo.Setup(s => s.FirstOrDefaultAsync(It.IsAny<Expression<Func<Solution, bool>>>())).ReturnsAsync(
@@ -119,6 +119,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                    S_Id = "s3",
                    Point = 30
                });
+            _mockPRepo.Setup(p => p.FirstOrDefaultAsync(It.IsAny<Expression<Func<Participation, bool>>>())).ReturnsAsync(pars.First());
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2",
