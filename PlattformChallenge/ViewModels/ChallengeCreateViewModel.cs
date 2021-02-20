@@ -40,5 +40,7 @@ namespace PlattformChallenge.ViewModels
         public bool[] IsSelected { get; set; }
 
         public bool Visible { get; set; }
+
+        public string Zone { get; set; }
     }
 }

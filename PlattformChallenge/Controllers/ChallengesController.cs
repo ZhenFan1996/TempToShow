@@ -18,6 +18,7 @@ using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
 using PlattformChallenge.Services;
 using PlattformChallenge.ViewModels;
+using TimeZoneConverter;
 
 namespace PlattformChallenge.Controllers
 {
@@ -182,10 +183,10 @@ namespace PlattformChallenge.Controllers
                 Title = challenge.Title,
                 Bonus = challenge.Bonus,
                 Content = challenge.Content,
-                Release_Date = TimeZoneInfo.ConvertTimeFromUtc(challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
+                Release_Date =challenge.Release_Date,
                 Max_Participant = challenge.Max_Participant,
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
-                Deadline = TimeZoneInfo.ConvertTimeFromUtc(challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
+                Deadline = challenge.Deadline,
                 Company = challenge.Company,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
@@ -242,7 +243,7 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
-                TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+                TimeZoneInfo zone = TZConvert.GetTimeZoneInfo(model.Zone);
                 DateTime zone_release = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, zone);
                 DateTime zone_deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, zone);
 
@@ -356,8 +357,8 @@ namespace PlattformChallenge.Controllers
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
                 model.IsSelected[int.Parse(lId) - 1] = true;
             }
-            model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
-            model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+            //model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+            //model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
             return View(model);
         }
    
@@ -417,8 +418,8 @@ namespace PlattformChallenge.Controllers
                         }
                     }
 
-                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
-                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone));
+                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Deadline, TZConvert.GetTimeZoneInfo(model.Zone));
 
                     try
                     {
