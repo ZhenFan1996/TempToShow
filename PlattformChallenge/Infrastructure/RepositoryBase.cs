@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Models;
 
@@ -15,7 +16,7 @@ namespace PlattformChallenge.Infrastructure
 
         public virtual DbSet<TEntity> Table => _dbcontext.Set<TEntity>();
 
-        public RepositoryBase(AppDbContext dbContext)
+        public RepositoryBase(AppDbContext dbContext, ILogger<RepositoryBase<TEntity>> logger)
         {
             this._dbcontext = dbContext;
         }
@@ -66,7 +67,7 @@ namespace PlattformChallenge.Infrastructure
          }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
-        {
+        {         
             AttachIfNot(entity);
             _dbcontext.Entry(entity).State = EntityState.Modified;
             await _dbcontext.SaveChangesAsync();
@@ -89,24 +90,6 @@ namespace PlattformChallenge.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
-        {
-            var query = GetAll().Where(predicate);
-            return includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        }
-
-        public Task<List<TEntity>> FindByAndToListAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
-        {
-            return FindBy(predicate, includes).ToListAsync();
-        }
-
-        public Task<TEntity>  IncludeAndFindOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
-        {
-            var query = GetAll();
-            var results =includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-            return results.FirstOrDefaultAsync(predicate);
-        }
-
         protected virtual void AttachIfNot(TEntity entity)
         {
             var entry = _dbcontext.ChangeTracker.Entries()
@@ -118,20 +101,6 @@ namespace PlattformChallenge.Infrastructure
             Table.Attach(entity);
         }
 
-        public bool Exists(Expression<Func<TEntity, bool>> predicate)
-        {
-            return GetAll().Any(predicate);
-        }
-
-        public async Task<PaginatedList<TEntity>> FindByAndCreatePaginateAsync(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
-        {
-            var query = FindBy(predicate, includes);
-            var source = query.AsNoTracking();
-            var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginatedList<TEntity>(items, count, pageIndex, pageSize);
-        }
-
-
+       
     }
 }  

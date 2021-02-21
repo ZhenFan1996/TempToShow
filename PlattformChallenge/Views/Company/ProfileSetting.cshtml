@@ -1,0 +1,101 @@
+@model PlattformChallenge.ViewModels.ProfileSettingViewModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+<head>
+    <script src="https://cdn.tiny.cloud/1/vec3hy3gfy6rcqrhfkinrb5uyzvogsw2iewjccmgzr9vimx9/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'a11ychecker advcode casechange formatpainter  lists checklist   pageembed permanentpen powerpaste table advtable  tinymcespellchecker',
+            toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name'
+        });
+    </script>
+</head>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" enctype="multipart/form-data" method="post" asp-action="ProfileSetting">
+                <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+                <div class="row">
+                    <div class="offset-4 col-md-2">
+                        <img class="rounded-circle" id="blah" src="@Model.LogoPath" alt="No logo" width="200" height="200">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <input asp-for="Logo" type='file' id="imgInp" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="col-sm-2 control-label">@SharedLocalizer["Name"]</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" asp-for="Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="col-sm-2 control-label">@SharedLocalizer["Phone"]</label>
+                    <div class="col-sm-10">
+                        <input asp-for="Phone" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="col-sm-2 control-label">@SharedLocalizer["Address"]</label>
+                    <div class="col-sm-10">
+                        <input asp-for="Address" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Birthday" class="col-sm-2 control-label">@SharedLocalizer["FoundationDate"]</label>
+                    <div class="col-sm-10">
+                        <input asp-for="Birthday" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hobby" class="col-sm-2 control-label">@SharedLocalizer["MainDomain"]</label>
+                    <div class="col-sm-10">
+                        <input asp-for="Hobby" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Bio" class="col-sm-2 control-label">@SharedLocalizer["AboutMe"]</label>
+                    <div class="col-sm-10">
+                        <textarea asp-for="Bio" class="form-control" style="height:250px"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">@SharedLocalizer["Submit"]</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInp").change(function () {
+        readURL(this);
+    });
+</script>

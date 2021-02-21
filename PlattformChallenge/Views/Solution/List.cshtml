@@ -1,0 +1,96 @@
+@using PlattformChallenge.Core.Model
+@model PlattformChallenge.ViewModels.BestSolutionViewModel;
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+<div class="container">
+
+    <div class="row">
+        <div class="card col-lg-3 " style="width: 18rem;">
+            <div style="color:#0000FF">
+                <h3>@Localizer["Best Solution"]</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@Localizer["Programmer Name"]: @Model.Best_Name</h5>
+                <ul>
+                    <li class="card-text"> @SharedLocalizer["Points"]: @Model.Best_Point </li>
+                </ul>
+                @if (Model.S_ID != null && Model.Winner_ID != null)
+                {
+                     @if (Model.Visible == true) { 
+                    <a asp-controller="Company" asp-action="DownloadSolution" asp-route-s_id="@Model.S_ID" class="btn btn-primary">@Localizer["Download"]</a>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-lg-8 offset-lg-1">
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th>
+                            @SharedLocalizer["Name"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Challenge Title"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Company"]
+                        </th>
+                        <th>
+                            <a asp-action="List" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-c_Id="@Model.C_ID">@SharedLocalizer["Date"]</a>
+                        </th>
+                        <th>
+                            <a asp-action="List" asp-route-sortOrder="@ViewData["PointSortParm"]" asp-route-c_Id="@Model.C_ID">@SharedLocalizer["Points"]</a>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Solutions)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Participation.Programmer.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Participation.Challenge.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Participation.Challenge.Company.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Submit_Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Point)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @{
+                var prevDisabled = !Model.Solutions.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Solutions.HasNextPage ? "disabled" : "";
+            }
+            @if (Model.Solutions.Count != 0)
+            {
+            <a asp-action="List"
+               asp-route-pageNumber="@(Model.Solutions.PageIndex - 1)"
+               asp-route-c_Id ="@Model.C_ID"
+               class="btn btn-default @prevDisabled">
+                @SharedLocalizer["Previous"]
+            </a>
+            <a asp-action="List"
+               asp-route-pageNumber="@(Model.Solutions.PageIndex + 1)"
+               asp-route-c_Id ="@Model.C_ID"
+               class="btn btn-default @nextDisabled">
+                @SharedLocalizer["Next"]
+            </a>
+            }
+        </div>
+   
+
+
+    </div>
+</div>

@@ -5,15 +5,19 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>PlattformChallenge_UnitTest</AssemblyName>
+    <AssemblyName>PlattformChallenge.UnitTest</AssemblyName>
 
-    <RootNamespace>PlattformChallenge_UnitTest</RootNamespace>
+    <RootNamespace>PlattformChallenge.UnitTest</RootNamespace>
 
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeCoverage" Version="16.8.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="Moq" Version="4.15.2" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />

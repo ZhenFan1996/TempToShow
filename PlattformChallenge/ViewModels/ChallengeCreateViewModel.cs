@@ -24,7 +24,12 @@ namespace PlattformChallenge.ViewModels
         public string Content { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
+
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Deadline { get; set; }
 
         [Required]
         [RegularExpression(@"^([1-9][0-9]*)$")]
@@ -33,5 +38,9 @@ namespace PlattformChallenge.ViewModels
         public List<Language> Languages { get; set; }
 
         public bool[] IsSelected { get; set; }
+
+        public bool Visible { get; set; }
+
+        public string Zone { get; set; }
     }
 }

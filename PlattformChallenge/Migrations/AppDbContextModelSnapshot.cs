@@ -221,10 +221,13 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Challenge", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Challenge", b =>
                 {
                     b.Property<string>("C_Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("AllowOpen")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Best_Solution_Id")
                         .HasColumnType("nvarchar(max)");
@@ -239,6 +242,12 @@ namespace PlattformChallenge.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsClose")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Max_Participant")
                         .HasColumnType("int");
@@ -260,7 +269,7 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("Challenges");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Language", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Language", b =>
                 {
                     b.Property<string>("Language_Id")
                         .HasColumnType("nvarchar(450)");
@@ -273,7 +282,7 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("Languages");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.LanguageChallenge", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.LanguageChallenge", b =>
                 {
                     b.Property<string>("Language_Id")
                         .HasColumnType("nvarchar(450)");
@@ -288,7 +297,7 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("LanguageChallenge");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Participation", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Participation", b =>
                 {
                     b.Property<string>("C_Id")
                         .HasColumnType("nvarchar(450)");
@@ -310,10 +319,13 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("Participations");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Solution", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Solution", b =>
                 {
                     b.Property<string>("S_Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Point")
                         .HasColumnType("int");
@@ -334,9 +346,21 @@ namespace PlattformChallenge.Migrations
                     b.ToTable("Solutions");
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.PlatformUser", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.PlatformUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Hobby")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActiv")
                         .HasColumnType("bit");
@@ -401,47 +425,47 @@ namespace PlattformChallenge.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Challenge", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Challenge", b =>
                 {
-                    b.HasOne("PlattformChallenge.Models.PlatformUser", "Company")
+                    b.HasOne("PlattformChallenge.Core.Model.PlatformUser", "Company")
                         .WithMany("Challenges")
                         .HasForeignKey("Com_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.LanguageChallenge", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.LanguageChallenge", b =>
                 {
-                    b.HasOne("PlattformChallenge.Models.Challenge", "Challenge")
+                    b.HasOne("PlattformChallenge.Core.Model.Challenge", "Challenge")
                         .WithMany("LanguageChallenges")
                         .HasForeignKey("C_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlattformChallenge.Models.Language", "Language")
+                    b.HasOne("PlattformChallenge.Core.Model.Language", "Language")
                         .WithMany("LanguageChallenges")
                         .HasForeignKey("Language_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PlattformChallenge.Models.Participation", b =>
+            modelBuilder.Entity("PlattformChallenge.Core.Model.Participation", b =>
                 {
-                    b.HasOne("PlattformChallenge.Models.Challenge", "Challenge")
+                    b.HasOne("PlattformChallenge.Core.Model.Challenge", "Challenge")
                         .WithMany("Participations")
                         .HasForeignKey("C_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlattformChallenge.Models.PlatformUser", "Programmer")
+                    b.HasOne("PlattformChallenge.Core.Model.PlatformUser", "Programmer")
                         .WithMany("Participations")
                         .HasForeignKey("P_Id")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("PlattformChallenge.Models.Solution", "Solution")
+                    b.HasOne("PlattformChallenge.Core.Model.Solution", "Solution")
                         .WithOne("Participation")
-                        .HasForeignKey("PlattformChallenge.Models.Participation", "S_Id");
+                        .HasForeignKey("PlattformChallenge.Core.Model.Participation", "S_Id");
                 });
 #pragma warning restore 612, 618
         }

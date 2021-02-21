@@ -1,13 +1,13 @@
 @using Microsoft.AspNetCore.Identity
 @using PlattformChallenge.Core.Model
 @inject SignInManager<PlatformUser> _signInManger
-
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = @Localizer["HomePage"];
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to Programming Challenge Platform</h1>
+    <h1 class="display-4">@Localizer["WelcomeTitle"]</h1>
     <img src="~/images/logo1x1.PNG" alt="">
-   
+
 </div>

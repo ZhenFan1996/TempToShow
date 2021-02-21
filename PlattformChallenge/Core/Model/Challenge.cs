@@ -20,15 +20,25 @@ namespace PlattformChallenge.Core.Model
         [Required]
         public string  Content  { get; set; }
         [Required]
-        [Display(Name = "Date")]
+        [Display(Name = "Release Date")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
+
+        [Required]
+        [Display(Name = "Deadline")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Deadline { get; set; }
+
         [Required]
         [Display(Name = "Quota")]
         public int Max_Participant { get; set; }
 
         [Required]
         public string Com_ID { get; set; }
+
+        public bool IsClose { get; set; }
+
+        public bool AllowOpen { get; set; }
 
         public List<Participation> Participations { get; set; }
 

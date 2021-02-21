@@ -18,8 +18,14 @@ namespace PlattformChallenge.ViewModels
         public string Content { get; set; }
         [Required]
         [Display(Name = "Date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Release_Date { get; set; }
+
+        [Required]
+        [Display(Name = "Deadline")]
+        //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        public DateTime Deadline { get; set; }
+
         [Required]
         [Display(Name = "Total Quota")]
         public int Max_Participant { get; set; }
@@ -39,5 +45,7 @@ namespace PlattformChallenge.ViewModels
 
         [Display(Name = "Best Solution")]
         public string Best_Solution_Id { get; set; }
+
+        public bool CanTakePartIn { get; set; }
     }
 }
