@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = @Localizer["Details"];
 }
+
+
+
 <head>
     <title>details</title>
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
@@ -84,6 +87,14 @@
         </dd>
     </dl>
 </div>
+
+<div>
+    @if (!ViewContext.HttpContext.User.IsInRole("Programmer") && !ViewContext.HttpContext.User.IsInRole("Company"))
+    {
+    <div>@Localizer["RegInfo"]</div>
+    }
+</div>
+
 <div class="sharethis-inline-share-buttons"></div>
 <div>
     <center>
@@ -96,6 +107,7 @@
 
 <div class="container">
     <div class="row">
+
         @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
             if (Model.Available_Quota > 0)
@@ -132,6 +144,7 @@
             }
 
         <div class="col-md-4">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
+
         <div>
             @if (ViewContext.HttpContext.User.IsInRole("Company"))
             {

@@ -61,7 +61,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected, int? status)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
-            ViewData["DeadlineSortParm"] = sortOrder == "Deadline" ? "deadline_desc" : "deadline";
+            ViewData["DeadlineSortParm"] = sortOrder == "Deadline" ? "deadline_desc" : "Deadline";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
@@ -110,7 +110,7 @@ namespace PlattformChallenge.Controllers
                 case "quota_desc":
                     challenges = challenges.OrderByDescending(c => c.Max_Participant);
                     break;
-                case "deadline":
+                case "Deadline":
                     challenges = challenges.OrderBy(c => c.Deadline);
                     break;
                 case "deadline_desc":
@@ -155,9 +155,6 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
-
-
-
             if (id == null || id == "")
             {
                 Response.StatusCode = 400;
@@ -176,8 +173,11 @@ namespace PlattformChallenge.Controllers
                 @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
                 return View("NotFound");
             }
-  
-            bool canTakePartIn = true;
+            bool canTakePartIn = false;
+            if (challenge.Release_Date < DateTime.Now && challenge.Deadline > DateTime.Now)
+            {
+                canTakePartIn = true;
+            }     
             var user = _pRepository.GetAll().Include(p => p.Participations).FirstOrDefault(p => p.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
             if (user!=null&&user.Participations != null)
             {

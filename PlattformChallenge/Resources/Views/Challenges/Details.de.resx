@@ -168,8 +168,11 @@
   <data name="Prize" xml:space="preserve">
     <value>Preisgeld</value>
   </data>
+  <data name="RegInfo" xml:space="preserve">
+    <value>Bitte registrieren oder melden Sie sich an, um an dieses Challenge teilzunehmen</value>
+  </data>
   <data name="ReleaseDate" xml:space="preserve">
-    <value>Veröffentlichungsdatum</value>
+    <value>Aktivierungsdatum</value>
   </data>
   <data name="Share" xml:space="preserve">
     <value>Teilen</value>
