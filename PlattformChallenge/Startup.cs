@@ -36,8 +36,8 @@ namespace PlattformChallenge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(
-            //options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
-            options => options.UseSqlServer(Configuration.GetConnectionString("Fan"))
+            options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
+           // options => options.UseSqlServer(Configuration.GetConnectionString("Fan"))
             //options => options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
             services.AddIdentity<PlatformUser, IdentityRole>(options => {

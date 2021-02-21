@@ -61,6 +61,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected, int? status)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            ViewData["DeadlineSortParm"] = sortOrder == "Deadline" ? "deadline_desc" : "deadline";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
@@ -108,6 +109,12 @@ namespace PlattformChallenge.Controllers
                     break;
                 case "quota_desc":
                     challenges = challenges.OrderByDescending(c => c.Max_Participant);
+                    break;
+                case "deadline":
+                    challenges = challenges.OrderBy(c => c.Deadline);
+                    break;
+                case "deadline_desc":
+                    challenges = challenges.OrderByDescending(c => c.Deadline);
                     break;
                 default:
                     challenges = challenges.OrderByDescending(c => c.Release_Date);
