@@ -346,6 +346,7 @@ namespace PlattformChallenge.Controllers
 
             ChallengeEditViewModel model = new ChallengeEditViewModel();
             model.Challenge = challenge;
+
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             if (model.Challenge.Release_Date > DateTime.Now)
@@ -357,8 +358,6 @@ namespace PlattformChallenge.Controllers
                 String lId = challenge.LanguageChallenges.ElementAt(i).Language_Id;
                 model.IsSelected[int.Parse(lId) - 1] = true;
             }
-            //model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
-            //model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
             return View(model);
         }
    
@@ -418,8 +417,8 @@ namespace PlattformChallenge.Controllers
                         }
                     }
 
-                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone));
-                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Deadline, TZConvert.GetTimeZoneInfo(model.Zone));
+                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone));
+                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, TZConvert.GetTimeZoneInfo(model.Zone));
 
                     try
                     {
@@ -460,13 +459,13 @@ namespace PlattformChallenge.Controllers
                 return "You can't change maximal participation to this number, there's already more users participated";
             }
             
-            if (TimeZoneInfo.ConvertTimeToUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")) < DateTime.Now
+            if (TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone)) < DateTime.Now
                 && model.AllowEditDate)
             {
                 //model.AllowEditDate = true;
                 return "You can only release challenge in the future";
             }
-            if (model.Challenge.Deadline <= model.Challenge.Release_Date && model.AllowEditDate)
+            if (model.Deadline < model.Release_Date && model.AllowEditDate)
             {
                 return "Deadline must be after release date";
             }

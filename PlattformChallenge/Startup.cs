@@ -36,7 +36,7 @@ namespace PlattformChallenge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("ChallengeDBConnection"))
+                options => options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
             services.AddIdentity<PlatformUser, IdentityRole>(options => {
                 options.Password.RequiredLength = 6;

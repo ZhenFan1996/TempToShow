@@ -153,8 +153,8 @@
         document.execCommand("Copy");
         document.getElementById("Copy");
     }
-    document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("D-M-YYYY,h:mm");
-    document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("D-M-YYYY,h:mm");
+    document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
+    document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
     </script>
 
 
