@@ -9,6 +9,7 @@ using PlattformChallenge.ViewModels;
 using System.Security.Claims;
 using PlattformChallenge.Core.Model;
 using Microsoft.Extensions.Logging;
+using PlattformChallenge.Services;
 
 namespace PlattformChallenge.Controllers
 {
@@ -17,15 +18,16 @@ namespace PlattformChallenge.Controllers
         private UserManager<PlatformUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private ILogger<AccountController> logger;
+        private readonly IEmailSender _sender;
         private SignInManager<PlatformUser> _signInManager;
 
-        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger)
+        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
             this.logger = logger;
-
+            this._sender = sender;
         }
         /// <summary>
         /// Enter the registration page
@@ -52,17 +54,31 @@ namespace PlattformChallenge.Controllers
                     Email = model.Email,
                     UserName = model.Email
                 };
-                var result1 = await _userManager.CreateAsync(user, model.Password);
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var result1 = await _userManager.CreateAsync(user, model.Password);                
                 if (result1.Succeeded)
                 {
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, false);
-                        logger.LogInformation($"A new {model.RoleName} with id {user.Id} is created");
-                        return RedirectToAction("Index", "Home");
-                    }
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                        {
+                            userId = user.Id,
+                            token = token
+                        }, Request.Scheme);
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                        string subject = "Confirm Email";
+                        string body =
+                            "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                            $"<p>Dear {user.Name} ,</p>" +
+                            $"<p>Please the confi </p>" +
+                            "<p></p>" +
+                            "<p>Kind regards</p>" +
+                            "<p>TES-Challenge Teams</p>"
+                            + "</div>";
+
+                    }                                                         
                     else
                     {
                         foreach (var error in result2.Errors)
