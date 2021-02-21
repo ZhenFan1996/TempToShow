@@ -126,8 +126,8 @@
   <data name="Challenge Title" xml:space="preserve">
     <value>Challenge title</value>
   </data>
-  <data name="ClosedChallenges" xml:space="preserve">
-    <value>Closed Challenges</value>
+  <data name="Challenges" xml:space="preserve">
+    <value>Challenges</value>
   </data>
   <data name="Company" xml:space="preserve">
     <value>Company</value>
@@ -147,6 +147,9 @@
   <data name="FindByTitle" xml:space="preserve">
     <value>Find by title</value>
   </data>
+  <data name="FutureChallenges" xml:space="preserve">
+    <value>Future Challenges</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
@@ -159,6 +162,9 @@
   <data name="NoChallengesInThisCategory" xml:space="preserve">
     <value>No challenges in this category</value>
   </data>
+  <data name="PastChallenges" xml:space="preserve">
+    <value>Past Challenges</value>
+  </data>
   <data name="Points" xml:space="preserve">
     <value>Points</value>
   </data>
@@ -168,14 +174,17 @@
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
-  <data name="ShowClosedList" xml:space="preserve">
-    <value>Show closed past challenges</value>
-  </data>
   <data name="ShowCurrentList" xml:space="preserve">
-    <value>Show current challenges</value>
+    <value>Current challenges</value>
   </data>
   <data name="ShowFullList" xml:space="preserve">
     <value>Show full list</value>
+  </data>
+  <data name="ShowFutureList" xml:space="preserve">
+    <value>Coming Challenges</value>
+  </data>
+  <data name="ShowPastList" xml:space="preserve">
+    <value>Past challenges</value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>Upload</value>

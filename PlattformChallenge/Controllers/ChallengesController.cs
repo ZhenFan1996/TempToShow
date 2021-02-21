@@ -56,7 +56,7 @@ namespace PlattformChallenge.Controllers
         /// <param name="searchString">which search keyword</param>
         /// <returns>A view with list of current active challenges</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected)
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected, int? status)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
@@ -64,10 +64,37 @@ namespace PlattformChallenge.Controllers
             ViewData["CurrentFilter"] = searchString;
             ViewData["Languages"] = await _lRepository.GetAllListAsync();
             ViewData["LanguagesFilter"] = isSelected;
-            var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == false)
+
+            //var challenges = from c
+            //                 in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == false)
+            //                 .Include(c => c.Company)
+            //                 select c;
+
+            //var challenges = from c
+            //                 in _repository.GetAll().Include(c => c.Company)
+            //                 select c;
+            IQueryable<Challenge> challenges = null;
+            switch (status)
+            {
+                case 1://Challenges in the past
+                    challenges = from c
+                             in _repository.GetAll().Where(c => c.Deadline <= DateTime.Now)
                              .Include(c => c.Company)
-                             select c;
+                                 select c;
+                    break;
+                case 2://Challenges in the future
+                    challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date > DateTime.Now)
+                             .Include(c => c.Company)
+                                 select c;
+                    break;
+                default: //Current Active Challenges
+                    challenges = from c
+                             in _repository.GetAll().Where(c=>c.Release_Date <= DateTime.Now && c.Deadline > DateTime.Now)
+                             .Include(c => c.Company)
+                                 select c;
+                    break;
+            }
             if (!String.IsNullOrEmpty(searchString))
             {
                 challenges = challenges.Where(c => c.Title.Contains(searchString));
@@ -105,35 +132,41 @@ namespace PlattformChallenge.Controllers
                              select ch;               
             }
             int pageSize = 10;
+            int currStatus = 0;
+            if (status.HasValue)
+            {
+                currStatus = (int)status;
+            }
             var model = new ChallengeIndexViewModel()
             {
                 Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
-                Languages = await _lRepository.GetAllListAsync()
+                Languages = await _lRepository.GetAllListAsync(),
+                Status = currStatus
             };
             return View(model);
         }
 
-        /// <summary>
-        /// Show a list of already closed challenges. Order by descending release date.
-        /// </summary>
-        /// <param name="pageNumber"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> PastList(int? pageNumber)
-        {
-            var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == true)
-                             .Include(c => c.Company)
-                             select c;
-            challenges = challenges.OrderByDescending(c => c.Release_Date);
-            int pageSize = 10;
+        ///// <summary>
+        ///// Show a list of already closed challenges. Order by descending release date.
+        ///// </summary>
+        ///// <param name="pageNumber"></param>
+        ///// <returns></returns>
+        //public async Task<IActionResult> PastList(int? pageNumber)
+        //{
+        //    var challenges = from c
+        //                     in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == true)
+        //                     .Include(c => c.Company)
+        //                     select c;
+        //    challenges = challenges.OrderByDescending(c => c.Release_Date);
+        //    int pageSize = 10;
 
-            var model = new ChallengeIndexViewModel()
-            {
-                Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
-                Languages = await _lRepository.GetAllListAsync()
-            };
-            return View("Index", model);
-        }
+        //    var model = new ChallengeIndexViewModel()
+        //    {
+        //        Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
+        //        Languages = await _lRepository.GetAllListAsync()
+        //    };
+        //    return View("Index", model);
+        //}
         #endregion
         #region details
         /// <summary>
