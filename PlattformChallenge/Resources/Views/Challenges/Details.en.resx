@@ -135,6 +135,9 @@
   <data name="ConfirmCondition" xml:space="preserve">
     <value>Please confirm the conditions:</value>
   </data>
+  <data name="Copy successfully!" xml:space="preserve">
+    <value>Copy successfully!</value>
+  </data>
   <data name="Copy URL" xml:space="preserve">
     <value>Copy URL</value>
   </data>

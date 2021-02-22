@@ -135,6 +135,9 @@
   <data name="ConfirmCondition" xml:space="preserve">
     <value>Bitte bestätigen Sie die Teilnahmebedingungen:</value>
   </data>
+  <data name="Copy successfully!" xml:space="preserve">
+    <value>Erfolgreich kopieren!</value>
+  </data>
   <data name="Copy URL" xml:space="preserve">
     <value>Kopieren URL</value>
   </data>

@@ -172,18 +172,24 @@
 
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script type="text/javascript">
+<script type="text/javascript">
     function Copy() {
-        var Url = document.getElementById("paste-box");
+         var clipBoardContent = "";
+            clipBoardContent = this.location.href;
+            window.clipboardData.setData("Text", clipBoardContent);
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+            alert(msg);
+        @*var Url = document.getElementById("paste-box");
         Url.value = window.location.href;
         Url.focus();
         Url.select();
         document.execCommand("Copy");
-        document.getElementById("Copy");
-    }
+            document.getElementById("Copy");
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())'
+            alert(msg);*@    }
     document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
     document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
-    </script>
+</script>
 
 
 }
