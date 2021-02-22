@@ -103,15 +103,30 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> WonChallenges()
+        {
+            var challenges = await  _cRepository.GetAll().Include(c => c.Company)
+                            .Where(c => c.Winner_Id == _currUser.Id).ToListAsync();
+            int sumBonus = 0;
+            foreach(var c in challenges)
+            {
+                sumBonus += c.Bonus;
+            }
+            var model = new WonChallengeViewModel()
+            {
+                Challenges = challenges,
+                SumBonus = sumBonus
+            };
+            return View(model);
+        }
 
+            /// <summary>
+            /// Exit the currently selected challenge
+            /// </summary>
+            /// <param name="id"></param> the challenge id
+            /// <returns>View index</returns>
 
-        /// <summary>
-        /// Exit the currently selected challenge
-        /// </summary>
-        /// <param name="id"></param> the challenge id
-        /// <returns>View index</returns>
-        
-        public async Task<IActionResult> Cancel(string id) {
+            public async Task<IActionResult> Cancel(string id) {
             var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution).Include(p => p.Challenge)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
                     select pc).ToListAsync();

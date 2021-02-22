@@ -1,0 +1,48 @@
+@model PlattformChallenge.ViewModels.WonChallengeViewModel
+@inject IViewLocalizer Localizer
+
+<h1>@Localizer["MyWonChallenges"]</h1>
+
+@if (Model.Challenges.Count <= 0)
+{
+    <p>
+        <h4>@Localizer["NoWonChallengeYet"]</h4>
+    </p>
+}
+else
+{
+    <table class="table col-lg-10" align="center">
+        <thead>
+            <tr>
+                <th>@Localizer["Title"]</th>
+                <th>@Localizer["Company"]</th>
+                <th>@Localizer["Bonus"]</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model.Challenges)
+
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Title)</a>
+                    </td>
+                    <td>
+                        <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@item.Com_ID">@Html.DisplayFor(modelItem => item.Company.Name)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bonus)
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+   
+    <div>
+        <h4>@Localizer["SumBonus"] @Model.SumBonus</h4>
+    </div>
+         
+}
+<div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
