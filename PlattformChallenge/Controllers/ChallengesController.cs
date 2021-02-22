@@ -260,23 +260,23 @@ namespace PlattformChallenge.Controllers
                 DateTime zone_release = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, zone);
                 DateTime zone_deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, zone);
 
+                List<Language> languages = await _lRepository.GetAllListAsync();
+                model.Languages = languages;
                 if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.Now))
                 {
-                    ViewBag.Message = "You can only release challenge in the future";
-                    return View("Create");
-                    //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
-                    //return View(model);
+                    //ViewBag.Message = "You can only release challenge in the future";
+                    //return View("Create");
+                    ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                    return View(model);
                 }
                 if (zone_deadline <= zone_release)
                 {
-                    ViewBag.Message = "Deadline must be after release date";
-                    return View("Create");
-                    //ModelState.AddModelError(string.Empty, "Deadline must be after release date");
-                    //return View(model);
+                    //ViewBag.Message = "Deadline must be after release date";
+                    //return View("Create");
+                    ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                    return View(model);
                 }
 
-                List<Language> languages = await _lRepository.GetAllListAsync();
-            
                 Challenge newChallenge = new Challenge
                 {
                     C_Id = Guid.NewGuid().ToString(),
@@ -505,19 +505,14 @@ namespace PlattformChallenge.Controllers
         {
             var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);         
 
-            if (GetAvailableQuota(id) <= 0)
+            if (GetAvailableQuota(id) <= 0 || challenge.Deadline < DateTime.Now || challenge.Release_Date > DateTime.Now)
             {
-                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
+                { //The corresponding razor page details.cshtml it has restriction that if the conditions are true,
                   // the button which links to this method will not be showed. e.g. this else-condition is not
-                  // supposed to be entered
-                    throw new Exception("Theres no place anymore");
-                    
+                  // supposed to be entered. Its an avoidance of entering by URL.
+                    ViewBag.Message = "Not allow to participate, because some rules are not fulfilled";
+                    return View("Details", new { id = id });
                 }
-            }
-
-            if (challenge.Deadline < DateTime.Now) {
-                throw new Exception("Registration time has passed");
-                
             }
 
             Participation newParti = new Participation()
