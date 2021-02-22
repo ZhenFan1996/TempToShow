@@ -144,7 +144,7 @@
 
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script type="text/javascript">
+<script type="text/javascript">
     function Copy() {
         var Url = document.getElementById("paste-box");
         Url.value = window.location.href;
@@ -153,9 +153,22 @@
         document.execCommand("Copy");
         document.getElementById("Copy");
     }
-    document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
-    document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
-    </script>
+
+        $(document).ready(function () {
+
+            var re = moment('@Model.Release_Date');
+            var deadline = moment('@Model.Deadline');
+            if (!re.isValid() || !deadline.isValid()) {
+                re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+                deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+            }
+            re = moment.tz(re, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            deadline = moment.tz(deadline, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            $('#release').html(re);
+            $('#deadline').html(deadline);
+        })
+
+</script>
 
 
 }
