@@ -3,8 +3,11 @@
 @{
     ViewData["Title"] = @Localizer["Details"];
 }
+
+
+
 <head>
-    <title>details</title>
+    <title>@Localizer["Details"]</title>
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
 </head>
 
@@ -57,7 +60,8 @@
             @Localizer["Company"]
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
+            @*@Html.DisplayFor(model => model.Company.Name)*@
+            <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@Model.Com_ID">@Html.DisplayFor(model => model.Company.Name)</a>
         </dd>
 
         <dt class="col-sm-2">
@@ -77,6 +81,20 @@
             }
         </dd>
         <dt class="col-sm-2">
+            @Localizer["WillSolutionOpen"]
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IsSolutionOpen)
+            {
+                @Localizer["Yes"]
+            }
+            else
+            {
+                @Localizer["No"]
+            }
+        </dd>
+
+        <dt class="col-sm-2">
             @Localizer["WinnerAndSolution"]
         </dt>
         <dd class="col-sm-10">
@@ -84,6 +102,14 @@
         </dd>
     </dl>
 </div>
+
+<div>
+    @if (!ViewContext.HttpContext.User.IsInRole("Programmer") && !ViewContext.HttpContext.User.IsInRole("Company"))
+    {
+    <div>@Localizer["RegInfo"]</div>
+    }
+</div>
+
 <div class="sharethis-inline-share-buttons"></div>
 <div>
     <center>
@@ -96,6 +122,7 @@
 
 <div class="container">
     <div class="row">
+
         @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
             if (Model.Available_Quota > 0)
@@ -132,6 +159,7 @@
             }
 
         <div class="col-md-4">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
+
         <div>
             @if (ViewContext.HttpContext.User.IsInRole("Company"))
             {
@@ -146,7 +174,12 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script type="text/javascript">
     function Copy() {
-        var Url = document.getElementById("paste-box");
+         var clipBoardContent = "";
+            clipBoardContent = this.location.href;
+            window.clipboardData.setData("Text", clipBoardContent);
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+            alert(msg);
+        @*var Url = document.getElementById("paste-box");
         Url.value = window.location.href;
         Url.focus();
         Url.select();
@@ -168,6 +201,12 @@
             $('#deadline').html(deadline);
         })
 
+</script>
+            document.getElementById("Copy");
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())'
+            alert(msg);*@    }
+    document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
+    document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
 </script>
 
 

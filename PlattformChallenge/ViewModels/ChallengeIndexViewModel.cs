@@ -20,5 +20,7 @@ namespace PlattformChallenge.ViewModels
         public string SortOrder { get; set; }
 
         public string SearchString { get; set; }
+
+        public int Status { get; set; }
     }
 }

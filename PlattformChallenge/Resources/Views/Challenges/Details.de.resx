@@ -135,6 +135,9 @@
   <data name="ConfirmCondition" xml:space="preserve">
     <value>Bitte bestätigen Sie die Teilnahmebedingungen:</value>
   </data>
+  <data name="Copy successfully!" xml:space="preserve">
+    <value>Erfolgreich kopieren!</value>
+  </data>
   <data name="Copy URL" xml:space="preserve">
     <value>Kopieren URL</value>
   </data>
@@ -159,17 +162,23 @@
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximale Teilnehmerzahl</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
   <data name="NoPlace" xml:space="preserve">
     <value>Sie können nicht mehr teilnehmen. Es gibt keinen Platz mehr</value>
   </data>
   <data name="ParticipationCondition" xml:space="preserve">
-    <value>Ihre Lösung wird eventuell veröffentlicht, wenn Sie das Preisgeld gewinnen.</value>
+    <value>Bitte lesen Sie die Informationen von diesem Challenge sorgfältig, insbesondere ob Ihre Lösung veröffentlicht wird, wenn Sie das Preisgeld gewinnen. Wenn Sie teilnehmen, bedeutet es, dass Sie an die Teilnahmebedingungen einverstanden sind.</value>
   </data>
   <data name="Prize" xml:space="preserve">
     <value>Preisgeld</value>
   </data>
+  <data name="RegInfo" xml:space="preserve">
+    <value>Bitte registrieren oder melden Sie sich an, um an dieses Challenge teilzunehmen</value>
+  </data>
   <data name="ReleaseDate" xml:space="preserve">
-    <value>Veröffentlichungsdatum</value>
+    <value>Aktivierungsdatum</value>
   </data>
   <data name="Share" xml:space="preserve">
     <value>Teilen</value>
@@ -186,7 +195,13 @@
   <data name="View" xml:space="preserve">
     <value>Aufrufen</value>
   </data>
+  <data name="WillSolutionOpen" xml:space="preserve">
+    <value>Ob die beste Lösung veröffentlicht wird</value>
+  </data>
   <data name="WinnerAndSolution" xml:space="preserve">
     <value>Gewinner und Lösung</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
   </data>
 </root>

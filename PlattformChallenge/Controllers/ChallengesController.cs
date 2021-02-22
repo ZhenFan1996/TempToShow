@@ -54,20 +54,41 @@ namespace PlattformChallenge.Controllers
         /// <param name="pageNumber">which page it should be shown</param>
         /// <param name="sortOrder">which sort criteria</param>
         /// <param name="searchString">which search keyword</param>
+        /// <param name="status">called challenge status. 
+        /// Default 0: Current Challenges; 1: Past Challenges; 2: Future Challenges</param>
         /// <returns>A view with list of current active challenges</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected)
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder, string searchString,bool[] isSelected, int? status)
         {
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Date" : "";
+            ViewData["DeadlineSortParm"] = sortOrder == "Deadline" ? "deadline_desc" : "Deadline";
             ViewData["BonusSortParm"] = sortOrder == "Bonus" ? "bonus_desc" : "Bonus";
             ViewData["QuotaSortParm"] = sortOrder == "Quota" ? "quota_desc" : "Quota";
             ViewData["CurrentFilter"] = searchString;
             ViewData["Languages"] = await _lRepository.GetAllListAsync();
             ViewData["LanguagesFilter"] = isSelected;
-            var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == false)
+            IQueryable<Challenge> challenges = null;
+            switch (status)
+            {
+                case 1://Challenges in the past
+                    challenges = from c
+                             in _repository.GetAll().Where(c => c.Deadline <= DateTime.Now)
                              .Include(c => c.Company)
-                             select c;
+                                 select c;
+                    break;
+                case 2://Challenges in the future
+                    challenges = from c
+                             in _repository.GetAll().Where(c => c.Release_Date > DateTime.Now)
+                             .Include(c => c.Company)
+                                 select c;
+                    break;
+                default: //Current Active Challenges
+                    challenges = from c
+                             in _repository.GetAll().Where(c=>c.Release_Date <= DateTime.Now && c.Deadline > DateTime.Now)
+                             .Include(c => c.Company)
+                                 select c;
+                    break;
+            }
             if (!String.IsNullOrEmpty(searchString))
             {
                 challenges = challenges.Where(c => c.Title.Contains(searchString));
@@ -89,6 +110,12 @@ namespace PlattformChallenge.Controllers
                 case "quota_desc":
                     challenges = challenges.OrderByDescending(c => c.Max_Participant);
                     break;
+                case "Deadline":
+                    challenges = challenges.OrderBy(c => c.Deadline);
+                    break;
+                case "deadline_desc":
+                    challenges = challenges.OrderByDescending(c => c.Deadline);
+                    break;
                 default:
                     challenges = challenges.OrderByDescending(c => c.Release_Date);
                     break;
@@ -105,35 +132,20 @@ namespace PlattformChallenge.Controllers
                              select ch;               
             }
             int pageSize = 10;
+            int currStatus = 0;
+            if (status.HasValue)
+            {
+                currStatus = (int)status;
+            }
             var model = new ChallengeIndexViewModel()
             {
                 Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
-                Languages = await _lRepository.GetAllListAsync()
+                Languages = await _lRepository.GetAllListAsync(),
+                Status = currStatus
             };
             return View(model);
         }
 
-        /// <summary>
-        /// Show a list of already closed challenges. Order by descending release date.
-        /// </summary>
-        /// <param name="pageNumber"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> PastList(int? pageNumber)
-        {
-            var challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date <= DateTime.Now && c.IsClose == true)
-                             .Include(c => c.Company)
-                             select c;
-            challenges = challenges.OrderByDescending(c => c.Release_Date);
-            int pageSize = 10;
-
-            var model = new ChallengeIndexViewModel()
-            {
-                Challenges = await PaginatedList<Challenge>.CreateAsync(challenges.AsNoTracking(), pageNumber ?? 1, pageSize),
-                Languages = await _lRepository.GetAllListAsync()
-            };
-            return View("Index", model);
-        }
         #endregion
         #region details
         /// <summary>
@@ -143,9 +155,6 @@ namespace PlattformChallenge.Controllers
         /// <returns>A view with all available information of given challenge</returns>
         public async Task<IActionResult> Details(string id)
         {
-
-
-
             if (id == null || id == "")
             {
                 Response.StatusCode = 400;
@@ -164,8 +173,11 @@ namespace PlattformChallenge.Controllers
                 @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
                 return View("NotFound");
             }
-  
-            bool canTakePartIn = true;
+            bool canTakePartIn = false;
+            if (challenge.Release_Date < DateTime.Now && challenge.Deadline > DateTime.Now)
+            {
+                canTakePartIn = true;
+            }     
             var user = _pRepository.GetAll().Include(p => p.Participations).FirstOrDefault(p => p.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
             if (user!=null&&user.Participations != null)
             {
@@ -188,9 +200,11 @@ namespace PlattformChallenge.Controllers
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
                 Deadline = challenge.Deadline,
                 Company = challenge.Company,
+                Com_ID = challenge.Com_ID,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
-                CanTakePartIn = canTakePartIn
+                CanTakePartIn = canTakePartIn,
+                IsSolutionOpen = challenge.AllowOpen
             };
 
             if (detail.Winner_Id != null)
@@ -247,23 +261,23 @@ namespace PlattformChallenge.Controllers
                 DateTime zone_release = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, zone);
                 DateTime zone_deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, zone);
 
+                List<Language> languages = await _lRepository.GetAllListAsync();
+                model.Languages = languages;
                 if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.Now))
                 {
-                    ViewBag.Message = "You can only release challenge in the future";
-                    return View("Create");
-                    //ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
-                    //return View(model);
+                    //ViewBag.Message = "You can only release challenge in the future";
+                    //return View("Create");
+                    ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                    return View(model);
                 }
                 if (zone_deadline <= zone_release)
                 {
-                    ViewBag.Message = "Deadline must be after release date";
-                    return View("Create");
-                    //ModelState.AddModelError(string.Empty, "Deadline must be after release date");
-                    //return View(model);
+                    //ViewBag.Message = "Deadline must be after release date";
+                    //return View("Create");
+                    ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                    return View(model);
                 }
 
-                List<Language> languages = await _lRepository.GetAllListAsync();
-            
                 Challenge newChallenge = new Challenge
                 {
                     C_Id = Guid.NewGuid().ToString(),
@@ -492,19 +506,14 @@ namespace PlattformChallenge.Controllers
         {
             var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);         
 
-            if (GetAvailableQuota(id) <= 0)
+            if (GetAvailableQuota(id) <= 0 || challenge.Deadline < DateTime.Now || challenge.Release_Date > DateTime.Now)
             {
-                { //The corresponding razor page details.cshtml it has restriction that if quota is less than 1,
+                { //The corresponding razor page details.cshtml it has restriction that if the conditions are true,
                   // the button which links to this method will not be showed. e.g. this else-condition is not
-                  // supposed to be entered
-                    throw new Exception("Theres no place anymore");
-                    
+                  // supposed to be entered. Its an avoidance of entering by URL.
+                    ViewBag.Message = "Not allow to participate, because some rules are not fulfilled";
+                    return View("Details", new { id = id });
                 }
-            }
-
-            if (challenge.Deadline < DateTime.Now) {
-                throw new Exception("Registration time has passed");
-                
             }
 
             Participation newParti = new Participation()

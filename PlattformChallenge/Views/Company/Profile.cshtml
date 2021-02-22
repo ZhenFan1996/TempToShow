@@ -34,7 +34,16 @@
                             <img class="mr-3" src="/images/undraw_online_posts_h475.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">@SharedLocalizer["Phone"]</h5>
-                                @Model.Phone
+                                @if (Model.Phone.Equals(""))
+                                {
+                                    <span>@SharedLocalizer["Unknown"]</span>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.Phone)
+                                }
+                                @*@Model.Phone*@
+
                             </div>
                         </li>
                     </ul>
@@ -59,7 +68,15 @@
                             <img class="mr-3" src="/images/undraw_happy_feeling_slmw.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">@SharedLocalizer["MainDomain"]</h5>
-                                @Model.Hobby
+                                @if (Model.Hobby.Equals(""))
+                                {
+                                    <span>@SharedLocalizer["Unknown"]</span>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.Hobby)
+                                }
+                                @*@Model.Hobby*@
                             </div>
                         </li>
                     </ul>
@@ -70,7 +87,15 @@
                             <img class="mr-3" src="~/images/undraw_location_review_dmxd.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">@SharedLocalizer["Address"]</h5>
-                                <address> @Model.Address</address>
+                                @if (Model.Address.Equals(""))
+                                {
+                                    <span>@SharedLocalizer["Unknown"]</span>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.Address)
+                                }
+                                @*<address> @Model.Address</address>*@
                             </div>
                         </li>
                         <li class="media my-4">
