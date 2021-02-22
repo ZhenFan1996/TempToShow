@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NLog.Extensions.Logging;
+using Azure.Identity;
 
 namespace PlattformChallenge
 {
@@ -18,7 +19,14 @@ namespace PlattformChallenge
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args).ConfigureLogging(
+            Host.CreateDefaultBuilder(args).ConfigureAppConfiguration((context, config) =>
+{
+var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+config.AddAzureKeyVault(
+keyVaultEndpoint,
+new DefaultAzureCredential());
+})
+.ConfigureLogging(
                 (hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
