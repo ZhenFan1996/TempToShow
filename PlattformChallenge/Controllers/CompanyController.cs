@@ -286,10 +286,10 @@ namespace PlattformChallenge.Controllers
             {
                 Email = company.Email,
                 Name = company.Name,
-                Address = company.Address ?? "*****",
+                Address = company.Address ?? "",
                 Bio = company.Bio,
-                Phone = company.PhoneNumber ?? "*****",
-                Hobby = company.Hobby ?? "*****",
+                Phone = company.PhoneNumber ?? "",
+                Hobby = company.Hobby ?? "",
                 Birthday = company.Birthday,
                 InvolvedChallengeNumber = num, 
                 LogoPath = "/images/" + (company.Logo ?? "default.png")
@@ -301,6 +301,7 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public IActionResult ProfileSetting()
         {
+            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.Now.Date : _currUser.Birthday;
             ProfileSettingViewModel model = new ProfileSettingViewModel()
             {
                 Name = _currUser.Name,
@@ -308,7 +309,7 @@ namespace PlattformChallenge.Controllers
                 Bio = _currUser.Bio,
                 Phone = _currUser.PhoneNumber,
                 Hobby = _currUser.Hobby,
-                Birthday = _currUser.Birthday,
+                Birthday = defaultTime,
                 LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
             };
             return View(model);

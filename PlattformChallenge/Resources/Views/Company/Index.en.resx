@@ -165,6 +165,9 @@
   <data name="NotClosed" xml:space="preserve">
     <value>Undetermined</value>
   </data>
+  <data name="NoWinner" xml:space="preserve">
+    <value>No Winner</value>
+  </data>
   <data name="Prize" xml:space="preserve">
     <value>Prize</value>
   </data>
