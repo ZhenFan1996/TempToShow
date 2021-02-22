@@ -9,6 +9,7 @@ using PlattformChallenge.ViewModels;
 using System.Security.Claims;
 using PlattformChallenge.Core.Model;
 using Microsoft.Extensions.Logging;
+using PlattformChallenge.Services;
 
 namespace PlattformChallenge.Controllers
 {
@@ -17,15 +18,16 @@ namespace PlattformChallenge.Controllers
         private UserManager<PlatformUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private ILogger<AccountController> logger;
+        private readonly IEmailSender _sender;
         private SignInManager<PlatformUser> _signInManager;
 
-        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger)
+        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
             this.logger = logger;
-
+            this._sender = sender;
         }
         /// <summary>
         /// Enter the registration page
@@ -52,17 +54,36 @@ namespace PlattformChallenge.Controllers
                     Email = model.Email,
                     UserName = model.Email
                 };
-                var result1 = await _userManager.CreateAsync(user, model.Password);
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var result1 = await _userManager.CreateAsync(user, model.Password);                
                 if (result1.Succeeded)
                 {
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, false);
-                        logger.LogInformation($"A new {model.RoleName} with id {user.Id} is created");
-                        return RedirectToAction("Index", "Home");
-                    }
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                        {
+                            userId = user.Id,
+                            token = token
+                        }, Request.Scheme);
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                        string subject = "Confirm Email";
+
+                        string body =
+                            "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                            $"<p>Dear {user.Name} ,</p>" +
+                            $"<p>Please confirm your account </p>" +
+                            $"<p>click this link {confirmationLink} </p>"+
+                            "<p></p>" +
+                            "<p>Kind regards</p>" +
+                            "<p>TES-Challenge Teams</p>"
+                            + "</div>";
+
+                        await _sender.SendEmailAsync(user.Email, subject, body);
+                        ViewBag.Message = "We have send the email. Please check your email";
+                        return View("ActivateUserEmail");
+                    }                                                         
                     else
                     {
                         foreach (var error in result2.Errors)
@@ -80,6 +101,34 @@ namespace PlattformChallenge.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId,string token) {
+
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Current ID :{userId} is invaild";
+                return View("NotFound");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ErrorMessage = "Failed Confirm";
+            return View("Error");
+
+
+        }
+
+
         #region login
         /// <summary>
         /// Enter  the page of login
@@ -88,7 +137,11 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
-            return View();
+            var model = new LogInViewModel() {
+                Not_Confirmed = false
+            };
+
+            return View(model);
         }
         /// <summary>
         /// Get the login information on the page and try to log in
@@ -100,6 +153,13 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByEmailAsync(logInViewModel.Email);
+                if (user != null && !user.EmailConfirmed) {
+                    ModelState.AddModelError(string.Empty, "Your Email has not been confiremd");
+                    logInViewModel.Not_Confirmed = true;
+                    return View(logInViewModel);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(logInViewModel.Email, logInViewModel.Password, logInViewModel.RememberMe, false);
                 if (result.Succeeded)
                 {
@@ -112,6 +172,49 @@ namespace PlattformChallenge.Controllers
             return View(logInViewModel);
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> ActivateUserEmail(string email)
+        {
+       
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                       
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, token = token }, Request.Scheme);
+
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                    string subject = "Confirm Email";
+
+                    string body =
+                        "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
+                        $"<p>Dear {user.Name} ,</p>" +
+                        $"<p>Please confirm your account </p>" +
+                        $"<p>click this link {confirmationLink} </p>" +
+                        "<p></p>" +
+                        "<p>Kind regards</p>" +
+                        "<p>TES-Challenge Teams</p>"
+                        + "</div>";
+
+                    await _sender.SendEmailAsync(user.Email, subject, body);
+                    ViewBag.Message = "We have send the email. Please check your email";
+                    return View();
+                    }
+                }
+                ViewBag.Message = "You have not an account create";
+                return View();
+         
+        }
+
         /// <summary>
         /// Log out for the user
         /// </summary>

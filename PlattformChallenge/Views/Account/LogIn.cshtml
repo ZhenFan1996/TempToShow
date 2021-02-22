@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.ViewModels.LogInViewModel
+@model PlattformChallenge.ViewModels.LogInViewModel
 @inject IViewLocalizer Localizer
 
 @{ ViewBag.Title = "Login";
@@ -9,8 +9,12 @@
     <form method="post">
 
 
-        <div asp-validation-summary="All" class="text-danger">   </div>
+        <div asp-validation-summary="All" class="text-danger">  </div>
 
+        @if (Model.Not_Confirmed)
+        {
+          <a class="text-danger" asp-action="ActivateUserEmail" asp-route-email=@Model.Email> click here to confirm</a>
+          }
         <div class="form-group">
             <label asp-for="Email">@Localizer["Email"]</label>
             <input asp-for="Email" class="form-control" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,5 +20,7 @@ namespace PlattformChallenge.ViewModels
 
         [Display(Name ="remember me ")]
         public bool RememberMe { get; set; }
+
+        public bool Not_Confirmed { get; set; }
     }
 }
