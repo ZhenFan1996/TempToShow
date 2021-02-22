@@ -184,6 +184,24 @@
         Url.focus();
         Url.select();
         document.execCommand("Copy");
+        document.getElementById("Copy");
+    }
+
+        $(document).ready(function () {
+
+            var re = moment('@Model.Release_Date');
+            var deadline = moment('@Model.Deadline');
+            if (!re.isValid() || !deadline.isValid()) {
+                re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+                deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+            }
+            re = moment.tz(re, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            deadline = moment.tz(deadline, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            $('#release').html(re);
+            $('#deadline').html(deadline);
+        })
+
+</script>
             document.getElementById("Copy");
             var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())'
             alert(msg);*@    }
