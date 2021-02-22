@@ -27,12 +27,16 @@
             }
             else
             {
-                <h1><font size="5" face="verdana">This challenge is not over!</font></h1>
-                <p><font size="4" face="arial" color="red">There is no winner yet.</font></p>
+                <h1><font size="5" face="verdana">@Localizer["This challenge is not over!"]</font></h1>
+                <p><font size="4" face="arial" color="red">@Localizer["There is no winner yet."]</font></p>
 
             }
         </div>
         <div class="col-lg-8 offset-lg-1">
+            @if (Model.Solutions.Count == 0)
+            {
+            <p><font size="4" face="arial" color="red">** @Localizer["No one has uploaded the answer yet"] **</font></p>
+            }
             <table class="table">
                 <thead>
                     <tr>
@@ -85,18 +89,18 @@
             }
             @if (Model.Solutions.Count != 0)
             {
-            <a asp-action="List"
-               asp-route-pageNumber="@(Model.Solutions.PageIndex - 1)"
-               asp-route-c_Id ="@Model.C_ID"
-               class="btn btn-default @prevDisabled">
-                @SharedLocalizer["Previous"]
-            </a>
-            <a asp-action="List"
-               asp-route-pageNumber="@(Model.Solutions.PageIndex + 1)"
-               asp-route-c_Id ="@Model.C_ID"
-               class="btn btn-default @nextDisabled">
-                @SharedLocalizer["Next"]
-            </a>
+                <a asp-action="List"
+                   asp-route-pageNumber="@(Model.Solutions.PageIndex - 1)"
+                   asp-route-c_Id="@Model.C_ID"
+                   class="btn btn-default @prevDisabled">
+                    @SharedLocalizer["Previous"]
+                </a>
+                <a asp-action="List"
+                   asp-route-pageNumber="@(Model.Solutions.PageIndex + 1)"
+                   asp-route-c_Id="@Model.C_ID"
+                   class="btn btn-default @nextDisabled">
+                    @SharedLocalizer["Next"]
+                </a>
             }
         </div>
    
