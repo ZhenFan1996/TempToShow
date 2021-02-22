@@ -256,7 +256,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, null,new bool[0]);
+            var result = await _sut.Index(null, null, null,new bool[0],null);
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var model = value.Model as  ChallengeIndexViewModel;
@@ -321,7 +321,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "bonus_desc", null,new bool[0]);
+            var result = await _sut.Index(null, "bonus_desc", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -381,7 +381,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "quota_desc", null,new bool[0]);
+            var result = await _sut.Index(null, "quota_desc", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -444,7 +444,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "", null,new bool[0]);
+            var result = await _sut.Index(null, "", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -509,7 +509,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, "2",isSelected);
+            var result = await _sut.Index(null, null, "2",isSelected,null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var searched = model.Challenges;
