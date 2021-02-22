@@ -60,7 +60,8 @@
             @Localizer["Company"]
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
+            @*@Html.DisplayFor(model => model.Company.Name)*@
+            <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@Model.Com_ID">@Html.DisplayFor(model => model.Company.Name)</a>
         </dd>
 
         <dt class="col-sm-2">

@@ -94,7 +94,8 @@
                     @Html.DisplayFor(modelItem => item.Bonus)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
+                    @*@Html.DisplayFor(modelItem => item.Company.Name)*@
+                    <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@item.Com_ID">@Html.DisplayFor(modelItem => item.Company.Name)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Release_Date)

@@ -97,7 +97,7 @@ namespace PlattformChallenge.Controllers
                 Hobby = programmer.Hobby ??"*****",
                 Birthday = programmer.Birthday,
                 InvolvedChallengeNumber = num,
-                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+                LogoPath = "/images/" + (programmer.Logo ?? "default.png")
             };
 
             return View(model);

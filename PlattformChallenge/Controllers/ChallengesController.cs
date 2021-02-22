@@ -200,6 +200,7 @@ namespace PlattformChallenge.Controllers
                 Available_Quota = GetAvailableQuota(challenge.C_Id),
                 Deadline = challenge.Deadline,
                 Company = challenge.Company,
+                Com_ID = challenge.Com_ID,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
                 CanTakePartIn = canTakePartIn

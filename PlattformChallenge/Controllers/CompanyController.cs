@@ -277,7 +277,7 @@ namespace PlattformChallenge.Controllers
             }
 
             var challenges = await (from c
-                             in _cRepository.GetAll().Where(c => c.Com_ID == _currUser.Id).Include(c => c.Company)
+                             in _cRepository.GetAll().Where(c => c.Com_ID == c_id).Include(c => c.Company)
                                     select c).ToListAsync();
             
             var num = challenges.Count();
@@ -292,7 +292,7 @@ namespace PlattformChallenge.Controllers
                 Hobby = company.Hobby ?? "*****",
                 Birthday = company.Birthday,
                 InvolvedChallengeNumber = num, 
-                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+                LogoPath = "/images/" + (company.Logo ?? "default.png")
             };
             return View(model);
         }
