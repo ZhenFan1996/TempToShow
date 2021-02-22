@@ -159,11 +159,14 @@
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximum Participants</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="NoPlace" xml:space="preserve">
     <value>You can't participate this challenge. There's no place anymore</value>
   </data>
   <data name="ParticipationCondition" xml:space="preserve">
-    <value>Your solution will be probably published if you win the prize.</value>
+    <value>Please read the information from this challenge carefully, especially whether your solution will be published if you win the prize money. If you participate, it means that you agree to the conditions of participation.</value>
   </data>
   <data name="Prize" xml:space="preserve">
     <value>Prize</value>
@@ -189,7 +192,13 @@
   <data name="View" xml:space="preserve">
     <value>View</value>
   </data>
+  <data name="WillSolutionOpen" xml:space="preserve">
+    <value>Whether the best solution will be published</value>
+  </data>
   <data name="WinnerAndSolution" xml:space="preserve">
     <value>Winner and solution</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

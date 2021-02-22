@@ -45,6 +45,7 @@ namespace PlattformChallenge.ViewModels
 
         [Display(Name = "Best Solution")]
         public string Best_Solution_Id { get; set; }
+        public bool IsSolutionOpen { get; set; }
 
         public bool CanTakePartIn { get; set; }
     }

@@ -203,7 +203,8 @@ namespace PlattformChallenge.Controllers
                 Com_ID = challenge.Com_ID,
                 Winner_Id = challenge.Winner_Id,
                 Best_Solution_Id = challenge.Best_Solution_Id,
-                CanTakePartIn = canTakePartIn
+                CanTakePartIn = canTakePartIn,
+                IsSolutionOpen = challenge.AllowOpen
             };
 
             if (detail.Winner_Id != null)
