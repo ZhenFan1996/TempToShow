@@ -113,8 +113,14 @@
 
     $(document).ready(function () {
         $('#zone').val(moment.tz.guess());
-        var re = moment.tz("@Model.Challenge.Release_Date", moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
-        var deadline = moment.tz("@Model.Challenge.Deadline", moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
+         var re = moment('@Model.Challenge.Release_Date');
+            var deadline = moment('@Model.Challenge.Deadline');
+            if (!re.isValid() || !deadline.isValid()) {
+                re = moment('@Model.Challenge.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+                deadline = moment('@Model.Challenge.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+            }
+        re = moment.tz(re, moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
+        deadline = moment.tz(deadline, moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
         $('#deadline').val(deadline);
         $('#release').val(re);
         $('#rn').val(re);
