@@ -35,7 +35,9 @@
         <div class="col-lg-8 offset-lg-1">
             @if (Model.Solutions.Count == 0)
             {
-            <p><font size="4" face="arial" color="red">** @Localizer["No one has uploaded the answer yet"] **</font></p>
+            <div class="alert alert-success alert-dismissable">
+                <p><font size="4" face="arial" color="red">** @Localizer["No one has uploaded the answer yet"] **</font></p>
+            </div>
             }
             <table class="table">
                 <thead>
