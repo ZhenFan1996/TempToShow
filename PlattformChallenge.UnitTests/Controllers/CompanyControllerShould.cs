@@ -252,7 +252,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(0));
             var result = await _sut.CloseChallenge("c4");
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score", _sut.ViewBag.Message);
+            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score. " +
+                            "Please rate them with different scores and then close the challenge", _sut.ViewBag.Message);
         }
 
         private List<Participation> GetAllBuildParticipation()
