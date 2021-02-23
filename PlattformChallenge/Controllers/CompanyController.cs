@@ -213,7 +213,8 @@ namespace PlattformChallenge.Controllers
                     int bestScore = (int)bestSolution.s.Point;
                     if(!checkIfOnlyBest(solList, bestScore))
                     {
-                        ViewBag.Message = "There are at least two solutions with same score. Only one solution can have the best score";
+                        ViewBag.Message = "There are at least two solutions with same score. Only one solution can have the best score. " +
+                            "Please rate them with different scores and then close the challenge";
                         return View("Index");
                     }
                     

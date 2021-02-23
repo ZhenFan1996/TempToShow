@@ -117,37 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Cancel" xml:space="preserve">
-    <value>Stornieren</value>
+  <data name="Bonus" xml:space="preserve">
+    <value>Preis</value>
   </data>
-  <data name="Challenges" xml:space="preserve">
-    <value>Beteiligte Challenges</value>
+  <data name="Company" xml:space="preserve">
+    <value>Unternehmen</value>
   </data>
-  <data name="Change Password" xml:space="preserve">
-    <value>Passwort ändern</value>
+  <data name="Download" xml:space="preserve">
+    <value>Herunterladen</value>
   </data>
-  <data name="Completed" xml:space="preserve">
-    <value>Abgeschlossen</value>
+  <data name="GoToMyPortal" xml:space="preserve">
+    <value>Zu meinem Portal</value>
   </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>Bist du Sicher?</value>
+  <data name="MyWonChallenges" xml:space="preserve">
+    <value>Meine gewonnene Challenges</value>
   </data>
-  <data name="In Progress" xml:space="preserve">
-    <value>In Bearbeitung</value>
+  <data name="NoWonChallengeYet" xml:space="preserve">
+    <value>Sie haben noch kein Challenge gewonnen</value>
   </data>
-  <data name="No Solution" xml:space="preserve">
-    <value>Keine Lösung</value>
+  <data name="Point" xml:space="preserve">
+    <value>Punkte</value>
   </data>
-  <data name="Participated Challenges" xml:space="preserve">
-    <value>Teilgenommene Challenges: </value>
+  <data name="SolutionID" xml:space="preserve">
+    <value>Lösung ID</value>
   </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Hochladen</value>
+  <data name="SubmitDate" xml:space="preserve">
+    <value>Abgabedatum</value>
   </data>
-  <data name="UploadItem" xml:space="preserve">
-    <value>Lösung Hochladen</value>
+  <data name="SumBonus" xml:space="preserve">
+    <value>Gesamt gewonnenes Preisgeld: </value>
   </data>
-  <data name="WonChallenges" xml:space="preserve">
-    <value>Meine gewonnene Challenges anzeigen</value>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
   </data>
 </root>
