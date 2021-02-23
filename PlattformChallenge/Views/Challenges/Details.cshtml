@@ -116,7 +116,9 @@
         <input type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
         <br />
     </center>
-    <center><textarea id="paste-box" rows="1" cols="60"></textarea></center>
+    
+        @*<center><textarea id="paste-box" rows="1" cols="60"></textarea></center>*@
+    
 </div>
 
 
@@ -175,6 +177,29 @@
     }
 <script type="text/javascript">
     function Copy() {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = window.location.href;
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+         var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+            alert(msg);;
+         @*var clipBoardContent = "";
+            clipBoardContent += window.location.href;
+            window.clipboardData.setData("Text", clipBoardContent);
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+            alert(msg);*@
+        @*var Url = document.getElementById("paste-box");
+        Url.value = window.location.href;
+        Url.focus();
+        Url.select();
+        document.execCommand("Copy");
+            document.getElementById("Copy");
+            var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())'
+            alert(msg);*@    }
+    document.getElementById("release").innerHTML = moment.tz("@Model.Release_Date", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
+    document.getElementById("deadline").innerHTML = moment.tz("@Model.Deadline", moment.tz.guess()).format("DD/MM/YYYY HH:mm");
         var clipBoardContent = "";
         clipBoardContent = this.location.href;
         window.clipboardData.setData("Text", clipBoardContent);
