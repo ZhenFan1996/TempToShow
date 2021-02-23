@@ -16,6 +16,7 @@ using PlattformChallenge.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.Controllers
 {
@@ -31,9 +32,10 @@ namespace PlattformChallenge.Controllers
         private readonly ConfigProviderService _appcfg;
         private readonly ILogger<ProgrammerController> logger;
         private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<ProgrammerController> localizer;
 
         public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg,
-            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment, IEmailSender sender
+            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment, IEmailSender sender, IStringLocalizer<ProgrammerController> localizer
             )
         {
             this._userManger = userManager;
@@ -44,6 +46,7 @@ namespace PlattformChallenge.Controllers
             _appcfg = appcfg;
             this.logger = logger;
             this._sender = sender;
+            this.localizer = localizer;
         }
         /// <summary>
         /// Get current user information and challenges participated in and return to the page
@@ -124,14 +127,7 @@ namespace PlattformChallenge.Controllers
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
                 string subject = $"Successfuly Cancel for {par.Challenge.Title} ";
-                string body =
-                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                    $"<p>Dear {_currUser.Name} ,</p>" +
-                    $"<p>Your have successfully cancel the challenge {par.Challenge.Title} </p>" +
-                    "<p></p>" +
-                    "<p>Kind regards</p>" +
-                    "<p>TES-Challenge Teams</p>"
-                    + "</div>";
+                string body = localizer["Cancel", _currUser.Name, par.Challenge.Title];
                 await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 if (par.Solution != null)
                 {
@@ -217,15 +213,7 @@ namespace PlattformChallenge.Controllers
                 model.Programmer = _currUser;
                 model.IsVaild = c.Deadline >= DateTime.Now;
                 string subject = $"Your Solution for {c.Title} has successfully uploaded";
-                string body =
-                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                    $"<p>Dear {_currUser.Name} ,</p>" +
-                    $"<p>Your Solution for {c.Title} has successfully uploaded</p>" +
-                    $"<p>The solution id is {par.S_Id}</p>"+
-                    "<p></p>" +
-                    "<p>Kind regards</p>" +
-                    "<p>TES-Challenge Teams</p>"
-                    +"</div>";
+                string body = localizer["Upload", _currUser.Name, c.Title, par.S_Id];
                 await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 return View(model);
             }

@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
 using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -37,6 +38,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<IRepository<Solution>> _mockSRepo;
         private readonly Mock<IEmailSender> _mockSender;
         private readonly Mock<IWebHostEnvironment> _mockEnv;
+        private readonly Mock<IStringLocalizer<CompanyController>> _mockLocal;
         private PlatformUser _user;
 
         public CompanyControllerShould()
@@ -56,11 +58,14 @@ namespace PlattformChallenge.UnitTest.Controllers
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "test-company"));
             _mockUserManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
             var logger = new Mock<ILogger<CompanyController>>();
+
+            _mockLocal = new Mock<IStringLocalizer<CompanyController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
             _mockSender = new Mock<IEmailSender>();
             _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             _mockEnv = new Mock<IWebHostEnvironment>();
             _mockEnv.SetupGet(m => m.WebRootPath).Returns("");
-             _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object, logger.Object, _mockEnv.Object, _mockSender.Object);
+             _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object, logger.Object, _mockEnv.Object, _mockSender.Object,_mockLocal.Object);
             _sut.ControllerContext = context;
         }
         /// <summary>

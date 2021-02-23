@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
 using System.IO;
 using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -35,6 +36,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly ProgrammerController _sut;
         private readonly Mock<IRepository<Solution>> _mockSRepo;
         private readonly Mock<IEmailSender> _mockSender;
+        private readonly Mock<IStringLocalizer<ProgrammerController>> _mockLocal;
         private PlatformUser _user;
 
         public ProgrammerControllerShould()
@@ -62,7 +64,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             env.SetupGet(e => e.WebRootPath).Returns("");
             _mockSender = new Mock<IEmailSender>();
             _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object,env.Object,_mockSender.Object);
+            _mockLocal = new Mock<IStringLocalizer<ProgrammerController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object,env.Object,_mockSender.Object,_mockLocal.Object);
             _sut.ControllerContext = context;
 
         }

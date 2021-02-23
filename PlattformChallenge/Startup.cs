@@ -86,7 +86,7 @@ namespace PlattformChallenge
                 options.Host_Address = Configuration["ExternalProviders:MailKit:SMTP:Address"];
                 options.Host_Port = Convert.ToInt32(Configuration["ExternalProviders:MailKit:SMTP:Port"]);
                 options.Host_Username = Configuration["ExternalProviders:MailKit:SMTP:Account"];
-                options.Host_Password = Configuration["ExternalProviders:MailKit:SMTP:Password"];
+                options.Host_Password = Configuration["HostEmailPassword"];
                 options.Sender_EMail = Configuration["ExternalProviders:MailKit:SMTP:SenderEmail"];
                 options.Sender_Name = Configuration["ExternalProviders:MailKit:SMTP:SenderName"];
             });

@@ -117,12 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Par" xml:space="preserve">
+  <data name="Cancel" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-      &lt;p&gt;Liebe {0} ,&lt;/p&gt;
-      &lt;p&gt;Sie haben erfolgreich an der Challenge {1} teilgenommen &lt;/p&gt;
-      &lt;p&gt;&lt;/p&gt;
-      &lt;p&gt;Viele Grüße&lt;/p&gt;
-      &lt;p&gt;TES-Challenge Teams&lt;/p&gt;&lt;/div&gt;</value>
+   &lt;p&gt;Dear {0} ,&lt;/p&gt;
+    &lt;p&gt;Your have successfully cancel the challenge {1} &lt;/p&gt;
+    &lt;p&gt;&lt;/p&gt;
+    &lt;p&gt;Kind regards&lt;/p&gt;
+     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
+   &lt;p&gt;Dear {0} ,&lt;/p&gt;
+   &lt;p&gt;Your Solution for {1} has successfully uploaded&lt;/p&gt;
+   &lt;p&gt;The solution id is {2}&lt;/p&gt;
+   &lt;p&gt;&lt;/p&gt;
+    &lt;p&gt;Kind regards&lt;/p&gt;
+    &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
+&lt;/div&gt;</value>
   </data>
 </root>

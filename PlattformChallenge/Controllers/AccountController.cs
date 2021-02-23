@@ -10,6 +10,8 @@ using System.Security.Claims;
 using PlattformChallenge.Core.Model;
 using Microsoft.Extensions.Logging;
 using PlattformChallenge.Services;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.Controllers
 {
@@ -19,15 +21,18 @@ namespace PlattformChallenge.Controllers
         private RoleManager<IdentityRole> _roleManager;
         private ILogger<AccountController> logger;
         private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<AccountController> localizer;
         private SignInManager<PlatformUser> _signInManager;
 
-        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender)
+        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender
+            , IStringLocalizer<AccountController> localizer)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
             this.logger = logger;
             this._sender = sender;
+            this.localizer = localizer;
         }
         /// <summary>
         /// Enter the registration page
@@ -69,16 +74,8 @@ namespace PlattformChallenge.Controllers
                         logger.Log(LogLevel.Warning, confirmationLink);
 
                         string subject = "Confirm Email";
-
                         string body =
-                            "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                            $"<p>Dear {user.Name} ,</p>" +
-                            $"<p>Please confirm your account </p>" +
-                            $"<p>click this link {confirmationLink} </p>"+
-                            "<p></p>" +
-                            "<p>Kind regards</p>" +
-                            "<p>TES-Challenge Teams</p>"
-                            + "</div>";
+                         localizer["EmailConfirm",user.Name, confirmationLink];
 
                         await _sender.SendEmailAsync(user.Email, subject, body);
                         ViewBag.Message = "We have send the email. Please check your email";
@@ -100,9 +97,6 @@ namespace PlattformChallenge.Controllers
             return View(model);
 
         }
-
-       
-
 
 
         [HttpGet]
@@ -159,7 +153,6 @@ namespace PlattformChallenge.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(logInViewModel.Email);
                 if (user != null && !user.EmailConfirmed) {
-                    ModelState.AddModelError(string.Empty, "Your Email has not been confiremd");
                     logInViewModel.Not_Confirmed = true;
                     return View(logInViewModel);
                 }
@@ -196,15 +189,7 @@ namespace PlattformChallenge.Controllers
 
                     string subject = "Confirm Email";
 
-                    string body =
-                        "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                        $"<p>Dear {user.Name} ,</p>" +
-                        $"<p>Please confirm your account </p>" +
-                        $"<p>click this link {confirmationLink} </p>" +
-                        "<p></p>" +
-                        "<p>Kind regards</p>" +
-                        "<p>TES-Challenge Teams</p>"
-                        + "</div>";
+                    string body = localizer["EmailConfirm", user.Name, confirmationLink];
 
                     await _sender.SendEmailAsync(user.Email, subject, body);
                     ViewBag.Message = "We have the email sendet. Please confirm the email";
@@ -240,14 +225,7 @@ namespace PlattformChallenge.Controllers
 
                     string subject = "Password Forgot";
 
-                    string body =
-                        "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                        $"<p>Dear {user.Name} ,</p>" +
-                        $"<p>click this link {passwordResetLink} </p>" +
-                        "<p>to reset your password</p>" +
-                        "<p>Kind regards</p>" +
-                        "<p>TES-Challenge Teams</p>"
-                        + "</div>";
+                    string body = localizer["ForgotPassword", user.Name, passwordResetLink];                      
 
                     await _sender.SendEmailAsync(user.Email, subject, body);
                     ViewBag.Message = "We have sent the reset Email";

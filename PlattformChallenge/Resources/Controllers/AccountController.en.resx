@@ -117,12 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Par" xml:space="preserve">
+  <data name="EmailConfirm" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-      &lt;p&gt;Liebe {0} ,&lt;/p&gt;
-      &lt;p&gt;Sie haben erfolgreich an der Challenge {1} teilgenommen &lt;/p&gt;
-      &lt;p&gt;&lt;/p&gt;
-      &lt;p&gt;Viele Grüße&lt;/p&gt;
-      &lt;p&gt;TES-Challenge Teams&lt;/p&gt;&lt;/div&gt;</value>
+   &lt;p&gt;Dear {0} ,&lt;/p&gt;
+   &lt;p&gt;Please confirm your account &lt;/p&gt;
+   &lt;p&gt;click this link {1} &lt;/p&gt;
+   &lt;p&gt;&lt;/p&gt;
+   &lt;p&gt;Kind regards&lt;/p&gt; 
+    &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
+   &lt;p&gt;Dear {0} ,&lt;/p&gt;
+   &lt;p&gt;Click this link {1} &lt;/p&gt;
+   &lt;p&gt;to reset your password&lt;/p&gt;
+   &lt;p&gt;Kind regards&lt;/p&gt;
+   &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
+&lt;/div&gt;</value>
   </data>
 </root>

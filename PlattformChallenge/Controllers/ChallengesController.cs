@@ -31,10 +31,11 @@ namespace PlattformChallenge.Controllers
         private readonly IRepository<Participation> _particiRepository;
         private readonly ILogger<ChallengesController> logger;
         private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<ChallengesController> localizer;
 
         public ChallengesController(IRepository<Challenge> repository, IRepository<PlatformUser> pRepository,
             IRepository<Language> lRepository, IRepository<LanguageChallenge> lcRepository, IRepository<Participation> particiRepository,
-            ILogger<ChallengesController> looger,IEmailSender sender
+            ILogger<ChallengesController> looger,IEmailSender sender, IStringLocalizer<ChallengesController> localizer
             )
         {
             _repository = repository;
@@ -44,6 +45,7 @@ namespace PlattformChallenge.Controllers
             _particiRepository = particiRepository;
             this.logger = looger;
             this._sender = sender;
+            this.localizer = localizer;
         }
         #region list
 
@@ -393,19 +395,12 @@ namespace PlattformChallenge.Controllers
                 string errMsg = checkIllegalOp(model);
                 if (errMsg != null)
                 {
-                    ModelState.AddModelError(string.Empty, errMsg);
-                    //model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Release_Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
-                    //model.Challenge.Deadline = TimeZoneInfo.ConvertTimeFromUtc(model.Challenge.Deadline, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"));
+                    ModelState.AddModelError(string.Empty, errMsg);                  
                     return View(model);
                 }
                 else
                 {
-                    //if (bonus > model.Challenge.Bonus)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "You can't change to a less bonus");
-                    //    return View(model);
-                    //}
-                   
+                                
                     var lcList = await _lcRepository.GetAllListAsync(l => l.C_Id == model.Challenge.C_Id);
                     for (int i = 0; i < model.IsSelected.Count(); i++)
                     {
@@ -475,8 +470,7 @@ namespace PlattformChallenge.Controllers
             
             if (TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone)) < DateTime.Now
                 && model.AllowEditDate)
-            {
-                //model.AllowEditDate = true;
+            {               
                 return "You can only release challenge in the future";
             }
             if (model.Deadline < model.Release_Date && model.AllowEditDate)
@@ -526,14 +520,7 @@ namespace PlattformChallenge.Controllers
                 await _particiRepository.InsertAsync(newParti);
                 var user = await _pRepository.FirstOrDefaultAsync(p => p.Id == newParti.P_Id);
                 string subject = $"Success take part in the Challenge {challenge.Title}";
-                string body =
-                    "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                    $"<p>Dear {user.Name} ,</p>" +
-                    $"<p>You habe successfully taken part in the challenge {challenge.Title} </p>" +
-                    "<p></p>" +
-                    "<p>Kind regards</p>" +
-                    "<p>TES-Challenge Teams</p>"
-                    +"</div>";
+                string body = localizer["par", user.Name, challenge.Title];
 
                 await _sender.SendEmailAsync(user.Email,subject,body);
                 logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");

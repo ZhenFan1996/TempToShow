@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Interfaces;
 using PlattformChallenge.Core.Model;
@@ -30,10 +31,11 @@ namespace PlattformChallenge.Controllers
         private readonly ILogger<CompanyController> logger;
         private readonly IWebHostEnvironment _env;
         private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<CompanyController> localizer;
 
         public CompanyController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository,
             IRepository<Participation> pRepository, IRepository<Solution> sRepository,ILogger<CompanyController> logger,
-            IWebHostEnvironment webHostEnvironment, IEmailSender sender)
+            IWebHostEnvironment webHostEnvironment, IEmailSender sender, IStringLocalizer<CompanyController> localizer)
         {
             this._userManger = userManager;
             this._cRepository = cRepository;
@@ -42,6 +44,7 @@ namespace PlattformChallenge.Controllers
             this.logger = logger;
             this._env = webHostEnvironment;
             this._sender = sender;
+            this.localizer = localizer;
         }
 
         /// <summary>
@@ -138,15 +141,7 @@ namespace PlattformChallenge.Controllers
                 toUpdate.Point = vm.Point;
                 var pro = await _userManger.FindByIdAsync( (await _pRepository.FirstOrDefaultAsync(p => p.S_Id ==vm.CurrSolutionId)).P_Id);
                 string subject = $"The Challenge  {challenge.Title} is noted";
-                string body =
-                     "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                    $"<p>Dear {pro.Name}</p>" +
-                    $"<p>Your Challenge {challenge.Title} was noted</p>" +
-                    $"<p>The point is :<strong>{vm.Point}</strong></p>" +
-                    "<p> </p>" +
-                    "<p>Kind regards</p>" +
-                    "<p>TES-Challenge Teams</p>"
-                    + "</div>";
+                string body = localizer["Noted", pro.Name, challenge.Title, vm.Point];
 
                 await _sender.SendEmailAsync(pro.Email, subject, body);
                 toUpdate.Status = StatusEnum.Rated;
@@ -240,18 +235,8 @@ namespace PlattformChallenge.Controllers
                     foreach (var p in toUpdate.Participations) {
                         var user = await _userManger.FindByIdAsync(p.P_Id);
                         string subject = $"The Challenge {toUpdate.Title} is closed";
-                        string body =
-                             "<div style='font: 14px/20px Times New Roman, sans-serif;' >" +
-                            $"<p>Dear {user.Name} ,</p>" +
-                            $"<p>You  challenge {toUpdate.Title} is closed. You can see the results in your protal</p>" +
-                            "<p></p>" +
-                            "<p>Kind regards</p>" +
-                            "<p>TES-Challenge Teams</p>"
-                            +"</div>";
-
+                        string body = localizer["Closed",user.Name,toUpdate.Title];
                         await _sender.SendEmailAsync(user.Email, subject, body);
-
-
                     }
 
                     logger.LogInformation($"The challenge with id {toUpdate.C_Id} is closed.");
