@@ -468,7 +468,7 @@ namespace PlattformChallenge.Controllers
                 return "You can't change maximal participation to this number, there's already more users participated";
             }
             
-            if (TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone)) < DateTime.Now
+            if (TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone)) < DateTime.UtcNow
                 && model.AllowEditDate)
             {               
                 return "You can only release challenge in the future";
