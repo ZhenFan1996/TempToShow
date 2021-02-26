@@ -210,8 +210,8 @@
                 re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
                 deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
             }
-            re = moment.tz(re, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
-            deadline = moment.tz(deadline, moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
             $('#release').html(re);
             $('#deadline').html(deadline);
         })

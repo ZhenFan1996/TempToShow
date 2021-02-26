@@ -113,14 +113,14 @@
 
     $(document).ready(function () {
         $('#zone').val(moment.tz.guess());
-         var re = moment('@Model.Challenge.Release_Date');
-            var deadline = moment('@Model.Challenge.Deadline');
+        var re = moment('@Model.Challenge.Release_Date');
+        var deadline = moment('@Model.Challenge.Deadline');
             if (!re.isValid() || !deadline.isValid()) {
-                re = moment('@Model.Challenge.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
-                deadline = moment('@Model.Challenge.Deadline', "DD.MM.YYYY HH:mm:ss", true);
-            }
-        re = moment.tz(re, moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
-        deadline = moment.tz(deadline, moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
+                re = moment('@Model.Challenge.Release_Date', "DD.MM.YYYY HH:mm:ss");
+                deadline = moment('@Model.Challenge.Deadline', "DD.MM.YYYY HH:mm:ss");
+        }
+        re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
+        deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
         $('#deadline').val(deadline);
         $('#release').val(re);
         $('#rn').val(re);
