@@ -69,6 +69,8 @@ namespace PlattformChallenge.Controllers
             ViewData["CurrentFilter"] = searchString;
             ViewData["Languages"] = await _lRepository.GetAllListAsync();
             ViewData["LanguagesFilter"] = isSelected;
+            ViewData["Status"] = status;
+            ViewData["SortOrder"] = sortOrder;
             IQueryable<Challenge> challenges = null;
             switch (status)
             {
