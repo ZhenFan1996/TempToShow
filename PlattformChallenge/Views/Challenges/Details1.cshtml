@@ -1,0 +1,173 @@
+
+@model PlattformChallenge.ViewModels.ChallengeDetailViewModel
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["Details"];
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+              @Model.Title
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-white box-shadow">
+                <div class="row">
+                    <div class="col-md-4 mt-2 ml-1">
+                        <div class="media">
+                            <img class="align-self-start mr-3 mb-1" src="/images/clock.png" alt="Generic placeholder image" width="30" height="30">
+                            <div class="media-body">
+                                <div class="row mt-1 text-center ">
+                                    <div id="release"></div> -- <div id="deadline"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 mt-2">
+                        <div class="media">
+                            <img class="align-self-start mr-3 mb-1" src="/images/euro-1.png" alt="Generic placeholder image" width="30" height="30">
+                            <div class="media-body">
+                                <div class="row mt-1 text-center ml-1">
+                                <div><strong>Bonus: </strong>@Model.Bonus</div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-2 ml-1">
+                        <div class="media">
+                            <img class="align-self-start mr-3 mb-1" src="/images/person.png" alt="Generic placeholder image" width="30" height="30">
+                            <div class="media-body">
+                                <div class="row mt-1 text-center ml-1">
+                                    <div class="row">
+
+                                        <strong> @Localizer["AvailableQuota"]</strong>
+                                        <div class="text-info">@Html.DisplayFor(model => model.Max_Participant) </div>
+                                        /
+                                        <div>  @Html.DisplayFor(model => model.Available_Quota)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                <div class="col-md-2 ">
+                    <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#p">
+                        @Localizer["TakePartIn"]
+                    </button>
+
+                    <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel"> @Localizer["ConfirmCondition"]   </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    @Localizer["ParticipationCondition"]
+                                </div>
+                                <div class="modal-footer">
+                                    <a asp-action="ParticipateChallenge" asp-route-id="@Model.C_Id" class="btn btn-primary">@Localizer["Agree"]</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Disagree"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 ">
+            <div class="card bg-light box-shadow">
+
+            <div class="row mt-2 mb-2 ml-1 mr-1">
+                <div class="col-md-10">
+                    <div class="card bg-white box-shadow " style="height: 0px; padding-bottom: 85%">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="media">
+                                    <div class="media-body">
+                                        <div class="mt-0 mb-1">@Html.Raw(Model.Content)</div>
+                                    </div>
+                                </li>             
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="col-md-2 mt-3 mb-3 ml-auto">
+                    <div class="card bg-light box-shadow">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="media">
+                                    <div class="media-body">
+                                        <div class="mt-0 mb-1">List-based media object</div>
+                                    </div>
+                                </li>
+                                <li class="media my-4">
+                                    <div class="media-body">
+                                        <div class="mt-0 mb-1">List-based media object</div>
+                                    </div>
+                                </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <div class="mt-0 mb-1">List-based media object</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6034eae6b772eb001285a6fd&product=inline-share-buttons" async="async"></script>
+    <script type="text/javascript">
+    function Copy() {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = window.location.href;
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+         var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+         alert(msg);
+    }
+        $(document).ready(function () {
+
+            var re = moment('@Model.Release_Date');
+            var deadline = moment('@Model.Deadline');
+            if (!re.isValid() || !deadline.isValid()) {
+                re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+                deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+            }
+            re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            $('#release').html(re);
+            $('#deadline').html(deadline);
+        })
+
+    </script>
+    }

@@ -207,6 +207,7 @@
             var re = moment('@Model.Release_Date');
             var deadline = moment('@Model.Deadline');
             if (!re.isValid() || !deadline.isValid()) {
+                
                 re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
                 deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
             }

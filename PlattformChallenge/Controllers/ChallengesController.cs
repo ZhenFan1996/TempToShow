@@ -225,7 +225,7 @@ namespace PlattformChallenge.Controllers
                             select l;
 
             detail.Languages = await langugaes.ToListAsync();
-            return View(detail);
+            return View("Details1",detail);
         }
         #endregion
 
