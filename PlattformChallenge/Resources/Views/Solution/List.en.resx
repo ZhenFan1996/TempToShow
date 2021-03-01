@@ -126,8 +126,8 @@
   <data name="Programmer Name" xml:space="preserve">
     <value>Programmer Name</value>
   </data>
-  <data name="There is no winner yet." xml:space="preserve">
-    <value>There is no winner yet.</value>
+  <data name="There is no winner" xml:space="preserve">
+    <value>There is no winner for this challenge.</value>
   </data>
   <data name="This challenge is not over！" xml:space="preserve">
     <value>This challenge is not over！</value>

@@ -9,7 +9,7 @@
             <div style="color:#0000FF">
                 <h3>@Localizer["Best Solution"]</h3>
             </div>
-            @if (Model.S_ID != null && Model.Winner_ID != null)
+            @if (Model.S_ID != null && Model.IsClose && Model.Winner_ID != "NoWinner")
             {
                 <div class="card-body">
                     <h5 class="card-title">@Localizer["Programmer Name"]: @Model.Best_Name</h5>
@@ -25,11 +25,13 @@
 
                 </div>
             }
-            else
+            else if(!Model.IsClose)
             {
                 <h1><font size="5" face="verdana">@Localizer["This challenge is not over!"]</font></h1>
-                <p><font size="4" face="arial" color="red">@Localizer["There is no winner yet."]</font></p>
-
+            }
+            else if (Model.IsClose && Model.Winner_ID == "NoWinner")
+            {
+                <p><font size="4" face="arial" color="red">@Localizer["There is no winner"]</font></p>
             }
         </div>
         <div class="col-lg-8 offset-lg-1">
