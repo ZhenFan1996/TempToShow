@@ -76,19 +76,19 @@ namespace PlattformChallenge.Controllers
             {
                 case 1://Challenges in the past
                     challenges = from c
-                             in _repository.GetAll().Where(c => c.Deadline <= DateTime.Now)
+                             in _repository.GetAll().Where(c => c.Deadline <= DateTime.UtcNow)
                              .Include(c => c.Company)
                                  select c;
                     break;
                 case 2://Challenges in the future
                     challenges = from c
-                             in _repository.GetAll().Where(c => c.Release_Date > DateTime.Now)
+                             in _repository.GetAll().Where(c => c.Release_Date > DateTime.UtcNow)
                              .Include(c => c.Company)
                                  select c;
                     break;
                 default: //Current Active Challenges
                     challenges = from c
-                             in _repository.GetAll().Where(c=>c.Release_Date <= DateTime.Now && c.Deadline > DateTime.Now)
+                             in _repository.GetAll().Where(c=>c.Release_Date <= DateTime.UtcNow && c.Deadline > DateTime.UtcNow)
                              .Include(c => c.Company)
                                  select c;
                     break;
@@ -178,7 +178,7 @@ namespace PlattformChallenge.Controllers
                 return View("NotFound");
             }
             bool canTakePartIn = false;
-            if (challenge.Release_Date < DateTime.Now && challenge.Deadline > DateTime.Now)
+            if (challenge.Release_Date < DateTime.UtcNow && challenge.Deadline > DateTime.UtcNow)
             {
                 canTakePartIn = true;
             }     
@@ -239,8 +239,8 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Create()
         {
             var model = new ChallengeCreateViewModel();
-            model.Release_Date = DateTime.Now.Date;
-            model.Deadline = DateTime.Now.Date;
+            model.Release_Date = DateTime.UtcNow.Date;
+            model.Deadline = DateTime.UtcNow.Date;
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
             return View(model);
@@ -267,7 +267,7 @@ namespace PlattformChallenge.Controllers
 
                 List<Language> languages = await _lRepository.GetAllListAsync();
                 model.Languages = languages;
-                if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.Now))
+                if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow))
                 {
                     //ViewBag.Message = "You can only release challenge in the future";
                     //return View("Create");
@@ -502,7 +502,7 @@ namespace PlattformChallenge.Controllers
         {
             var challenge = await _repository.FirstOrDefaultAsync(m => m.C_Id == id);         
 
-            if (GetAvailableQuota(id) <= 0 || challenge.Deadline < DateTime.Now || challenge.Release_Date > DateTime.Now)
+            if (GetAvailableQuota(id) <= 0 || challenge.Deadline < DateTime.UtcNow || challenge.Release_Date > DateTime.UtcNow)
             {
                 { //The corresponding razor page details.cshtml it has restriction that if the conditions are true,
                   // the button which links to this method will not be showed. e.g. this else-condition is not

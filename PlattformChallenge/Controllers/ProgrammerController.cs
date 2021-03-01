@@ -170,7 +170,7 @@ namespace PlattformChallenge.Controllers
                 Participation = par,
                 Challenge = c,
                 Programmer =_currUser,
-                IsVaild = c.Deadline >= DateTime.Now
+                IsVaild = c.Deadline >= DateTime.UtcNow
 
             };
             return View(model);
@@ -188,7 +188,7 @@ namespace PlattformChallenge.Controllers
                 if (model.SolutionFile==null||(!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed")))
                 {
                     ModelState.AddModelError("","The type is false");
-                    model.IsVaild = c.Deadline >= DateTime.Now;
+                    model.IsVaild = c.Deadline >= DateTime.UtcNow;
                     model.Challenge = c;
                     model.Programmer = _currUser;
                     model.Participation = par;
@@ -201,7 +201,7 @@ namespace PlattformChallenge.Controllers
                     S_Id = Guid.NewGuid().ToString(),
                     URL = path,
                     Status = StatusEnum.Receive,
-                    Submit_Date = DateTime.Now,
+                    Submit_Date = DateTime.UtcNow,
                     FileName = fileName
                 };
                 if (par.S_Id == null)
@@ -226,7 +226,7 @@ namespace PlattformChallenge.Controllers
                 par.Solution = s;
                 model.Participation = par;
                 model.Programmer = _currUser;
-                model.IsVaild = c.Deadline >= DateTime.Now;
+                model.IsVaild = c.Deadline >= DateTime.UtcNow;
                 string subject = $"Your Solution for {c.Title} has successfully uploaded";
                 string body = localizer["Upload", _currUser.Name, c.Title, par.S_Id];
                 await _sender.SendEmailAsync(_currUser.Email, subject, body);

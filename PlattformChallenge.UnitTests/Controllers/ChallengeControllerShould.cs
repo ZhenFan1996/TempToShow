@@ -111,7 +111,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.UtcNow,
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
@@ -178,7 +178,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now.AddDays(2),
+                Release_Date = DateTime.UtcNow.AddDays(2),
                 Max_Participant = 8,
                 IsSelected = new bool[] { true, false, true }
             };
@@ -235,8 +235,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -248,8 +248,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -270,7 +270,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(200, model.Challenges.ElementAt<Challenge>(1).Bonus);
             Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
-            Assert.Equal(DateTime.Now.Day, model.Challenges.ElementAt<Challenge>(0).Release_Date.Day);
+            Assert.Equal(DateTime.UtcNow.Day, model.Challenges.ElementAt<Challenge>(0).Release_Date.Day);
         }
 
         //
@@ -287,8 +287,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-6),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-6),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -300,8 +300,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now.AddDays(-4),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-4),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -313,8 +313,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -349,8 +349,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-5),
-                 Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-5),
+                 Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -362,8 +362,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now.AddDays(-3),
-                 Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-3),
+                 Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -375,8 +375,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -412,8 +412,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-5),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-5),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -425,8 +425,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now.AddDays(-3),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-3),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -438,8 +438,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -476,8 +476,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -489,8 +489,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -502,8 +502,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 3",
                 Bonus = 600,
                 Content = "test content 3",
-                Release_Date = DateTime.Now.AddDays(2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 118,
                 Com_ID = "3333",
                 Company = new PlatformUser(){
@@ -541,7 +541,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Bonus = 100,
                     Content = "Content_mock_challenge_RVP",
                     Max_Participant = 11,
-                    Deadline = DateTime.Now.AddDays(+3)
+                    Deadline = DateTime.UtcNow.AddDays(+3)
                 }
                 ));
 
@@ -554,7 +554,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Bonus = 100,
                     Content = "Content_mock_challenge_RVP",
                     Max_Participant = 11,
-                    Deadline = DateTime.Now.AddDays(+3)
+                    Deadline = DateTime.UtcNow.AddDays(+3)
                 }
                 }.AsQueryable().BuildMockDbSet().Object
                 );
@@ -593,7 +593,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Title = "title_mock_challenge1",
                     Bonus = 100,
                     Content = "Content_mock_challenge1",
-                    Deadline = DateTime.Now.AddDays(20),
+                    Deadline = DateTime.UtcNow.AddDays(20),
                     Max_Participant = 11
                 }
                 ));

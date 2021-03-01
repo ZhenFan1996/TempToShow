@@ -56,7 +56,7 @@ namespace PlattformChallenge.IntegrationTests.Helpers
                 C_Id ="test 1",
                 Title ="Test challenge 1",
                 Bonus = 10,
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.UtcNow,
                 Content = "Content of test 1",
                 Max_Participant = 10,
                 Com_ID = "com1"               

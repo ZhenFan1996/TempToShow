@@ -178,7 +178,7 @@ namespace PlattformChallenge.Controllers
                 return View("Index");
             }
 
-            else if (toUpdate.Deadline >= DateTime.Now)
+            else if (toUpdate.Deadline >= DateTime.UtcNow)
             {
                 ViewBag.Message = string.Format("You can not close the challenge before the deadline");
                 return View("Index");
@@ -287,7 +287,7 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public IActionResult ProfileSetting()
         {
-            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.Now.Date : _currUser.Birthday;
+            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.UtcNow.Date : _currUser.Birthday;
             ProfileSettingViewModel model = new ProfileSettingViewModel()
             {
                 Name = _currUser.Name,
