@@ -150,8 +150,14 @@
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Email:</value>
+  </data>
+  <data name="MyChallenges" xml:space="preserve">
+    <value>My Challenges</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>

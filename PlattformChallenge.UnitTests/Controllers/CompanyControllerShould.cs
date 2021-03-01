@@ -23,6 +23,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
+using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -34,6 +36,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly CompanyController _sut;
         private readonly Mock<ConfigProviderService> _mockAfg;
         private readonly Mock<IRepository<Solution>> _mockSRepo;
+        private readonly Mock<IEmailSender> _mockSender;
+        private readonly Mock<IWebHostEnvironment> _mockEnv;
+        private readonly Mock<IStringLocalizer<CompanyController>> _mockLocal;
         private PlatformUser _user;
 
         public CompanyControllerShould()
@@ -53,7 +58,14 @@ namespace PlattformChallenge.UnitTest.Controllers
             mock.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "test-company"));
             _mockUserManager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);
             var logger = new Mock<ILogger<CompanyController>>();
-            _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object, logger.Object);
+
+            _mockLocal = new Mock<IStringLocalizer<CompanyController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
+            _mockSender = new Mock<IEmailSender>();
+            _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            _mockEnv = new Mock<IWebHostEnvironment>();
+            _mockEnv.SetupGet(m => m.WebRootPath).Returns("");
+             _sut = new CompanyController(_mockUserManager.Object, _mockCRepo.Object, _mockPRepo.Object, _mockSRepo.Object, logger.Object, _mockEnv.Object, _mockSender.Object,_mockLocal.Object);
             _sut.ControllerContext = context;
         }
         /// <summary>
@@ -103,7 +115,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         {
             var challenges = GetAllBuildChallenge();
             GetAllBuildSolution();
-            GetAllBuildParticipation();
+           var pars = GetAllBuildParticipation();
             _mockCRepo.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(
                challenges.ElementAt(1));
             _mockSRepo.Setup(s => s.FirstOrDefaultAsync(It.IsAny<Expression<Func<Solution, bool>>>())).ReturnsAsync(
@@ -112,6 +124,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                    S_Id = "s3",
                    Point = 30
                });
+            _mockPRepo.Setup(p => p.FirstOrDefaultAsync(It.IsAny<Expression<Func<Participation, bool>>>())).ReturnsAsync(pars.First());
             AllSolutionsViewModel vm = new AllSolutionsViewModel
             {
                 CurrChallengeId = "c2",
@@ -156,6 +169,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         [Fact]
         public async Task CloseChallengeSuccess()
         {
+
             var challenges = GetAllBuildChallenge();
             GetAllBuildRatedSolution();
             var participations = GetAllBuildParticipation();
@@ -188,7 +202,14 @@ namespace PlattformChallenge.UnitTest.Controllers
                 {
                    C_Id = "cC",
                     IsClose = true,
-                     Com_ID = "test-company"
+                     Com_ID = "test-company",
+                     Participations = new List<Participation>(){
+
+                         new Participation(){
+                             C_Id = "cC",
+                             P_Id ="test"
+                         }
+                     }
                 }
               }.AsQueryable().BuildMockDbSet().Object
               );
@@ -231,7 +252,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(0));
             var result = await _sut.CloseChallenge("c4");
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score", _sut.ViewBag.Message);
+            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score. " +
+                            "Please rate them with different scores and then close the challenge", _sut.ViewBag.Message);
         }
 
         private List<Participation> GetAllBuildParticipation()
@@ -342,7 +364,14 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Com_ID = "another-company",
                 Company = new PlatformUser(){
                     Id = "test1.com"
-                 }
+                 },
+                 Participations = new List<Participation>(){
+
+                         new Participation(){
+                             C_Id = "c1",
+                             P_Id ="test"
+                         }
+                     }
             },
                 new Challenge(){
                 C_Id = "c2",
@@ -354,7 +383,13 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Com_ID = "test-company",
                 Company = new PlatformUser(){
                     Id = "test1.com"
-                 }
+                 },
+                 Participations = new List<Participation>(){
+                         new Participation(){
+                             C_Id = "cC",
+                             P_Id ="test"
+                         }
+                     }
             },
                   new Challenge(){
                 C_Id = "c3",

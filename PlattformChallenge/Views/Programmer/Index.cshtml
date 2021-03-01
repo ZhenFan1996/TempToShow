@@ -8,9 +8,9 @@
                 <div class="col-md-3">
                     <img class="rounded-circle" src="@Model.LogoPath" alt="Card image cap" width="120" height="120">
                 </div>
-                <div class="offset-md-1  col-md-8 mt-4" >
+                <div class="offset-md-1  col-md-8 mt-4">
                     <h1 class=" flex-column justify-content-center">
-                        Hallo,
+                        @SharedLocalizer["Hello"],
                         <a asp-action="Profile" asp-route-p_id="@Model.Programmer.Id"> @Model.Programmer.Name</a>
                     </h1>
                 </div>
@@ -47,13 +47,13 @@
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">@Localizer["In Progress"]</h5>
                                 <strong>@Model.InProgress</strong>
-                             </div>
+                            </div>
                         </li>
                         <li class="media my-4">
                             <img class="mr-3" src="/images/undraw_finish_line_katerina_limpitsouni_xy20.png" alt="Generic placeholder image" width="65" height="65">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">@Localizer["Completed"]</h5>
-                              <strong>  @Model.Completet </strong>
+                                <strong>  @Model.Completet </strong>
                             </div>
                         </li>
                     </ul>
@@ -73,7 +73,7 @@
                     <div class="media-body">
                         <a asp-action="ProfileSetting" class="btn btn-dark mt-2">@Localizer["Edit Profile"]</a>
                     </div>
-                </li>            
+                </li>
             </ul>
         </div>
 
@@ -81,7 +81,7 @@
 
     <div class="row mt-4">
         <h5 class="text-muted">
-            @Localizer["Challenges"]          
+            @Localizer["Challenges"]
         </h5>
     </div>
     <div class="row mt-4">
@@ -102,74 +102,79 @@
                 <tbody>
                     @foreach (var item in Model.Participations)
                     {
-                    <tr>
-                        <td>
-                            <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Challenge.Title) </a>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Challenge.Bonus)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Challenge.Company.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Challenge.Deadline)
-                        </td>
+                        <tr>
+                            <td>
+                                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.C_Id"> @Html.DisplayFor(modelItem => item.Challenge.Title) </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Challenge.Bonus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Challenge.Company.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Challenge.Deadline)
+                            </td>
 
-                        <td>
-                            @if (item.Solution != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.Solution.Status);
-                                            }
-                            else
-                            {
-                    <span>No Solution</span>}
-                        </td>
+                            <td>
+                                @if (item.Solution != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.Solution.Status);
+                                }
+                                else
+                                {
+                                    <span>No Solution</span>}
+                            </td>
 
-                        <td>
-                            @if (item.Solution != null&& item.Solution.Point!=null)
-                            {
-                                @Html.DisplayFor(modelItem => item.Solution.Point)
-                                            }
-                            else
-                            {
-                    <span>*</span>}
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
-                                @Localizer["Cancel"]
-                            </button>
+                            <td>
+                                @if (item.Solution != null && item.Solution.Point != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.Solution.Point)
+                                }
+                                else
+                                {
+                                    <span>*</span>}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tips-@item.C_Id">
+                                    @Localizer["Cancel"]
+                                </button>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel"></h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            @Localizer["Confirm"]
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">@SharedLocalizer["Yes"]</a>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@SharedLocalizer["No"]</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="tips-@item.C_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @Localizer["Confirm"]
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a asp-action="Cancel" asp-route-id="@item.C_Id" class="btn btn-primary">@SharedLocalizer["Yes"]</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@SharedLocalizer["No"]</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
 
-                        <td>
-                            <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">@Localizer["Upload"]</a>
+                            <td>
+                                <a asp-action="UploadSolution" asp-route-c_id="@item.C_Id" class="btn btn-primary">@Localizer["Upload"]</a>
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="row mt-4">
+        <h5 class="text-muted">
+            <a asp-action="WonChallenges" class="btn btn-primary"> @Localizer["WonChallenges"]</a>
+        </h5>
     </div>
 </div>

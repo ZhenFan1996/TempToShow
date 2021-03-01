@@ -9,6 +9,9 @@ using PlattformChallenge.ViewModels;
 using System.Security.Claims;
 using PlattformChallenge.Core.Model;
 using Microsoft.Extensions.Logging;
+using PlattformChallenge.Services;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.Controllers
 {
@@ -17,15 +20,19 @@ namespace PlattformChallenge.Controllers
         private UserManager<PlatformUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private ILogger<AccountController> logger;
+        private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<AccountController> localizer;
         private SignInManager<PlatformUser> _signInManager;
 
-        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger)
+        public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender
+            , IStringLocalizer<AccountController> localizer)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._roleManager = roleManager;
             this.logger = logger;
-
+            this._sender = sender;
+            this.localizer = localizer;
         }
         /// <summary>
         /// Enter the registration page
@@ -52,17 +59,28 @@ namespace PlattformChallenge.Controllers
                     Email = model.Email,
                     UserName = model.Email
                 };
-                var result1 = await _userManager.CreateAsync(user, model.Password);
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var result1 = await _userManager.CreateAsync(user, model.Password);                
                 if (result1.Succeeded)
                 {
                     var result2 = await _userManager.AddToRoleAsync(user, model.RoleName);
                     if (result2.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, false);
-                        logger.LogInformation($"A new {model.RoleName} with id {user.Id} is created");
-                        return RedirectToAction("Index", "Home");
-                    }
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                        {
+                            userId = user.Id,
+                            token = token
+                        }, Request.Scheme);
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                        string subject = "Confirm Email";
+                        string body =
+                         localizer["EmailConfirm",user.Name, confirmationLink];
+
+                        await _sender.SendEmailAsync(user.Email, subject, body);
+                        ViewBag.Message = "We have send the email. Please check your email";
+                        return View("ActivateUserEmail");
+                    }                                                         
                     else
                     {
                         foreach (var error in result2.Errors)
@@ -80,6 +98,35 @@ namespace PlattformChallenge.Controllers
 
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId,string token) {
+
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Current ID :{userId} is invaild";
+                return View("NotFound");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ErrorMessage = "Failed Confirm";
+            return View("Error");
+
+
+        }
+
+
         #region login
         /// <summary>
         /// Enter  the page of login
@@ -88,7 +135,11 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
-            return View();
+            var model = new LogInViewModel() {
+                Not_Confirmed = false
+            };
+
+            return View(model);
         }
         /// <summary>
         /// Get the login information on the page and try to log in
@@ -100,6 +151,12 @@ namespace PlattformChallenge.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByEmailAsync(logInViewModel.Email);
+                if (user != null && !user.EmailConfirmed) {
+                    logInViewModel.Not_Confirmed = true;
+                    return View(logInViewModel);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(logInViewModel.Email, logInViewModel.Password, logInViewModel.RememberMe, false);
                 if (result.Succeeded)
                 {
@@ -112,6 +169,120 @@ namespace PlattformChallenge.Controllers
             return View(logInViewModel);
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> ActivateUserEmail(string email)
+        {
+       
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                    new { userId = user.Id, token = token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, confirmationLink);
+
+                    string subject = "Confirm Email";
+
+                    string body = localizer["EmailConfirm", user.Name, confirmationLink];
+
+                    await _sender.SendEmailAsync(user.Email, subject, body);
+                    ViewBag.Message = "We have the email sendet. Please confirm the email";
+                    return View();
+                }
+                else {
+                    ViewBag.Message = "You have confirmed the email. Please log in";
+                    return View();
+                }
+                }
+            throw new Exception("The Email is invaild");
+         
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword() {
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model) {
+            if (ModelState.IsValid)
+            {              
+                var user = await _userManager.FindByEmailAsync(model.Email);
+              
+                if (user != null && await _userManager.IsEmailConfirmedAsync(user))
+                {                   
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    
+                    var passwordResetLink = Url.Action("ResetPassword", "Account",
+                            new { email = model.Email, token = token }, Request.Scheme);
+
+                    string subject = "Password Forgot";
+
+                    string body = localizer["ForgotPassword", user.Name, passwordResetLink];                      
+
+                    await _sender.SendEmailAsync(user.Email, subject, body);
+                    ViewBag.Message = "We have sent the reset Email";
+                    return View("ForgotPasswordConfirmation");
+                }
+
+                return View("ForgotPasswordConfirmation");
+            }
+
+            return View(model);
+
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email) {
+
+            if (token == null || email == null) {
+                ModelState.AddModelError("", "Invaild Token");
+
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model) {
+            if (ModelState.IsValid) {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("ChangePasswordConfirm");
+                    }
+                    else
+                    {
+
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+                }
+                else {
+                    Response.StatusCode = 400;
+                    @ViewBag.ErrorMessage = "Invalid user email";
+                    return View("NotFound");
+                }
+                
+            }
+            return View(model);
+        }
+
+
+
         /// <summary>
         /// Log out for the user
         /// </summary>
@@ -173,9 +344,8 @@ namespace PlattformChallenge.Controllers
                     return View();
                 }
                 if (user != null)
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                {                  
+                    var result = await _userManager.ChangePasswordAsync(user, model.Original, model.Password);
                     if (result.Succeeded)
                     {
                         await _signInManager.SignOutAsync();

@@ -1,4 +1,4 @@
-﻿@model PlattformChallenge.ViewModels.LogInViewModel
+@model PlattformChallenge.ViewModels.LogInViewModel
 @inject IViewLocalizer Localizer
 
 @{ ViewBag.Title = "Login";
@@ -9,8 +9,17 @@
     <form method="post">
 
 
-        <div asp-validation-summary="All" class="text-danger">   </div>
+        <div asp-validation-summary="All" class="text-danger">  </div>
 
+        @if (Model.Not_Confirmed)
+        {  
+        <div class="text-danger">You have not confirmed your Email :
+        <a class="text-danger" asp-action="ActivateUserEmail" asp-route-email=@Model.Email>
+            Click here to confirm </a>
+        </div>
+            
+           
+        }
         <div class="form-group">
             <label asp-for="Email">@Localizer["Email"]</label>
             <input asp-for="Email" class="form-control" />
@@ -21,6 +30,7 @@
             <label asp-for="Password">@Localizer["Password"]</label>
             <input asp-for="Password" class="form-control" />
             <span asp-validation-for="Password " class="text-danger"></span>
+            <a asp-action="ForgotPassword" class="text-right">Password forgot</a>
         </div>
 
         <div class="form-group">
@@ -30,10 +40,9 @@
                 </label>
             </div>
         </div>
-
         <button type="submit" class="btn btn-primary">@Localizer["LogIn"]</button>
     </form>
-
+    
 
 
 

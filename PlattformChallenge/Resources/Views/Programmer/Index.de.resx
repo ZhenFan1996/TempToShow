@@ -147,4 +147,7 @@
   <data name="UploadItem" xml:space="preserve">
     <value>Lösung Hochladen</value>
   </data>
+  <data name="WonChallenges" xml:space="preserve">
+    <value>Meine gewonnene Challenges anzeigen</value>
+  </data>
 </root>

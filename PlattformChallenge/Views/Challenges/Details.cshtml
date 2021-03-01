@@ -3,22 +3,18 @@
 @{
     ViewData["Title"] = @Localizer["Details"];
 }
+
+
+
 <head>
-    <title>details</title>
-    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=60110652e7f5c10011bd3438&product=inline-share-buttons" async="async"></script>
-    <script type="text/javascript">
-        function Copy() {
-            var Url = document.getElementById("paste-box");
-            Url.value = window.location.href;
-            Url.focus();
-            Url.select();
-            document.execCommand("Copy");
-            document.getElementById("Copy");
-
-        }
-    </script>
+    <title>@Localizer["Details"]</title>
 </head>
-
+@if (!ViewContext.HttpContext.User.IsInRole("Programmer") && !ViewContext.HttpContext.User.IsInRole("Company"))
+{
+    <div class="alert alert-success alert-dismissable ">
+        <p><font size="4" face="arial" color="red">** @Localizer["RegInfo"] **</font></p>
+    </div>
+                }
 <h1 class="row">@Localizer["ChallengeDetails"] </h1>
 <div>
     <dl class="row">
@@ -44,14 +40,13 @@
         <dt class="col-sm-2">
             @Localizer["ReleaseDate"]
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Release_Date)
+        <dd class="col-sm-10" id="release">
         </dd>
         <dt class="col-sm-2">
             @Localizer["Deadline"]
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
+            <div id="deadline"></div>
         </dd>
         <dt class="col-sm-2">
             @Localizer["MaxParticipants"]
@@ -69,7 +64,8 @@
             @Localizer["Company"]
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
+            @*@Html.DisplayFor(model => model.Company.Name)*@
+            <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@Model.Com_ID">@Html.DisplayFor(model => model.Company.Name)</a>
         </dd>
 
         <dt class="col-sm-2">
@@ -89,6 +85,20 @@
             }
         </dd>
         <dt class="col-sm-2">
+            @Localizer["WillSolutionOpen"]
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IsSolutionOpen)
+            {
+                @Localizer["Yes"]
+            }
+            else
+            {
+                @Localizer["No"]
+            }
+        </dd>
+
+        <dt class="col-sm-2">
             @Localizer["WinnerAndSolution"]
         </dt>
         <dd class="col-sm-10">
@@ -96,19 +106,13 @@
         </dd>
     </dl>
 </div>
-<div class="sharethis-inline-share-buttons"></div>
-<div>
 
-    <center>
-        <input type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
-        <br />
-    </center>
-    <center><textarea id="paste-box" rows="1" cols="60"></textarea></center>
-</div>
+
 
 
 <div class="container">
     <div class="row">
+
         @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn)
 
             if (Model.Available_Quota > 0)
@@ -141,10 +145,11 @@
             }
             else
             {
-                <p>@Localizer["NoPlace"]</p>
+                <div class="text-danger ">  @Localizer["NoPlace"]</div>
             }
 
         <div class="col-md-4">    <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a></div>
+
         <div>
             @if (ViewContext.HttpContext.User.IsInRole("Company"))
             {
@@ -152,4 +157,67 @@
             }
         </div>
     </div>
+
+    <div class="row mt-3">
+        <button type="button" class="btn btn-info off-set-2" data-toggle="modal" data-target="#share">
+            Share
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="share" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content  " style="width:350px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Share Challenge</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                       <div class="row mt-2">
+                            <div class="sharethis-inline-share-buttons md-4  col-md-8"></div>
+                            <input class="btn btn-info offset-md-1 col-md-3" type="button" value="@Localizer["Copy URL"]" onclick="Copy();" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6034eae6b772eb001285a6fd&product=inline-share-buttons" async="async"></script>
+    <script type="text/javascript">
+    function Copy() {
+        var inputc = document.body.appendChild(document.createElement("input"));
+        inputc.value = window.location.href;
+        inputc.focus();
+        inputc.select();
+        document.execCommand('copy');
+        inputc.parentNode.removeChild(inputc);
+         var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+         alert(msg);
+    }
+        $(document).ready(function () {
+
+            var re = moment('@Model.Release_Date');
+            var deadline = moment('@Model.Deadline');
+            if (!re.isValid() || !deadline.isValid()) {
+                re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+                deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+            }
+            re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+            $('#release').html(re);
+            $('#deadline').html(deadline);
+        })
+
+    </script>
+
+
+}
+

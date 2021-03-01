@@ -15,6 +15,9 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using PlattformChallenge.ViewModels;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Localization;
+using PlattformChallenge.Services;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -25,14 +28,48 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<UserManager<PlatformUser>> _userManager;
         private readonly Mock<RoleManager<IdentityRole>> _roleManager;
         private readonly Mock<SignInManager<PlatformUser>> _signInManager;
+        private readonly Mock<IStringLocalizer<AccountController>> _mockLocal;
+        private readonly Mock<IEmailSender> _mockSender;
 
         public AccountControllerShould()
         {
             _userManager = MockUserManager<PlatformUser>();
             _roleManager = MockRoleManager();
             _signInManager = MockSignInManager(_userManager);
+            _mockLocal = new Mock<IStringLocalizer<AccountController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(),It.IsAny<string[]>()]).Returns(new LocalizedString("name","value"));
             var logger = new Mock<ILogger<AccountController>>();
-            _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object,logger.Object);
+            _mockSender = new Mock<IEmailSender>();
+            _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            var request = new Mock<HttpRequest>();
+            request.Setup(x => x.Scheme).Returns("http");
+            request.Setup(x => x.Host).Returns(HostString.FromUriComponent("http://localhost:8080"));
+            request.Setup(x => x.PathBase).Returns(PathString.FromUriComponent("/api"));
+
+            var httpContext = Mock.Of<HttpContext>(_ =>
+                _.Request == request.Object
+            );
+
+            //Controller needs a controller context 
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext,
+            };
+            //assign context to controller
+
+            _sut = new AccountController(_userManager.Object, _signInManager.Object, _roleManager.Object,logger.Object,_mockSender.Object,_mockLocal.Object);
+            _sut.ControllerContext = controllerContext;
+            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
+            mockUrlHelper
+                .Setup(
+                    x => x.Action(
+                        It.IsAny<UrlActionContext>()
+                    )
+                )
+                .Returns("callbackUrl");
+            _sut.Url = mockUrlHelper.Object;
+            
+
         }
 
     
@@ -171,9 +208,14 @@ namespace PlattformChallenge.UnitTest.Controllers
                     userForRoleManager = x;
                     rollName = y;
                 });
+
+            _userManager.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<PlatformUser>())).ReturnsAsync("");
             _signInManager.Setup(x => x.SignInAsync(It.IsAny<PlatformUser>(), It.IsAny<bool>(), null))
                 .Returns(Task.CompletedTask);
-           var result = await _sut.Register(model);
+          
+
+
+            var result = await _sut.Register(model);
 
             Assert.Equal(userForRoleManager, userForUserManager);
             Assert.Equal(userForUserManager.Name, model.Name);
@@ -181,10 +223,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(userForUserManager.UserName, model.Email);
             Assert.Equal(rollName, model.RoleName);
             Assert.Equal(toCheckPassword, model.Password);
-            Assert.IsType<RedirectToActionResult>(result);
-            var value = result as RedirectToActionResult;
-            Assert.Equal("Index", value.ActionName);
-            Assert.Equal("Home", value.ControllerName);
+            Assert.IsType<ViewResult>(result);
 
         }
         /// <summary>

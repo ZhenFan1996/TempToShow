@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using PlattformChallenge.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.Controllers
 {
@@ -29,9 +31,11 @@ namespace PlattformChallenge.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly ConfigProviderService _appcfg;
         private readonly ILogger<ProgrammerController> logger;
+        private readonly IEmailSender _sender;
+        private readonly IStringLocalizer<ProgrammerController> localizer;
 
         public ProgrammerController(UserManager<PlatformUser> userManager, IRepository<Challenge> cRepository, IRepository<Participation> pRepository,IRepository<Solution> sRepository, ConfigProviderService appcfg,
-            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment
+            ILogger<ProgrammerController> logger, IWebHostEnvironment webHostEnvironment, IEmailSender sender, IStringLocalizer<ProgrammerController> localizer
             )
         {
             this._userManger = userManager;
@@ -41,6 +45,8 @@ namespace PlattformChallenge.Controllers
             this._env = webHostEnvironment;
             _appcfg = appcfg;
             this.logger = logger;
+            this._sender = sender;
+            this.localizer = localizer;
         }
         /// <summary>
         /// Get current user information and challenges participated in and return to the page
@@ -93,23 +99,38 @@ namespace PlattformChallenge.Controllers
                 Phone = programmer.PhoneNumber ??"*****",
                 Hobby = programmer.Hobby ??"*****",
                 Birthday = programmer.Birthday,
-                TakePartInNummber = num,
-                LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
+                InvolvedChallengeNumber = num,
+                LogoPath = "/images/" + (programmer.Logo ?? "default.png")
             };
 
             return View(model);
         }
 
+        public async Task<IActionResult> WonChallenges()
+        {
+            var challenges = await  _cRepository.GetAll().Include(c => c.Company)
+                            .Where(c => c.Winner_Id == _currUser.Id).ToListAsync();
+            int sumBonus = 0;
+            foreach(var c in challenges)
+            {
+                sumBonus += c.Bonus;
+            }
+            var model = new WonChallengeViewModel()
+            {
+                Challenges = challenges,
+                SumBonus = sumBonus
+            };
+            return View(model);
+        }
 
+            /// <summary>
+            /// Exit the currently selected challenge
+            /// </summary>
+            /// <param name="id"></param> the challenge id
+            /// <returns>View index</returns>
 
-        /// <summary>
-        /// Exit the currently selected challenge
-        /// </summary>
-        /// <param name="id"></param> the challenge id
-        /// <returns>View index</returns>
-        
-        public async Task<IActionResult> Cancel(string id) {
-            var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution)
+            public async Task<IActionResult> Cancel(string id) {
+            var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution).Include(p => p.Challenge)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
                     select pc).ToListAsync();
             if (p.Count !=1)
@@ -120,9 +141,12 @@ namespace PlattformChallenge.Controllers
             {
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
+                string subject = $"Successfuly Cancel for {par.Challenge.Title} ";
+                string body = localizer["Cancel", _currUser.Name, par.Challenge.Title];
+                await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 if (par.Solution != null)
                 {
-                    await _sRepository.DeleteAsync(par.Solution);
+                    await _sRepository.DeleteAsync(par.Solution);                   
                 }
                 logger.LogInformation($"The Programmer with id {par.P_Id} cancel the challenge{par.C_Id}" );
                 return RedirectToAction("Index");
@@ -203,6 +227,9 @@ namespace PlattformChallenge.Controllers
                 model.Participation = par;
                 model.Programmer = _currUser;
                 model.IsVaild = c.Deadline >= DateTime.Now;
+                string subject = $"Your Solution for {c.Title} has successfully uploaded";
+                string body = localizer["Upload", _currUser.Name, c.Title, par.S_Id];
+                await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 return View(model);
             }
             else {

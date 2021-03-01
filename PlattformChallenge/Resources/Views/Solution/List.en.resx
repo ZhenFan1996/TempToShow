@@ -120,7 +120,16 @@
   <data name="Best Solution" xml:space="preserve">
     <value>Best Solution</value>
   </data>
+  <data name="No one has uploaded the answer yet" xml:space="preserve">
+    <value>No one has uploaded the answer yet</value>
+  </data>
   <data name="Programmer Name" xml:space="preserve">
     <value>Programmer Name</value>
+  </data>
+  <data name="There is no winner yet." xml:space="preserve">
+    <value>There is no winner yet.</value>
+  </data>
+  <data name="This challenge is not over！" xml:space="preserve">
+    <value>This challenge is not over！</value>
   </data>
 </root>

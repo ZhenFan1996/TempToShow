@@ -19,6 +19,8 @@ using MockQueryable.Moq;
 using Microsoft.Data.SqlClient;
 using PlattformChallenge.Controllers;
 using Microsoft.Extensions.Logging;
+using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -30,7 +32,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<IRepository<Language>> _mockLRepository;
         private readonly Mock<IRepository<LanguageChallenge>> _mockLCRepository;
         private readonly Mock<IRepository<Participation>> _mockPaRepository;
+        private readonly Mock<IStringLocalizer<ChallengesController>> _mockLocal;
         private readonly Mock<HttpContext> _mockHttpContext;
+        private readonly Mock<IEmailSender> _mockSender;
 
         private readonly ChallengesController _sut;
 
@@ -42,8 +46,12 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLRepository = new Mock<IRepository<Language>>();
             _mockLCRepository = new Mock<IRepository<LanguageChallenge>>();
             _mockPaRepository = new Mock<IRepository<Participation>>();
+            _mockLocal = new Mock<IStringLocalizer<ChallengesController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
+            _mockSender = new Mock<IEmailSender>();
+            _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             var logger = new Mock<ILogger<ChallengesController>>();
-            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object, _mockPaRepository.Object,logger.Object);
+            _sut = new ChallengesController(_mockRepository.Object, _mockPRpository.Object, _mockLRepository.Object, _mockLCRepository.Object, _mockPaRepository.Object,logger.Object,_mockSender.Object,_mockLocal.Object);
             _mockHttpContext = new Mock<HttpContext>();
             var context = new ControllerContext(new ActionContext(_mockHttpContext.Object, new RouteData(), new ControllerActionDescriptor()));
             _mockHttpContext.Setup(p => p.User.FindFirst(ClaimTypes.NameIdentifier)).Returns(new Claim(ClaimTypes.NameIdentifier, "1"));
@@ -136,10 +144,11 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "aaaa",
                 Bonus = 2,
                 Content = "wuwuwuwuwu",
-                Release_Date = DateTime.Now.AddDays(1),
-                Deadline = DateTime.Now.AddDays(3),
+                Release_Date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.AddDays(1), TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
+                Deadline = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.AddDays(3), TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")),
                 Max_Participant = 8,
-                IsSelected = new bool[] { true, false, true }
+                IsSelected = new bool[] { true, false, true },
+                Zone = "Europe/Berlin"
             };
 
 
@@ -147,7 +156,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(challenge.Title, savedChallenge.Title);
             Assert.Equal(challenge.Bonus, savedChallenge.Bonus);
             Assert.Equal(challenge.Content, savedChallenge.Content);
-            Assert.Equal(challenge.Release_Date, savedChallenge.Release_Date);
+            Assert.Equal(DateTime.UtcNow.AddDays(1).Date, savedChallenge.Release_Date.Date);
             Assert.Equal(challenge.Max_Participant, savedChallenge.Max_Participant);
             Assert.Equal("1", savedChallenge.Com_ID);
             Assert.Equal(savedLc.ElementAt(0).C_Id, savedChallenge.C_Id);
@@ -179,7 +188,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(challenge, value.Model);
             IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
             Assert.Equal("failed to create the challenge, please try again", allErrors.ElementAt(0).ErrorMessage);
-            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Never);
+            _mockLRepository.Verify(l => l.GetAllListAsync(), Times.Once);
             _mockRepository.Verify(l => l.InsertAsync(It.IsAny<Challenge>()), Times.Never);
             _mockLCRepository.Verify(l => l.InsertAsync(It.IsAny<LanguageChallenge>()), Times.Never);
         }
@@ -252,7 +261,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, null,new bool[0]);
+            var result = await _sut.Index(null, null, null, new bool[0],null) ;
             Assert.IsType<ViewResult>(result);
             var value = result as ViewResult;
             var model = value.Model as  ChallengeIndexViewModel;
@@ -317,7 +326,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "bonus_desc", null,new bool[0]);
+            var result = await _sut.Index(null, "bonus_desc", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -341,6 +350,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Bonus = 200,
                 Content = "test content 1",
                 Release_Date = DateTime.Now.AddDays(-5),
+                 Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -353,6 +363,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Bonus = 400,
                 Content = "test content 2",
                 Release_Date = DateTime.Now.AddDays(-3),
+                 Deadline = DateTime.Now.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -377,7 +388,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "quota_desc", null,new bool[0]);
+            var result = await _sut.Index(null, "quota_desc", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -440,7 +451,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, "", null,new bool[0]);
+            var result = await _sut.Index(null, "", null,new bool[0],null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var sorted = model.Challenges;
@@ -505,7 +516,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository
                 .Setup(m => m.GetAll())
                 .Returns(query.Object);
-            var result = await _sut.Index(null, null, "2",isSelected);
+            var result = await _sut.Index(null, null, "2",isSelected,null);
             var value = result as ViewResult;
             var model = value.Model as ChallengeIndexViewModel;
             var searched = model.Challenges;
@@ -551,6 +562,13 @@ namespace PlattformChallenge.UnitTest.Controllers
                 .Returns(Task.CompletedTask)
                 .Callback<Participation>(x => toCheck = x);
 
+            _mockPRpository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<PlatformUser, bool>>>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "test@kit.edu",
+                Name = "test"
+
+            });
             _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
             {
             });

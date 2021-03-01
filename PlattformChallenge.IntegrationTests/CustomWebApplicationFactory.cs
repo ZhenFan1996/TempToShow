@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PlattformChallenge.Core.Model;
 using PlattformChallenge.Infrastructure;
@@ -15,8 +17,13 @@ namespace PlattformChallenge.IntegrationTests
     public class CustomWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup : class
     {
+
+     
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            
+
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(

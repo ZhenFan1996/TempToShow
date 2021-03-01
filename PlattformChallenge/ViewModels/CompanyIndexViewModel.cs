@@ -1,4 +1,4 @@
-﻿using PlattformChallenge.Core.Model;
+using PlattformChallenge.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +11,7 @@ namespace PlattformChallenge.ViewModels
         public List<Challenge> Challenges { get; set; }
 
         public PlatformUser Company { get; set; }
+
+        public string LogoPath { get; set; }
     }
 }

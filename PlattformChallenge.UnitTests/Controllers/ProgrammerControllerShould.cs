@@ -23,6 +23,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using PlattformChallenge.Infrastructure;
 using System.IO;
+using PlattformChallenge.Services;
+using Microsoft.Extensions.Localization;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -33,6 +35,8 @@ namespace PlattformChallenge.UnitTest.Controllers
         private readonly Mock<IRepository<Participation>> _mockPRepo;
         private readonly ProgrammerController _sut;
         private readonly Mock<IRepository<Solution>> _mockSRepo;
+        private readonly Mock<IEmailSender> _mockSender;
+        private readonly Mock<IStringLocalizer<ProgrammerController>> _mockLocal;
         private PlatformUser _user;
 
         public ProgrammerControllerShould()
@@ -58,7 +62,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             var logger = new Mock<ILogger<ProgrammerController>>();
             var env = new Mock<IWebHostEnvironment>();
             env.SetupGet(e => e.WebRootPath).Returns("");
-            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object,env.Object);
+            _mockSender = new Mock<IEmailSender>();
+            _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
+            _mockLocal = new Mock<IStringLocalizer<ProgrammerController>>();
+            _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
+            _sut = new ProgrammerController(_mockUseerManager.Object, _mockCRepo.Object, _mockPRepo.Object,_mockSRepo.Object,afg,logger.Object,env.Object,_mockSender.Object,_mockLocal.Object);
             _sut.ControllerContext = context;
 
         }
@@ -87,7 +95,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             var mockP = new List<Participation>() {
                 new Participation(){
                     P_Id = "test-programmer",
-                    C_Id ="c1"
+                    C_Id ="c1",
+                    Challenge = new Challenge(){
+                        C_Id ="test",
+                        Title ="test"
+                    }
                 }
             }.AsQueryable().BuildMock();
             _mockPRepo.Setup(m => m.GetAll()).Returns(mockP.Object);
@@ -223,7 +235,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("ubumh@student.kit.edu", model.Email);
             Assert.Equal("test bio", model.Bio);
             Assert.Equal("test Hobby", model.Hobby);
-            Assert.Equal(2, model.TakePartInNummber);
+            Assert.Equal(2, model.InvolvedChallengeNumber);
         }
 
         private Mock<IFormFile> mockFormFile() {
