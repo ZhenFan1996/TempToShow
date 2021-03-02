@@ -94,10 +94,10 @@ namespace PlattformChallenge.Controllers
             {
                 Email = programmer.Email,
                 Name = programmer.Name,
-                Address = programmer.Address ??"*****",
+                Address = programmer.Address ??"Unknown",
                 Bio = programmer.Bio,
-                Phone = programmer.PhoneNumber ??"*****",
-                Hobby = programmer.Hobby ??"*****",
+                Phone = programmer.PhoneNumber ?? "Unknown",
+                Hobby = programmer.Hobby ?? "Unknown",
                 Birthday = programmer.Birthday,
                 InvolvedChallengeNumber = num,
                 LogoPath = "/images/" + (programmer.Logo ?? "default.png")
