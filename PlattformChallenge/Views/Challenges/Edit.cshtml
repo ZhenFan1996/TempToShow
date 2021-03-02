@@ -1,6 +1,7 @@
 @model PlattformChallenge.ViewModels.ChallengeEditViewModel
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
+@using Microsoft.AspNetCore.Localization;
 
 
 
@@ -10,93 +11,93 @@
 
 <h1>@Localizer["EditChallenge"]</h1>
 
-    <div class="row">
-        <div class="col-md-8">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Challenge.C_Id" />
-                <input type="hidden" asp-for="AllowEditDate" />
-                <input type="hidden" id="zone" asp-for="Zone">
-                <div class="form-group">
-                    <label asp-for="Challenge.Title" class="control-label">@Localizer["Title"]</label>
-                    <input asp-for="Challenge.Title" class="form-control" />
-                    <span asp-validation-for="Challenge.Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Challenge.Content" class="control-label">@Localizer["Discription"]</label>
-                    <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
-                    <span asp-validation-for="Challenge.Content" class="text-danger"></span>
-                </div>
-
-                @if (Model.AllowEditDate)
-                {
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Challenge.C_Id" />
+            <input type="hidden" asp-for="AllowEditDate" />
+            <input type="hidden" id="zone" asp-for="Zone">
             <div class="form-group">
-                <label asp-for="Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
-                <input id="release" asp-for="Release_Date" class="form-control" />
-                <span asp-validation-for="Release_Date" class="text-danger"></span>
+                <label asp-for="Challenge.Title" class="control-label">@Localizer["Title"]</label>
+                <input asp-for="Challenge.Title" class="form-control" />
+                <span asp-validation-for="Challenge.Title" class="text-danger"></span>
             </div>
-                 <div class="form-group">
-                  <label asp-for="Deadline" class="control-label">@Localizer["Deadline"]</label>
-                  <input id="deadline" asp-for="Deadline" class="form-control" />
-                  <span asp-validation-for="Deadline" class="text-danger"></span>
-                    </div>
-                }
-                else
-                {
-                    <input type="hidden" asp-for="Release_Date" />
-                    <div class="form-group">
-                        <label  asp-for="Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>                        
-                        <input asp-for="Release_Date" id="rn"  disabled/>
-                        <div>
+            <div class="form-group">
+                <label asp-for="Challenge.Content" class="control-label">@Localizer["Discription"]</label>
+                <textarea asp-for="Challenge.Content" class="form-control" style="height:250px"></textarea>
+                <span asp-validation-for="Challenge.Content" class="text-danger"></span>
+            </div>
+
+            @if (Model.AllowEditDate)
+            {
+                <div class="form-group">
+                    <label asp-for="Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
+                    <input id="release" asp-for="Release_Date" class="form-control" />
+                    <span asp-validation-for="Release_Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Deadline" class="control-label">@Localizer["Deadline"]</label>
+                    <input id="deadline" asp-for="Deadline" class="form-control" />
+                    <span asp-validation-for="Deadline" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="Release_Date" />
+                <div class="form-group">
+                    <label asp-for="Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
+                    <input asp-for="Release_Date" id="rn" disabled />
+                    <div>
                         <span>@Localizer["NoEditInfo"]</span>
-                        </div>
                     </div>
-                    <input type="hidden" asp-for="Deadline" />
-                    <div class="form-group">
-                        <label  asp-for="Deadline"class="control-label">@Localizer["Deadline"]</label>
-                        <input asp-for="Deadline" id="dn"  disabled/>
-                        <div><span>@Localizer["NoEditInfo"]</span></div>
-                    </div>
+                </div>
+                <input type="hidden" asp-for="Deadline" />
+                <div class="form-group">
+                    <label asp-for="Deadline" class="control-label">@Localizer["Deadline"]</label>
+                    <input asp-for="Deadline" id="dn" disabled />
+                    <div><span>@Localizer["NoEditInfo"]</span></div>
+                </div>
 
-                }
+            }
 
-                <input type="hidden" asp-for="Challenge.Com_ID" />
-                <div class="form-group">
-                    <label asp-for="Challenge.Bonus" class="control-label">@Localizer["Bonus"]</label>
-                    <input asp-for="Challenge.Bonus" class="form-control" />
-                    <span asp-validation-for="Challenge.Bonus" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Challenge.Max_Participant" class="control-label">@Localizer["MaxParticipants"]</label>
-                    <input asp-for="Challenge.Max_Participant" class="form-control" />
-                    <span asp-validation-for="Challenge.Max_Participant" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">@Localizer["DevLanguage"] </label>
-                    @for (int i = 0; i < Model.Languages.Count; i++)
-                    {
-                        <span clss="form-check m-1">
-                            <input asp-for="@Model.IsSelected[i]" class="from-check-input" />
-                            <label class="form-check-label" asp-for="@Model.IsSelected[i]">@Model.Languages.ElementAt(i).DevelopmentLanguage</label>
-                            <input type="hidden" asp-for="@Model.Languages.ElementAt(i).Language_Id" />
-                        </span>
-                    }
-                </div>
-                <div>
-                    <label class="control-label">@Localizer["BestSichtbarkeit"]:  </label>
+            <input type="hidden" asp-for="Challenge.Com_ID" />
+            <div class="form-group">
+                <label asp-for="Challenge.Bonus" class="control-label">@Localizer["Bonus"]</label>
+                <input asp-for="Challenge.Bonus" class="form-control" />
+                <span asp-validation-for="Challenge.Bonus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Challenge.Max_Participant" class="control-label">@Localizer["MaxParticipants"]</label>
+                <input asp-for="Challenge.Max_Participant" class="form-control" />
+                <span asp-validation-for="Challenge.Max_Participant" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">@Localizer["DevLanguage"] </label>
+                @for (int i = 0; i < Model.Languages.Count; i++)
+                {
                     <span clss="form-check m-1">
-                        <input asp-for="@Model.Challenge.AllowOpen" class="from-check-input" />
-                        <label class="form-check-label" asp-for="@Model.Challenge.AllowOpen">@SharedLocalizer["Yes"]</label>
-
+                        <input asp-for="@Model.IsSelected[i]" class="from-check-input" />
+                        <label class="form-check-label" asp-for="@Model.IsSelected[i]">@Model.Languages.ElementAt(i).DevelopmentLanguage</label>
+                        <input type="hidden" asp-for="@Model.Languages.ElementAt(i).Language_Id" />
                     </span>
-                </div>
-                <input type="hidden" asp-for="Challenge.Winner_Id" />
-                <input type="hidden" asp-for="Challenge.Best_Solution_Id" />
-                <div class="form-group">
-                    <input type="submit" value=@Localizer["Save"] class="btn btn-primary" />
-                </div>
+                }
+            </div>
+            <div>
+                <label class="control-label">@Localizer["BestSichtbarkeit"]:  </label>
+                <span clss="form-check m-1">
+                    <input asp-for="@Model.Challenge.AllowOpen" class="from-check-input" />
+                    <label class="form-check-label" asp-for="@Model.Challenge.AllowOpen">@SharedLocalizer["Yes"]</label>
 
-            </form>
+                </span>
+            </div>
+            <input type="hidden" asp-for="Challenge.Winner_Id" />
+            <input type="hidden" asp-for="Challenge.Best_Solution_Id" />
+            <div class="form-group">
+                <input type="submit" value=@Localizer["Save"] class="btn btn-primary" />
+            </div>
+
+        </form>
     </div>
 </div>
 
@@ -104,21 +105,24 @@
     <a asp-action="Index">@Localizer["BackToList"]</a>
 </div>
 
-
+@{ var rqf = Context.Features.Get<IRequestCultureFeature>();
+    var culture = rqf.RequestCulture.Culture; }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script src="https://cdn.tiny.cloud/1/vec3hy3gfy6rcqrhfkinrb5uyzvogsw2iewjccmgzr9vimx9/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-<script type="text/javascript">
+    <script src="https://cdn.tiny.cloud/1/vec3hy3gfy6rcqrhfkinrb5uyzvogsw2iewjccmgzr9vimx9/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript">
 
     $(document).ready(function () {
         $('#zone').val(moment.tz.guess());
-        var re = moment('@Model.Challenge.Release_Date');
-        var deadline = moment('@Model.Challenge.Deadline');
-            if (!re.isValid() || !deadline.isValid()) {
-                re = moment('@Model.Challenge.Release_Date', "DD.MM.YYYY HH:mm:ss");
-                deadline = moment('@Model.Challenge.Deadline', "DD.MM.YYYY HH:mm:ss");
-        }
+           if (@culture.Name.Equals("en")) {
+               var re = moment('@Model.Release_Date');
+               var deadline = moment('@Model.Deadline');
+            } else {
+               var  re = moment('@Model.Release_Date', "DD.MM.YYYY HH:mm:ss", true);
+               var deadline = moment('@Model.Deadline', "DD.MM.YYYY HH:mm:ss", true);
+           }
+
         re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
         deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY-MM-DDTHH:mm:ss.SSS");
         $('#deadline').val(deadline);
@@ -136,5 +140,5 @@
         tinycomments_author: 'Author name'
     });
 
-</script>
+    </script>
 }
