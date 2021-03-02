@@ -287,7 +287,7 @@ namespace PlattformChallenge.Controllers
         [HttpGet]
         public IActionResult ProfileSetting()
         {
-            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.UtcNow.Date : _currUser.Birthday;
+            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.UtcNow.Date.AddYears(-10) : _currUser.Birthday;
             ProfileSettingViewModel model = new ProfileSettingViewModel()
             {
                 Name = _currUser.Name,

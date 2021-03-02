@@ -241,7 +241,7 @@ namespace PlattformChallenge.Controllers
         
         [HttpGet]
         public  IActionResult ProfileSetting() {
-
+            DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.UtcNow.Date.AddYears(-20) : _currUser.Birthday;
             ProfileSettingViewModel model = new ProfileSettingViewModel()
             {
                 Name = _currUser.Name,
@@ -249,7 +249,7 @@ namespace PlattformChallenge.Controllers
                 Bio = _currUser.Bio,
                 Phone = _currUser.PhoneNumber,
                 Hobby = _currUser.Hobby,
-                Birthday = _currUser.Birthday,
+                Birthday = defaultTime,
                 LogoPath = "/images/" + (_currUser.Logo ?? "default.png")
             };
             
