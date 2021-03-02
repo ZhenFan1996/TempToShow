@@ -524,7 +524,7 @@ namespace PlattformChallenge.Controllers
                 await _particiRepository.InsertAsync(newParti);
                 var user = await _pRepository.FirstOrDefaultAsync(p => p.Id == newParti.P_Id);
                 string subject = $"Success take part in the Challenge {challenge.Title}";
-                string body = localizer["par", user.Name, challenge.Title];
+                string body = localizer["Par", user.Name, challenge.Title];
 
                 await _sender.SendEmailAsync(user.Email,subject,body);
                 logger.LogInformation($"The Programmer with id {newParti.P_Id} take part in the Challenge with id {id}");
