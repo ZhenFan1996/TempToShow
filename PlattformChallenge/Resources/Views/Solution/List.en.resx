@@ -126,10 +126,16 @@
   <data name="Programmer Name" xml:space="preserve">
     <value>Programmer Name</value>
   </data>
+  <data name="ScoreList" xml:space="preserve">
+    <value>Score List</value>
+  </data>
+  <data name="TemporaryList" xml:space="preserve">
+    <value>Temporary Score List</value>
+  </data>
   <data name="There is no winner" xml:space="preserve">
     <value>There is no winner for this challenge.</value>
   </data>
-  <data name="This challenge is not over！" xml:space="preserve">
-    <value>This challenge is not over！</value>
+  <data name="This challenge is not over" xml:space="preserve">
+    <value>This challenge is still not closed by the company. Winner is still unknown. </value>
   </data>
 </root>

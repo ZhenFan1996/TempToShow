@@ -126,10 +126,16 @@
   <data name="Programmer Name" xml:space="preserve">
     <value>Programmierer Name</value>
   </data>
+  <data name="ScoreList" xml:space="preserve">
+    <value>Punkteliste</value>
+  </data>
+  <data name="TemporaryList" xml:space="preserve">
+    <value>Vorübergehende Punkteliste</value>
+  </data>
   <data name="There is no winner" xml:space="preserve">
     <value>Es gibt keinen Gewinner für dieses Challenge.</value>
   </data>
-  <data name="This challenge is not over!" xml:space="preserve">
-    <value>Diese Challenge ist noch nicht vorbei！</value>
+  <data name="This challenge is not over" xml:space="preserve">
+    <value>Diese Challenge ist noch nicht vorbei！Der Gewinner ist noch unbekannt.</value>
   </data>
 </root>

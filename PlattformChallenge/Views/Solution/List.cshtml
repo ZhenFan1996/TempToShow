@@ -27,7 +27,7 @@
             }
             else if(!Model.IsClose)
             {
-                <h1><font size="5" face="verdana">@Localizer["This challenge is not over!"]</font></h1>
+                <h1><font size="4" face="verdana">@Localizer["This challenge is not over"]</font></h1>
             }
             else if (Model.IsClose && Model.Winner_ID == "NoWinner")
             {
@@ -37,9 +37,20 @@
         <div class="col-lg-8 offset-lg-1">
             @if (Model.Solutions.Count == 0)
             {
-            <div class="alert alert-success alert-dismissable">
-                <p><font size="4" face="arial" color="red">** @Localizer["No one has uploaded the answer yet"] **</font></p>
-            </div>
+                <div class="alert alert-success alert-dismissable">
+                    <p><font size="4" face="arial" color="red">** @Localizer["No one has uploaded the answer yet"] **</font></p>
+                </div>
+            }
+            else if(!Model.IsClose)
+            {
+                <div class="alert alert-success alert-dismissable">
+                    <p><font size="4" face="arial" color="red">** @Localizer["TemporaryList"] **</font></p>
+                </div>
+            }else if (Model.IsClose)
+            {
+        <div>
+            <p><font size="6" face="arial"> @Localizer["ScoreList"] </font></p>
+        </div> 
             }
             <table class="table">
                 <thead>
