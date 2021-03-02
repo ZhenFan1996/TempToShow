@@ -367,6 +367,8 @@ namespace PlattformChallenge.Controllers
 
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
+            model.Release_Date = challenge.Release_Date;
+            model.Deadline = challenge.Deadline;
             if (model.Challenge.Release_Date > DateTime.UtcNow)
             {
                 model.AllowEditDate = true;
