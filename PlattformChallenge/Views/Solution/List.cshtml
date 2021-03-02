@@ -80,13 +80,16 @@
                         <tr>
 
                             <td>
-                                @Html.DisplayFor(modelItem => item.Participation.Programmer.Name)
+                                @*@Html.DisplayFor(modelItem => item.Participation.Programmer.Name)*@
+                                <a asp-controller="Programmer" asp-action="Profile" asp-route-p_id="@item.Participation.Programmer.Id">@Html.DisplayFor(modelItem => item.Participation.Programmer.Name)</a>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Participation.Challenge.Title)
+                                @*@Html.DisplayFor(modelItem => item.Participation.Challenge.Title)*@
+                                <a asp-controller="Challenges" asp-action="Details" asp-route-id="@item.Participation.Challenge.C_Id"> @Html.DisplayFor(modelItem => item.Participation.Challenge.Title) </a>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Participation.Challenge.Company.Name)
+                                @*@Html.DisplayFor(modelItem => item.Participation.Challenge.Company.Name)*@
+                                <a asp-controller="Company" asp-action="Profile" asp-route-c_id="@item.Participation.Challenge.Com_ID">@Html.DisplayFor(modelItem => item.Participation.Challenge.Company.Name)</a>
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Submit_Date)

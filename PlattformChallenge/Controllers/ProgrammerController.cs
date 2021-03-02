@@ -70,7 +70,7 @@ namespace PlattformChallenge.Controllers
                 Challenges = challenges,
                 Participations = participations,
                 Programmer = _currUser,
-                Phone = _currUser.PhoneNumber ?? "***",
+                Phone = _currUser.PhoneNumber ?? "Unknown",
                 LogoPath = "/images/" + (_currUser.Logo ?? "default.png"),
                 InProgress = inProgress,
                 Completet = challenges.Count() - inProgress                
