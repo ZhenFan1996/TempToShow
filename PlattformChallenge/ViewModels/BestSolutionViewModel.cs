@@ -9,6 +9,7 @@ namespace PlattformChallenge.ViewModels
         public PaginatedList<Solution> Solutions { get; set; }
         [Required]
         public string C_ID { get; set; }
+        public bool IsClose { get; set; }
 
         public string S_ID { get; set; }
         public string Best_Name { get; set; }

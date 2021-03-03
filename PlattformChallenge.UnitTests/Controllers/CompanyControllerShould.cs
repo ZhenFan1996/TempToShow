@@ -298,20 +298,20 @@ namespace PlattformChallenge.UnitTest.Controllers
                     S_Id="s1",
                     URL = "www.test/solution/s1",
                     Status = StatusEnum.Receive,
-                    Submit_Date = DateTime.Now.AddDays(-2),
+                    Submit_Date = DateTime.UtcNow.AddDays(-2),
                 },
           
                   new Solution(){
                     S_Id="s2",
                     URL = "www.test/solution/s2",
                     Status = StatusEnum.Receive,
-                    Submit_Date = DateTime.Now.AddDays(-4),
+                    Submit_Date = DateTime.UtcNow.AddDays(-4),
                 },
                   new Solution(){
                     S_Id="s3",
                     URL = "www.test/solution/s3",
                     Status = StatusEnum.Rated,
-                    Submit_Date = DateTime.Now.AddDays(-3),
+                    Submit_Date = DateTime.UtcNow.AddDays(-3),
                     Point = 30
                 },
 
@@ -359,7 +359,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.UtcNow,
                 Max_Participant = 8,
                 Com_ID = "another-company",
                 Company = new PlatformUser(){
@@ -378,7 +378,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 200,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.UtcNow,
                 Max_Participant = 8,
                 Com_ID = "test-company",
                 Company = new PlatformUser(){
@@ -396,7 +396,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 3",
                 Bonus = 200,
                 Content = "test content 3",
-                Release_Date = DateTime.Now,
+                Release_Date = DateTime.UtcNow,
                 Max_Participant = 8,
                 Com_ID = "test-company",
                 Company = new PlatformUser(){

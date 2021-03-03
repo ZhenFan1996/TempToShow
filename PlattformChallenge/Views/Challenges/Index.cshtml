@@ -125,11 +125,19 @@ else
 <div>
     <a asp-action="Index"
        asp-route-pageNumber="@(Model.Challenges.PageIndex - 1)"
+       asp-route-status ="@ViewData["Status"]"
+       asp-route-sortOrder ="@ViewData["SortOrder"]"
+       asp-route-searchString ="@ViewData["searchString"]"
+       asp-route-isSelected="@ViewData["LanguagesFilter"]"
        class="btn btn-default @prevDisabled">
         @SharedLocalizer["Previous"]
     </a>
     <a asp-action="Index"
        asp-route-pageNumber="@(Model.Challenges.PageIndex + 1)"
+       asp-route-status ="@ViewData["Status"]"
+       asp-route-sortOrder ="@ViewData["SortOrder"]"
+       asp-route-searchString ="@ViewData["searchString"]"
+       asp-route-isSelected="@ViewData["LanguagesFilter"]"
        class="btn btn-default @nextDisabled">
         @SharedLocalizer["Next"]
     </a>

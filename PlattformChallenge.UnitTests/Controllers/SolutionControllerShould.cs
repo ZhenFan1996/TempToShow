@@ -51,7 +51,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 1",
                 Status = StatusEnum.Rated,
                 Point=10,
-                Submit_Date = DateTime.Now.AddDays(-2),
+                Submit_Date = DateTime.UtcNow.AddDays(-2),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -66,7 +66,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=100,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -83,8 +83,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -96,8 +96,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -137,7 +137,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 1",
                 Status = StatusEnum.Rated,
                 Point=10,
-                Submit_Date = DateTime.Now.AddDays(-2),
+                Submit_Date = DateTime.UtcNow.AddDays(-2),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -152,7 +152,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=100,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -185,7 +185,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 1",
                 Status = StatusEnum.Rated,
                 Point=100,
-                Submit_Date = DateTime.Now.AddDays(-2),
+                Submit_Date = DateTime.UtcNow.AddDays(-2),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -200,7 +200,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=200,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -215,7 +215,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=300,
-                Submit_Date = DateTime.Now.AddDays(+4),
+                Submit_Date = DateTime.UtcNow.AddDays(+4),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -232,8 +232,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -245,8 +245,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -291,7 +291,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 1",
                 Status = StatusEnum.Rated,
                 Point=100,
-                Submit_Date = DateTime.Now.AddDays(-2),
+                Submit_Date = DateTime.UtcNow.AddDays(-2),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -306,7 +306,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=200,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -321,7 +321,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=300,
-                Submit_Date = DateTime.Now.AddDays(+4),
+                Submit_Date = DateTime.UtcNow.AddDays(+4),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -337,8 +337,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -350,8 +350,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -396,7 +396,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 1",
                 Status = StatusEnum.Rated,
                 Point=100,
-                Submit_Date = DateTime.Now.AddDays(-2),
+                Submit_Date = DateTime.UtcNow.AddDays(-2),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -411,7 +411,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=200,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -426,7 +426,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=300,
-                Submit_Date = DateTime.Now.AddDays(+4),
+                Submit_Date = DateTime.UtcNow.AddDays(+4),
                  Participation = new Participation(){
                     C_Id = "test1",
                     Programmer = new PlatformUser()
@@ -443,8 +443,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -456,8 +456,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){
@@ -502,7 +502,7 @@ namespace PlattformChallenge.UnitTest.Controllers
                 URL = "test URL 2",
                 Status = StatusEnum.Rated,
                 Point=200,
-                Submit_Date = DateTime.Now.AddDays(+2),
+                Submit_Date = DateTime.UtcNow.AddDays(+2),
                  Participation = new Participation(){
                     C_Id = "test2",
                     Programmer = new PlatformUser()
@@ -519,8 +519,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 1",
                 Bonus = 200,
                 Content = "test content 1",
-                Release_Date = DateTime.Now.AddDays(-2),
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow.AddDays(-2),
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 8,
                 Com_ID = "1111",
                 Company = new PlatformUser(){
@@ -532,8 +532,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Title = "test title 2",
                 Bonus = 400,
                 Content = "test content 2",
-                Release_Date = DateTime.Now,
-                Deadline = DateTime.Now.AddDays(30),
+                Release_Date = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(30),
                 Max_Participant = 18,
                 Com_ID = "2222",
                 Company = new PlatformUser(){

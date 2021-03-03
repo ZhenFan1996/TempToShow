@@ -81,36 +81,59 @@ namespace PlattformChallenge.Controllers
                              in _cRepository.GetAll()
                              .Where(c => c.C_Id == c_Id)
                                   select c.AllowOpen).Single();
+            bool isClose = (from c
+                             in _cRepository.GetAll()
+                             .Where(c => c.C_Id == c_Id)
+                            select c.IsClose).Single();
 
-            if (bestSolution != null && bestSolution.Point!=null)
+            bSolution = new BestSolutionViewModel();
+            bSolution.IsClose = isClose;
+            bSolution.Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize);
+            bSolution.C_ID = c_Id;
+            bSolution.Winner_ID = winner;
+            bSolution.Visible = visible;
+            if (bestSolution != null && bestSolution.Point != null)
             {
-                bSolution = new BestSolutionViewModel()
-                {
-                    Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
-                    C_ID = c_Id,
-                    Best_Name = bestSolution.Participation.Programmer.Name,
-                    Best_Point = bestSolution.Point,
-                    Best_URL = bestSolution.URL,
-                    S_ID = bestSolution.S_Id,
-                    Winner_ID = winner,
-                    Visible = visible
-                };
+                bSolution.Best_Name = bestSolution.Participation.Programmer.Name;
+                bSolution.Best_Point = bestSolution.Point;
+                bSolution.Best_URL = bestSolution.URL;
+                bSolution.S_ID = bestSolution.S_Id;
             }
             else
             {
-                bSolution = new BestSolutionViewModel()
-                {
-                    Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
-                    C_ID = c_Id,
-                    Best_Name = "",
-                    Best_Point = null,
-                    Best_URL = "",
-                    S_ID = null,
-                    Winner_ID = winner,
-                    Visible = visible
-
-                };
+                bSolution.Best_Name = "";
+                bSolution.Best_Point = null;
+                bSolution.Best_URL = "";
+                bSolution.S_ID = null;
             }
+            //if (bestSolution != null && bestSolution.Point!=null)
+            //{
+            //    bSolution = new BestSolutionViewModel()
+            //    {
+            //        Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
+            //        C_ID = c_Id,
+            //        Best_Name = bestSolution.Participation.Programmer.Name,
+            //        Best_Point = bestSolution.Point,
+            //        Best_URL = bestSolution.URL,
+            //        S_ID = bestSolution.S_Id,
+            //        Winner_ID = winner,
+            //        Visible = visible,
+            //    };
+            //}
+            //else
+            //{
+            //    bSolution = new BestSolutionViewModel()
+            //    {
+            //        Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
+            //        C_ID = c_Id,
+            //        Best_Name = "",
+            //        Best_Point = null,
+            //        Best_URL = "",
+            //        S_ID = null,
+            //        Winner_ID = winner,
+            //        Visible = visible,
+            //    };
+            //}
 
             return View(bSolution);
         }
