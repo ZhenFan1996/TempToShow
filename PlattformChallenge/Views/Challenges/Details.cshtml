@@ -193,15 +193,22 @@
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6034eae6b772eb001285a6fd&product=inline-share-buttons" async="async"></script>
     <script type="text/javascript">
     function Copy() {
-        var inputc = document.body.appendChild(document.createElement("input"));
+        @*var inputc = document.body.appendChild(document.createElement("input"));
         inputc.value = window.location.href;
         inputc.focus();
         inputc.select();
         document.execCommand('copy');
         inputc.parentNode.removeChild(inputc);
          var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
+         alert(msg);*@
+        navigator.clipboard.writeText(window.location.href).then(
+            () => { console.log("done"); },
+            (reason) => console.console.log(reason)
+        );
+        var msg = '@Html.Raw(Localizer["Copy successfully!"].Value.ToString())';
          alert(msg);
-    }
+        }
+
         $(document).ready(function () {
 
             var re = moment('@Model.Release_Date');
