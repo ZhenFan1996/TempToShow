@@ -10,11 +10,11 @@
         <div class="col-md-12">
             <div class="card bg-white box-shadow">
                 <div class="row">
-                    <div class="col-md-4 mt-2 ml-1">
+                    <div class="col-md-4 mt-2">
                         <div class="media">
                             <img class="align-self-start mr-3 mb-1" src="/images/time-circle.png" alt="Generic placeholder image" width="30" height="30">
                             <div class="media-body">
-                                <div class="row mt-1">
+                                <div class="row mt-1">    
                                     <div id="release"></div> -- <div id="deadline"></div>
                                 </div>
                             </div>
@@ -37,7 +37,6 @@
                             <div class="media-body">
                                 <div class="row mt-1 text-center ml-1">
                                     <div class="row">
-
                                         <strong> @Localizer["AvailableQuota"]</strong>
                                         <div class="text-info ml-1">@Html.DisplayFor(model => model.Max_Participant) </div>
                                         /
@@ -48,11 +47,35 @@
                         </div>
 
                     </div>
-                    <div class="col-md-2 ">
-                        <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#p">
-                            @Localizer["TakePartIn"]
-                        </button>
+                    <div class="col-md-2 mt-1 ">
+                        @if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn && Model.Available_Quota > 0)
+                        {
+                            <button type="button" class="btn btn-primary btn-sm mt-1" data-toggle="modal" data-target="#p">
+                                @Localizer["TakePartIn"]
+                            </button>
+                        }
+                        else if (!ViewContext.HttpContext.User.IsInRole("Programmer"))
+                        {
 
+                                <button type="button" class="btn btn-secondary btn-sm mt-1" data-toggle="Tooltip"title="@Localizer["RegInfo"]"  disabled>
+                                    @Localizer["TakePartIn"]
+                                </button>
+
+                        }
+                        else if (ViewContext.HttpContext.User.IsInRole("Programmer") && !Model.CanTakePartIn)
+                        {
+                                <button type="button" class="btn btn-secondary btn-sm mt-1" data-toggle="Tooltip" title="@Localizer["Invalid"]" disabled>
+                                    @Localizer["TakePartIn"]
+                                </button>
+                        }
+                        else if (ViewContext.HttpContext.User.IsInRole("Programmer") && Model.CanTakePartIn && Model.Available_Quota == 0)
+                        {
+                        
+                                <button type="button" class="btn btn-secondary btn-sm mt-1" data-toggle="Tooltip" title="@Localizer["NoPlace"]"  disabled>
+                                    @Localizer["TakePartIn"]
+                                </button>
+                            
+                            }
                         <div class="modal fade" id="p" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -116,22 +139,22 @@
                                     </li>
                                     <li class="media my-2">
                                         <div class="media-body">
-                                            <strong class="mt-0 mb-1">@Localizer["DevLanguage"]</strong>
+                                            <div class="mt-0 mb-1 font-weight-bold">@Localizer["DevLanguage"]</div>
 
 
                                             @for (int i = 0; i < Model.Languages.Count; i++)
                                             {
                                                 if (i % 3 == 0)
                                                 {
-                                                    <span class="badge badge-info badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </span>
+                                                    <div class="badge badge-info badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </div>
                                                 }
                                                 else if (i % 3 == 1)
                                                 {
-                                                    <span class="badge badge-success badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </span> }
+                                                    <div class="badge badge-success badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </div> }
                                                 else
                                                 {
 
-                                                    <span class="badge badge-danger badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </span>}
+                                                    <div class="badge badge-danger badge-pill"> @Model.Languages.ElementAt(i).DevelopmentLanguage </div>}
                                             }
 
                                         </div>
@@ -148,11 +171,7 @@
 
                                         </div>
                                     </li>
-                                    <li class="media my-2">
-                                        <div class="media-body">
-                                            <a asp-action="Index" class="btn btn-primary ">@Localizer["AllChallengeList"]</a>
-                                        </div>
-                                    </li>
+
                                     <li class="media my-2">
                                         <div class="media-body">
                                             <button type="button" class="btn btn-info off-set-2" data-toggle="modal" data-target="#share">
@@ -179,6 +198,21 @@
                                             </div>
 
                                         </div>
+                                    </li>
+                                    <li class="media my-2">
+                                        <div class="media-body">
+                                            <a asp-action="Index">@Localizer["AllChallengeList"]</a>
+                                        </div>
+                                    </li>
+
+
+
+                                    <li class="media my-2">
+
+                                        <div class="media-body">
+                                            <a asp-controller="Solution" asp-action="List" asp-route-c_Id="@Model.C_Id">  @Localizer["WinnerAndSolution"] </a>
+                                        </div>
+
                                     </li>
 
 
@@ -230,7 +264,8 @@
             re = moment.tz(re.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
             deadline = moment.tz(deadline.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
             $('#release').html(re);
-            $('#deadline').html(deadline);
+            $('#deadline').html(deadline);          
+
         })
 
     </script>

@@ -148,7 +148,7 @@
     <value>Details</value>
   </data>
   <data name="DevLanguage" xml:space="preserve">
-    <value>Entwicklungssprachen</value>
+    <value>Sprachen</value>
   </data>
   <data name="Disagree" xml:space="preserve">
     <value>Nein</value>
@@ -158,6 +158,9 @@
   </data>
   <data name="GoToMyPortal" xml:space="preserve">
     <value>Zu meinem Portal</value>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>Sie haben teilgenommen oder die Zeit ist vergangen</value>
   </data>
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximale Teilnehmerzahl</value>
@@ -170,6 +173,9 @@
   </data>
   <data name="ParticipationCondition" xml:space="preserve">
     <value>Bitte lesen Sie die Informationen von diesem Challenge sorgfältig, insbesondere ob Ihre Lösung veröffentlicht wird, wenn Sie das Preisgeld gewinnen. Wenn Sie teilnehmen, bedeutet es, dass Sie an die Teilnahmebedingungen einverstanden sind.</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Zeitraum: </value>
   </data>
   <data name="Prize" xml:space="preserve">
     <value>Preisgeld</value>

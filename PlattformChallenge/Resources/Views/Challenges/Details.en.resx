@@ -159,6 +159,9 @@
   <data name="GoToMyPortal" xml:space="preserve">
     <value>Go To My portal</value>
   </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>You have participated or time has passed</value>
+  </data>
   <data name="MaxParticipants" xml:space="preserve">
     <value>Maximum Participants</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="ParticipationCondition" xml:space="preserve">
     <value>Please read the information from this challenge carefully, especially whether your solution will be published if you win the prize money. If you participate, it means that you agree to the conditions of participation.</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Period: </value>
   </data>
   <data name="Prize" xml:space="preserve">
     <value>Prize</value>
