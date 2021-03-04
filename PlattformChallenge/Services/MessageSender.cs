@@ -1,4 +1,5 @@
 
+using System;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
@@ -34,15 +35,20 @@ namespace PlattformChallenge.Services
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = message };
 
-            
-            using (var smtp = new SmtpClient())
+            try
             {
-                smtp.Connect(Options.Host_Address, Options.Host_Port, Options.Host_SecureSocketOptions);
-                smtp.Authenticate(Options.Host_Username, Options.Host_Password);
-                smtp.Send(email);
-                smtp.Disconnect(true);
+                using (var smtp = new SmtpClient())
+                {
+                    smtp.Connect(Options.Host_Address, Options.Host_Port, Options.Host_SecureSocketOptions);
+                    smtp.Authenticate(Options.Host_Username, Options.Host_Password);
+                    smtp.Send(email);
+                    smtp.Disconnect(true);
+                }
             }
+            catch (Exception e) {
 
+
+            }
             return Task.FromResult(true);
         }
     }
