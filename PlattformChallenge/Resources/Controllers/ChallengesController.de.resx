@@ -119,7 +119,7 @@
   </resheader>
   <data name="Par" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-      &lt;p&gt;Liebe {0} ,&lt;/p&gt;
+      &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
       &lt;p&gt;Sie haben erfolgreich an der Challenge {1} teilgenommen &lt;/p&gt;
       &lt;p&gt;&lt;/p&gt;
       &lt;p&gt;Viele Grüße&lt;/p&gt;

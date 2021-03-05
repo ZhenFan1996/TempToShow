@@ -119,7 +119,7 @@
   </resheader>
   <data name="Cancel" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-   &lt;p&gt;Liebe {0} ,&lt;/p&gt;
+   &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
     &lt;p&gt;Sie haben die Challenge {1} erfolgreich abgemeldet &lt;/p&gt;
     &lt;p&gt;&lt;/p&gt;
     &lt;p&gt;Viele Grüße&lt;/p&gt;
@@ -128,7 +128,7 @@
   </data>
   <data name="Upload" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-   &lt;p&gt;Liebe {0} ,&lt;/p&gt;
+   &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
    &lt;p&gt;Deine Lösung für {1} wurde erfolgreich hochgeladen&lt;/p&gt;
    &lt;p&gt;Die Lösungs-ID lautet :{2}&lt;/p&gt;
    &lt;p&gt;&lt;/p&gt;
