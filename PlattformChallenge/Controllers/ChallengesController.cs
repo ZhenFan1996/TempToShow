@@ -367,8 +367,6 @@ namespace PlattformChallenge.Controllers
 
             model.Languages = await _lRepository.GetAllListAsync();
             model.IsSelected = new bool[model.Languages.Count];
-            model.Release_Date = challenge.Release_Date;
-            model.Deadline = challenge.Deadline;
             if (model.Challenge.Release_Date > DateTime.UtcNow)
             {
                 model.AllowEditDate = true;
@@ -429,10 +427,14 @@ namespace PlattformChallenge.Controllers
                             }
                         }
                     }
-
-                    model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone));
-                    model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, TZConvert.GetTimeZoneInfo(model.Zone));
-
+                    if (model.Release_Date != DateTime.MinValue)
+                    {
+                        model.Challenge.Release_Date = TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone));
+                    }
+                    if (model.Deadline != DateTime.MinValue)
+                    {
+                        model.Challenge.Deadline = TimeZoneInfo.ConvertTimeToUtc(model.Deadline, TZConvert.GetTimeZoneInfo(model.Zone));
+                    }
                     try
                     {
                         await _repository.UpdateAsync(model.Challenge);
