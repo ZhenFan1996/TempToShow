@@ -132,11 +132,26 @@
   <data name="Confirm" xml:space="preserve">
     <value>Bist du Sicher?</value>
   </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>Profil bearbeiten</value>
+  </data>
+  <data name="IfWon" xml:space="preserve">
+    <value>Ob gewonnen</value>
+  </data>
   <data name="In Progress" xml:space="preserve">
     <value>In Bearbeitung</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
   <data name="No Solution" xml:space="preserve">
     <value>Keine Lösung</value>
+  </data>
+  <data name="NotEnded" xml:space="preserve">
+    <value>Offen</value>
+  </data>
+  <data name="NotRated" xml:space="preserve">
+    <value>Nicht bewertet</value>
   </data>
   <data name="Participated Challenges" xml:space="preserve">
     <value>Teilgenommene Challenges: </value>
@@ -149,5 +164,8 @@
   </data>
   <data name="WonChallenges" xml:space="preserve">
     <value>Meine gewonnene Challenges anzeigen</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
   </data>
 </root>

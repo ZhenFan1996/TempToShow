@@ -137,13 +137,13 @@
     <value>Ungültiger leerer Challenge-ID-Wert!</value>
   </data>
   <data name="MustRateAllSolutions" xml:space="preserve">
-    <value>Es gibt mindestens ein Lösung, die Sie nicht bewertet haben. Daher können Sie dieses Challenge noch nicht schließen. Bitte bewerten Sie alle Lösungen, bevor Sie eine Challenge abschließen.</value>
+    <value>Es gibt mindestens eine Loesung, die Sie nicht bewertet haben. Daher koennen Sie dieses Challenge noch nicht schliessen. Bitte bewerten Sie alle Loesungen, bevor Sie eine Challenge abschliessen.</value>
   </data>
   <data name="NoAccessOtherCom" xml:space="preserve">
     <value>Sie haben keinen Zugang zu Challenges anderer Unternehmen!</value>
   </data>
   <data name="NoCloseBeforeDeadline" xml:space="preserve">
-    <value>Sie können das Challenge NICHT vor Abgabefrist schließen!</value>
+    <value>Sie koennen das Challenge NICHT vor Abgabefrist schliessen!</value>
   </data>
   <data name="NoRateAfterClosing" xml:space="preserve">
     <value>Sie können die Lösung nicht mehr bewerten, da dieses Challenge bereits abgeschlossen ist.</value>

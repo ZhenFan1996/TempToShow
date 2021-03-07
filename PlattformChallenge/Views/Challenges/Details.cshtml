@@ -54,7 +54,7 @@
                                 @Localizer["TakePartIn"]
                             </button>
                         }
-                        else if (!ViewContext.HttpContext.User.IsInRole("Programmer"))
+                        else if (!ViewContext.HttpContext.User.IsInRole("Programmer") && !ViewContext.HttpContext.User.IsInRole("Company"))
                         {
 
                                 <button type="button" class="btn btn-secondary btn-sm mt-1" data-toggle="Tooltip"title="@Localizer["RegInfo"]"  disabled>

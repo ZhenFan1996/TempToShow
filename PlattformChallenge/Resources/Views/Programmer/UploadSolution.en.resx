@@ -120,8 +120,26 @@
   <data name="Date" xml:space="preserve">
     <value>Last Update</value>
   </data>
+  <data name="DeadlinePassed" xml:space="preserve">
+    <value>The deadline is passed, you can't upload solution anymore</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="FormatInfo" xml:space="preserve">
+    <value>Please upload file with Zip-format.</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="OverAndNoSolution" xml:space="preserve">
+    <value>The challenge is over and you did not submit an Solution.</value>
+  </data>
   <data name="SolutionFile" xml:space="preserve">
     <value>SolutionFile</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit date</value>

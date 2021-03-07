@@ -353,7 +353,7 @@ namespace PlattformChallenge.Controllers
             if(challenge.IsClose)
             {
                 Response.StatusCode = 403;
-                ViewBag.Message = localizer["NoEditAfterClosing"];
+                ViewBag.ErrorMessage = localizer["NoEditAfterClosing"];
                 return View("Error");
 
             }

@@ -21,7 +21,7 @@
                 </div>
             </div>
             @if (!Model.IsVaild && Model.Participation.Solution == null) {
-            <h2>The challenge is over and you did not submit an Solution.</h2>
+        <h2>@Localizer["OverAndNoSolution"]</h2>
             }
 
 
@@ -33,16 +33,16 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        Id
+                                        @Localizer["Id"]
                                     </th>
                                     <th>
-                                        File name
+                                        @Localizer["FileName"]
                                     </th>
                                     <th>
                                         @Localizer["Submit"]
                                     </th>
                                     <th>
-                                        Status
+                                        @Localizer["Status"]
                                     </th>
                                 </tr>
                             </thead>
@@ -67,27 +67,29 @@
                 </div>}
             @if (Model.IsVaild)
             {
-            <div class="row">
-                <div class="col-md-6">
-                    <form enctype="multipart/form-data" method="post">
-                        <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
-                        <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
-                        <dl>
-                            <dt>
-                                <label asp-for="@Model.SolutionFile">@Localizer["SolutionFile"]</label>
-                            </dt>
-                            <dd>
-                                <input asp-for="@Model.SolutionFile" type="file">
-                                <span asp-validation-for="@Model.SolutionFile"></span>
-                            </dd>
-                        </dl>
-                        <input asp-page-handler="Upload" asp-route-c_id="@Model.Participation.C_Id"class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+        <div class="row">
+            <div class="text-danger"><strong> @Localizer["FormatInfo"]</strong></div>
+           
+            <div class="col-md-6">
+                <form enctype="multipart/form-data" method="post">
+                    <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
+                    <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
+                    <dl>
+                        <dt>
+                            <label asp-for="@Model.SolutionFile">@Localizer["SolutionFile"]</label>
+                        </dt>
+                        <dd>
+                            <input asp-for="@Model.SolutionFile" type="file">
+                            <span asp-validation-for="@Model.SolutionFile"></span>
+                        </dd>
+                    </dl>
+                    <input asp-page-handler="Upload" asp-route-c_id="@Model.Participation.C_Id" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
 
-                    </form>
-                </div>
-            </div>}
+                </form>
+            </div>
+        </div>}
             else {
-                <div class="text-danger"><strong> The Deadline is passed</strong></div>
+                <div class="text-danger"><strong> @Localizer["DeadlinePassed"]</strong></div>
 
             }
         </div>
