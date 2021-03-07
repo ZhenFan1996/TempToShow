@@ -117,30 +117,30 @@ namespace PlattformChallenge.Controllers
         [HttpPost]
         public async Task<IActionResult> RateSolution(AllSolutionsViewModel vm)
         {
-   
+
             if (ModelState.IsValid)
             {
                 var solItem = await (from p in _pRepository.GetAll()
-                                       join s in _sRepository.GetAll()
-                                       on p.S_Id equals s.S_Id
-                                       where p.C_Id == vm.CurrChallengeId
-                                       select new { s, p }
+                                     join s in _sRepository.GetAll()
+                                     on p.S_Id equals s.S_Id
+                                     where p.C_Id == vm.CurrChallengeId
+                                     select new { s, p }
                                  ).ToListAsync();
-               
+
                 var challengeId = solItem.First().p.C_Id;
                 var challenge = await _cRepository.FirstOrDefaultAsync(c => c.C_Id == challengeId);
                 if (challenge.IsClose)
                 //This shouldn't suppose to happen in normal situation, because the rate button will be deactived
                 {
-                    ViewBag.Message = "You can not rate solution anymore because this challenge is already closed";
+                    ViewBag.Message = localizer["NoRateAfterClosing"];
                     return View("Index");
                 }
 
 
                 var toUpdate = await _sRepository.FirstOrDefaultAsync(s => s.S_Id == vm.CurrSolutionId);
                 toUpdate.Point = vm.Point;
-                var pro = await _userManger.FindByIdAsync( (await _pRepository.FirstOrDefaultAsync(p => p.S_Id ==vm.CurrSolutionId)).P_Id);
-                string subject = $"The Challenge  {challenge.Title} is noted";
+                var pro = await _userManger.FindByIdAsync((await _pRepository.FirstOrDefaultAsync(p => p.S_Id == vm.CurrSolutionId)).P_Id);
+                string subject = localizer["NotedTitle", challenge.Title]; 
                 string body = localizer["Noted", pro.Name, challenge.Title, vm.Point];
 
                 await _sender.SendEmailAsync(pro.Email, subject, body);
@@ -174,13 +174,13 @@ namespace PlattformChallenge.Controllers
             if (toUpdate.IsClose)
             //This shouldn't suppose to happen in normal situation, because the close button will be deactived
             {
-                ViewBag.Message = string.Format("You already closed this challenge");
+                ViewBag.Message = localizer["AlreadyClosed"];
                 return View("Index");
             }
 
             else if (toUpdate.Deadline >= DateTime.UtcNow)
             {
-                ViewBag.Message = string.Format("You can not close the challenge before the deadline");
+                ViewBag.Message = localizer["NoCloseBeforeDeadline"];
                 return View("Index");
 
             }
@@ -197,8 +197,7 @@ namespace PlattformChallenge.Controllers
                 {
                     if (s.s.Point == null || s.s.Point == 0)
                     {
-                        ViewBag.Message = "There is at least one challenge you did not rate, therefore you can not close this challenge yet. " +
-                            "Please rate all solutions before closing a challenge";
+                        ViewBag.Message = localizer["MustRateAllSolutions"];
                         return View("Index");
                     }
                 }
@@ -213,8 +212,7 @@ namespace PlattformChallenge.Controllers
                     int bestScore = (int)bestSolution.s.Point;
                     if(!checkIfOnlyBest(solList, bestScore))
                     {
-                        ViewBag.Message = "There are at least two solutions with same score. Only one solution can have the best score. " +
-                            "Please rate them with different scores and then close the challenge";
+                        ViewBag.Message = localizer["TwoSolutionSameScore"]; 
                         return View("Index");
                     }
                     
@@ -235,7 +233,7 @@ namespace PlattformChallenge.Controllers
                     await _cRepository.UpdateAsync(toUpdate);
                     foreach (var p in toUpdate.Participations) {
                         var user = await _userManger.FindByIdAsync(p.P_Id);
-                        string subject = $"The Challenge {toUpdate.Title} is closed";
+                        string subject = localizer["ClosedTitle", toUpdate.Title]; 
                         string body = localizer["Closed",user.Name,toUpdate.Title];
                         await _sender.SendEmailAsync(user.Email, subject, body);
                     }
@@ -354,7 +352,7 @@ namespace PlattformChallenge.Controllers
             if (Id == null || Id == "")
             {
                 Response.StatusCode = 400;
-                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                @ViewBag.ErrorMessage = localizer["EmptyCID"]; 
                 return View("NotFound");
             }
            Challenge challenge =  _cRepository.GetAll()
@@ -364,14 +362,14 @@ namespace PlattformChallenge.Controllers
             if (challenge == null)
             {
                 Response.StatusCode = 404;
-                @ViewBag.ErrorMessage = $"The Challenge with id {Id} can not be found";
+                @ViewBag.ErrorMessage = localizer["CannotFoundCID", Id]; 
                 return View("NotFound");
             }
            
             if (_currUser.Id != challenge.Com_ID)
             {
                 Response.StatusCode = 403;
-                @ViewBag.ErrorMessage = "You have no access to challenges from other companies";
+                @ViewBag.ErrorMessage = localizer["NoAccessOtherCom"]; 
                 return View("Error");
             }
 

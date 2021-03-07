@@ -117,6 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CannotFoundCID" xml:space="preserve">
+    <value>Das Challenge mit Id {0} kann nicht gefunden werden.</value>
+  </data>
+  <data name="CannotReduceBonus" xml:space="preserve">
+    <value>Sie können für ein bereits veröffentlichtes Challenge nicht zu einem geringeren Bonus wechseln.</value>
+  </data>
+  <data name="CannotReduceParNumber" xml:space="preserve">
+    <value>Sie können die maximale Teilnahme nicht auf diese Anzahl ändern, da bereits mehr Benutzer teilgenommen haben.</value>
+  </data>
+  <data name="DeadlineAfterRelease" xml:space="preserve">
+    <value>Abgabefrist muss nach dem Veröffentlichungsdatum sein.</value>
+  </data>
+  <data name="EmptyCID" xml:space="preserve">
+    <value>Ungültiger leerer Challenge-ID-Wert!</value>
+  </data>
+  <data name="FailedCreate" xml:space="preserve">
+    <value>Fehler beim Erstellen dieses Challenges. Bitte versuchen Sie es erneut!</value>
+  </data>
+  <data name="NoAccessOtherCom" xml:space="preserve">
+    <value>Sie haben keinen Zugang zu Challenges anderer Unternehmen!</value>
+  </data>
+  <data name="NoAllowParticipation" xml:space="preserve">
+    <value>Teilnahme nicht gestattet, da einige Regeln nicht erfüllt sind.</value>
+  </data>
+  <data name="NoEditAfterClosing" xml:space="preserve">
+    <value>Sie haben dieses Challenge bereits geschlossen und können es nicht mehr bearbeiten.</value>
+  </data>
+  <data name="OnlyReleaseInFuture" xml:space="preserve">
+    <value>Sie können nur ein Challenge ab einen Zeitpunkt in der Zukunft veröffentlichen!</value>
+  </data>
   <data name="Par" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
       &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
@@ -124,5 +154,8 @@
       &lt;p&gt;&lt;/p&gt;
       &lt;p&gt;Viele Grüße&lt;/p&gt;
       &lt;p&gt;TES-Challenge Teams&lt;/p&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SuccessParTitle" xml:space="preserve">
+    <value>Erfolgreich angemeldet für das Challenge {0}</value>
   </data>
 </root>

@@ -117,6 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CannotFoundCID" xml:space="preserve">
+    <value>The challenge with Id {0} can not be found.</value>
+  </data>
+  <data name="CannotReduceBonus" xml:space="preserve">
+    <value>You can't change to a less bonus for a already published challenge.</value>
+  </data>
+  <data name="CannotReduceParNumber" xml:space="preserve">
+    <value>You can't change maximal participation to this number, there's already more users participated</value>
+  </data>
+  <data name="DeadlineAfterRelease" xml:space="preserve">
+    <value>Deadline must be after release date!</value>
+  </data>
+  <data name="EmptyCID" xml:space="preserve">
+    <value>Invalid empty challenge id value!</value>
+  </data>
+  <data name="FailedCreate" xml:space="preserve">
+    <value>Failed to create the challenge, please try again!</value>
+  </data>
+  <data name="NoAccessOtherCom" xml:space="preserve">
+    <value>You have no access to challenges from other companies!</value>
+  </data>
+  <data name="NoAllowParticipation" xml:space="preserve">
+    <value>Not allow to participate, because some rules are not fulfilled.</value>
+  </data>
+  <data name="NoEditAfterClosing" xml:space="preserve">
+    <value>You already closed this challenge, can't edit anymore.</value>
+  </data>
+  <data name="OnlyReleaseInFuture" xml:space="preserve">
+    <value>You can only release challenge in the future!</value>
+  </data>
   <data name="Par" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
       &lt;p&gt;Dear {0} ,&lt;/p&gt;
@@ -124,5 +154,8 @@
       &lt;p&gt;&lt;/p&gt;
       &lt;p&gt;Kind regards&lt;/p&gt;
       &lt;p&gt;TES-Challenge Teams&lt;/p&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SuccessParTitle" xml:space="preserve">
+    <value>Successfully enrolled in the Challenge {0}</value>
   </data>
 </root>

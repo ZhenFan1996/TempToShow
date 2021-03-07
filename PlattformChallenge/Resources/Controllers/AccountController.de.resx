@@ -117,10 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmedLogIn" xml:space="preserve">
+    <value>Sie haben die E-Mail bestätigt. Bitte loggen Sie sich ein.</value>
+  </data>
+  <data name="ConfirmEmailTitle" xml:space="preserve">
+    <value>Bestätigung Ihres Accounts auf der Programming Challenge Platform</value>
+  </data>
+  <data name="CurrentUserWrong" xml:space="preserve">
+    <value>Der aktuelle Benutzer ist falsch.</value>
+  </data>
   <data name="EmailConfirm" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
-   &lt;p&gt;Bitte bestätigen Sie Ihr Konto &lt;/p&gt;
+   &lt;p&gt;Bitte bestätigen Sie Ihr Account. &lt;/p&gt;
    &lt;p&gt;Klicken Sie auf diesen Link {1} &lt;/p&gt;
    &lt;p&gt;&lt;/p&gt;
    &lt;p&gt;Viele Grüße&lt;/p&gt; 
@@ -129,11 +138,23 @@
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-   &lt;p&gt;Dear {0} ,&lt;/p&gt;
+   &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
    &lt;p&gt;Klicken Sie auf diesen Link {1} &lt;/p&gt;
-   &lt;p&gt; um das Passwort zurückzusetzen&lt;/p&gt;
+   &lt;p&gt; um das Passwort zurückzusetzen.&lt;/p&gt;
    &lt;p&gt;Viele Grüße&lt;/p&gt;
    &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
+  </data>
+  <data name="ForgotPasswordTitle" xml:space="preserve">
+    <value>Legen Sie Ihr neues Passwort auf der Programming Challenge Platform fest</value>
+  </data>
+  <data name="OriginPasswordWrong" xml:space="preserve">
+    <value>Das alte kennwort ist nicht korrekt.</value>
+  </data>
+  <data name="SentConfirmEmail" xml:space="preserve">
+    <value>Wir haben die Bestätigungs-E-Mail gesendet. Bitte überprüfen Sie Ihre E-Mails und klicken Sie auf den Bestätigungslink.</value>
+  </data>
+  <data name="SentPasswordEmail" xml:space="preserve">
+    <value>Wir haben eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihre Mailbox.</value>
   </data>
 </root>

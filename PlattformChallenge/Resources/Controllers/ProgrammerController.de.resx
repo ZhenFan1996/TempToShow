@@ -126,14 +126,23 @@
      &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
   </data>
+  <data name="CancelTitle" xml:space="preserve">
+    <value>Erfolgreich abgemeldet vom Challenge {0}</value>
+  </data>
   <data name="Upload" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
-   &lt;p&gt;Deine Lösung für {1} wurde erfolgreich hochgeladen&lt;/p&gt;
+   &lt;p&gt;Ihre Lösung für {1} wurde erfolgreich hochgeladen&lt;/p&gt;
    &lt;p&gt;Die Lösungs-ID lautet :{2}&lt;/p&gt;
    &lt;p&gt;&lt;/p&gt;
     &lt;p&gt;Viele Grüße&lt;/p&gt;
     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
+  </data>
+  <data name="UploadTitle" xml:space="preserve">
+    <value>Ihre Lösung für {0} wurde erfolgreich hochgeladen</value>
+  </data>
+  <data name="WrongFileType" xml:space="preserve">
+    <value>Der Dateityp ist falsch. Nur .zip ist erlaubt.</value>
   </data>
 </root>
