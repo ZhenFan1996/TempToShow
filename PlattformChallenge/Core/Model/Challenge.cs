@@ -13,7 +13,8 @@ namespace PlattformChallenge.Core.Model
         public string C_Id { get; set; }
 
         [Required]
-
+        [RegularExpression(@"^([1-9][0-9]*)$",
+         ErrorMessage = "Only numbers greater than 0 are allowed.")]
         public int Bonus { get; set; }
         [Required]
         public string Title { get; set; }
@@ -31,6 +32,8 @@ namespace PlattformChallenge.Core.Model
 
         [Required]
         [Display(Name = "Quota")]
+        [RegularExpression(@"^([1-9][0-9]*)$",
+         ErrorMessage = "Only numbers greater than 0 are allowed.")]
         public int Max_Participant { get; set; }
 
         [Required]
