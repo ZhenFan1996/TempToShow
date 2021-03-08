@@ -1,5 +1,5 @@
 @model PlattformChallenge.ViewModels.UploadSolutionViewModel;
-
+@using Microsoft.AspNetCore.Localization;
 @inject IViewLocalizer Localizer
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 
@@ -20,10 +20,6 @@
                     </h3>
                 </div>
             </div>
-            @if (!Model.IsVaild && Model.Participation.Solution == null) {
-        <h2>@Localizer["OverAndNoSolution"]</h2>
-            }
-
 
             @if (Model.Participation.Solution != null)
             {
@@ -54,8 +50,8 @@
                                     <td>
                                         @Model.Participation.Solution.FileName
                                     </td>
-                                    <td>
-                                        @Model.Participation.Solution.Submit_Date
+                                    <td >
+                                        <div id="submit">@Model.Participation.Solution.Submit_Date</div>                                      
                                     </td>
                                     <td>
                                         @Model.Participation.Solution.Status
@@ -67,31 +63,67 @@
                 </div>}
             @if (Model.IsVaild)
             {
-        <div class="row">
-            <div class="text-danger"><strong> @Localizer["FormatInfo"]</strong></div>
-           
-            <div class="col-md-6">
-                <form enctype="multipart/form-data" method="post">
-                    <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
-                    <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
-                    <dl>
-                        <dt>
-                            <label asp-for="@Model.SolutionFile">@Localizer["SolutionFile"]</label>
-                        </dt>
-                        <dd>
-                            <input asp-for="@Model.SolutionFile" type="file">
-                            <span asp-validation-for="@Model.SolutionFile"></span>
-                        </dd>
-                    </dl>
-                    <input asp-page-handler="Upload" asp-route-c_id="@Model.Participation.C_Id" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+                <div class="row">
 
-                </form>
-            </div>
-        </div>}
-            else {
+
+                    <div class="col-md-6">
+                        <form enctype="multipart/form-data" method="post">
+                            <input type="hidden" asp-for="P_Id" value="@Model.Participation.P_Id" />
+                            <input type="hidden" asp-for="C_Id" value="@Model.Participation.C_Id" />
+                            <dl>
+                                <dt>
+                                    <label asp-for="@Model.SolutionFile">@Localizer["SolutionFile"]</label>
+                                    <label class="text-danger"><strong> @Localizer["FormatInfo"]</strong></label>
+                                </dt>
+                                <dd>
+                                    <input asp-for="@Model.SolutionFile" type="file">
+                                    <span asp-validation-for="@Model.SolutionFile"></span>
+                                </dd>
+                            </dl>
+                            <input asp-page-handler="Upload" asp-route-c_id="@Model.Participation.C_Id" class="btn btn-primary" type="submit" value="@SharedLocalizer["Upload"]" />
+
+                        </form>
+                    </div>
+                </div>}
+            else
+            {
                 <div class="text-danger"><strong> @Localizer["DeadlinePassed"]</strong></div>
 
             }
         </div>
     </div>
 </div>
+
+@{
+
+    var rqf = Context.Features.Get<IRequestCultureFeature>();
+    var culture = rqf.RequestCulture.Culture;
+}
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6034eae6b772eb001285a6fd&product=inline-share-buttons" async="async"></script>
+    <script type="text/javascript">
+  
+        $(document).ready(function () {
+
+            var isEn = "@culture.Name" == "en";
+
+            var submit = moment($('#submit').html());
+
+            if (!isEn) {
+                submit = moment($('#submit').html(), "DD.MM.YYYY HH:mm:ss", true);
+            }
+
+            submit = moment.tz(submit.format("MM/DD/YYYY HH:mm:ss"), moment.tz.guess()).format("YYYY/MM/DD HH:mm");
+         
+            $('#submit').html(submit);
+
+
+        })
+
+    </script>
+
+}
