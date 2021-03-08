@@ -53,6 +53,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             var context = new ControllerContext(new ActionContext(mock.Object, new RouteData(), new ControllerActionDescriptor()));
             _user = new PlatformUser()
             {
+                Email ="ubumh@student.kit.edu",
                 Id = "test-programmer",
                 Name = "Zhen"
             };
@@ -195,8 +196,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             Solution savedSolution = null;
             var checkedSolution = new Solution()
             {
-                FileName = "test title 1_Zhen.zip",
-                URL = "C\\Solutions\\test title 1_Zhen.zip",
+                FileName = "test title 1_ubumh@student.kit.edu.zip",
+                URL = "C\\Solutions\\test title 1_ubumh@student.kit.edu.zip",
                 Status =StatusEnum.Receive
 
             };

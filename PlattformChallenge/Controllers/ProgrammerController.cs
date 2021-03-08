@@ -183,7 +183,7 @@ namespace PlattformChallenge.Controllers
             {              
                 var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p => p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
                 var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
-                string fileName = c.Title + "_" + _currUser.Name + ".zip";
+                string fileName = c.Title + "_" + _currUser.Email + ".zip";
 
                 if (model.SolutionFile==null||(!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed")))
                 {
