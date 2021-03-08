@@ -48,6 +48,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockPaRepository = new Mock<IRepository<Participation>>();
             _mockLocal = new Mock<IStringLocalizer<ChallengesController>>();
             _mockLocal.SetupGet(m => m[It.IsAny<string>(), It.IsAny<string[]>()]).Returns(new LocalizedString("name", "value"));
+            _mockLocal.SetupGet(m => m[It.IsAny<string>()]).Returns(new LocalizedString("name", "value"));
             _mockSender = new Mock<IEmailSender>();
             _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             var logger = new Mock<ILogger<ChallengesController>>();
@@ -202,7 +203,7 @@ namespace PlattformChallenge.UnitTest.Controllers
         {
             var result = await _sut.Details("");         
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("Invalid empty challenge id value", _sut.ViewBag.ErrorMessage);
+            _mockLocal.Verify(l => l["EmptyCID"], Times.Once);
         }
 
         //
@@ -617,7 +618,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             {
             });
             var ex = await Assert.ThrowsAsync<Exception>(() => _sut.ParticipateChallenge("mock_challenge1"));
-            Assert.Equal("You have already participated this challenge", ex.Message);
+            Assert.Equal("Participation Error", ex.Message);
         }
 
         //
