@@ -120,13 +120,7 @@
   <data name="ClickBackToHome" xml:space="preserve">
     <value>Back to homepage</value>
   </data>
-  <data name="Error" xml:space="preserve">
-    <value>An error occurred while processing your request.</value>
-  </data>
   <data name="GoToMyPortal" xml:space="preserve">
     <value>Go to my portal</value>
-  </data>
-  <data name="Reason" xml:space="preserve">
-    <value>Reason:</value>
   </data>
 </root>

@@ -1,7 +1,9 @@
+@inject IViewLocalizer Localizer
+
 @{ ViewBag.Title = "404 Error"; }
 
 <div class="alert alert-danger mt-1 mb-1">
-    <h4>404 Error :</h4>
+    <h4>404 Error:</h4>
     <hr />
     <h5>
         @ViewBag.ErrorMessage
@@ -9,4 +11,18 @@
 </div>
 
 <a asp-controller="home" asp-action="index" class="btn btn-outline-success"
-   style="width:auto">  Check hier to go back home</a>
+   style="width:auto">@Localizer["ClickBackToHome"]</a>
+
+<div>
+    @if (ViewContext.HttpContext.User.IsInRole("Company"))
+    {
+        <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
+    }
+</div>
+
+<div>
+    @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
+    {
+        <div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
+    }
+</div>

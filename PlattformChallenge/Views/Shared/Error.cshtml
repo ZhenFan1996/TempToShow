@@ -5,42 +5,26 @@
 }
 
 <h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">@Localizer["An error occurred while processing your request"].</h2>
+<h2 class="text-danger">@Localizer["Error"]</h2>
 
-@*@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}*@
 <p>
+    <div class="text-danger">@Localizer["Reason"]</div>
     <strong><code>@ViewBag.ErrorMessage</code></strong>
 </p>
-<p>
-    @Html.ActionLink("Click here go back to homepage.", "Index", "Home")
-</p>
+
+<a asp-controller="home" asp-action="index" class="btn btn-outline-success"
+   style="width:auto">@Localizer["ClickBackToHome"]</a>
 
 <div>
     @if (ViewContext.HttpContext.User.IsInRole("Company"))
     {
-        <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">Go To My portal</a></div>
+        <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
     }
 </div>
 
 <div>
     @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
     {
-        <div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">Go To My portal</a></div>
+        <div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
     }
 </div>
-
-@*<h3>Development Mode</h3>
-    <p>
-        Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-    </p>
-    <p>
-        <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-        It can result in displaying sensitive information from exceptions to end users.
-        For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-        and restarting the app.
-    </p>*@

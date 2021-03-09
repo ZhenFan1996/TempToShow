@@ -118,15 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClickBackToHome" xml:space="preserve">
-    <value>Back to homepage</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>An error occurred while processing your request.</value>
+    <value>Zurück zu Homepage</value>
   </data>
   <data name="GoToMyPortal" xml:space="preserve">
-    <value>Go to my portal</value>
-  </data>
-  <data name="Reason" xml:space="preserve">
-    <value>Reason:</value>
+    <value>Zu meinem Portal</value>
   </data>
 </root>
