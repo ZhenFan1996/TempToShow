@@ -162,7 +162,7 @@ namespace PlattformChallenge.Controllers
             if (id == null || id == "")
             {
                 Response.StatusCode = 400;
-                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                @ViewBag.ErrorMessage = localizer["EmptyCID"];
                 return View("NotFound");
 
             }
@@ -174,7 +174,7 @@ namespace PlattformChallenge.Controllers
             if (challenge == null)
             {
                 Response.StatusCode = 404;
-                @ViewBag.ErrorMessage = $"The Challenge with id {id} can not be found";
+                @ViewBag.ErrorMessage = localizer["CannotFoundCID", id];
                 return View("NotFound");
             }
             bool canTakePartIn = false;
@@ -269,16 +269,12 @@ namespace PlattformChallenge.Controllers
                 model.Languages = languages;
                 if (zone_release < TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow))
                 {
-                    //ViewBag.Message = "You can only release challenge in the future";
-                    //return View("Create");
-                    ModelState.AddModelError(string.Empty, "You can only release challenge in the future");
+                    ModelState.AddModelError(string.Empty, localizer["OnlyReleaseInFuture"]);
                     return View(model);
                 }
                 if (zone_deadline <= zone_release)
                 {
-                    //ViewBag.Message = "Deadline must be after release date";
-                    //return View("Create");
-                    ModelState.AddModelError(string.Empty, "Deadline must be after release date");
+                    ModelState.AddModelError(string.Empty, localizer["DeadlineAfterRelease"]);
                     return View(model);
                 }
 
@@ -313,7 +309,7 @@ namespace PlattformChallenge.Controllers
                 return RedirectToAction("Details", new { id = newChallenge.C_Id });
             }
             //if modelstate is not valid
-            ModelState.AddModelError(string.Empty, "failed to create the challenge, please try again");
+            ModelState.AddModelError(string.Empty, localizer["FailedCreate"]);
             model.Languages = await _lRepository.GetAllListAsync();
             return View(model);
         }
@@ -333,7 +329,7 @@ namespace PlattformChallenge.Controllers
             if (id == null || id == "")
             {
                 Response.StatusCode = 400;
-                @ViewBag.ErrorMessage = "Invalid empty challenge id value";
+                @ViewBag.ErrorMessage = localizer["EmptyCID"];
                 return View("NotFound");
             }
             var challenge = await _repository.GetAll()
@@ -343,21 +339,21 @@ namespace PlattformChallenge.Controllers
             if (challenge == null)
             {
                 Response.StatusCode = 404;
-                ViewBag.ErrorMessage = $"there's no challenge with this id ={id}, please check again";
+                ViewBag.ErrorMessage = localizer["CannotFoundCID", id];
                 return View("NotFound");
             }
 
             if (User.FindFirstValue(ClaimTypes.NameIdentifier) != challenge.Com_ID)
             {
                 Response.StatusCode = 403;
-                ViewBag.ErrorMessage = "You don't have access to challenges from other companies";
+                ViewBag.ErrorMessage = localizer["NoAccessOtherCom"];
                 return View("Error");
             }
 
             if(challenge.IsClose)
             {
                 Response.StatusCode = 403;
-                ViewBag.Message = string.Format("You already closed this challenge, can't edit anymore");
+                ViewBag.ErrorMessage = localizer["NoEditAfterClosing"];
                 return View("Error");
 
             }
@@ -468,21 +464,21 @@ namespace PlattformChallenge.Controllers
 
             if (!model.AllowEditDate && bonus > model.Challenge.Bonus)
             {
-                return "You can't change to a less bonus for a already published challenge";
+                return localizer["CannotReduceBonus"];
             }
             if (alreadyParticiCount > model.Challenge.Max_Participant)
             {
-                return "You can't change maximal participation to this number, there's already more users participated";
+                return localizer["CannotReduceParNumber"];
             }
             
             if (TimeZoneInfo.ConvertTimeToUtc(model.Release_Date, TZConvert.GetTimeZoneInfo(model.Zone)) < DateTime.UtcNow
                 && model.AllowEditDate)
             {               
-                return "You can only release challenge in the future";
+                return localizer["OnlyReleaseInFuture"];
             }
             if (model.Deadline < model.Release_Date && model.AllowEditDate)
             {
-                return "Deadline must be after release date";
+                return localizer["DeadlineAfterRelease"];
             }
             return null;
 
@@ -512,7 +508,7 @@ namespace PlattformChallenge.Controllers
                 { //The corresponding razor page details.cshtml it has restriction that if the conditions are true,
                   // the button which links to this method will not be showed. e.g. this else-condition is not
                   // supposed to be entered. Its an avoidance of entering by URL.
-                    ViewBag.Message = "Not allow to participate, because some rules are not fulfilled";
+                    ViewBag.Message = localizer["NoAllowParticipation"];
                     return View("Details", new { id = id });
                 }
             }
@@ -526,7 +522,7 @@ namespace PlattformChallenge.Controllers
             {
                 await _particiRepository.InsertAsync(newParti);
                 var user = await _pRepository.FirstOrDefaultAsync(p => p.Id == newParti.P_Id);
-                string subject = $"Success take part in the Challenge {challenge.Title}";
+                string subject = localizer["SuccessParTitle", challenge.Title];
                 string body = localizer["Par", user.Name, challenge.Title];
 
                 await _sender.SendEmailAsync(user.Email,subject,body);
@@ -536,47 +532,47 @@ namespace PlattformChallenge.Controllers
             
             catch (Exception ex) when (ex is SqlException || ex is InvalidOperationException)
             {             
-               throw new Exception("You have already participated this challenge");            
+               throw new Exception("Participation Error");            
             }
             return View(challenge);
         }
 
         #endregion
 
-        #region delete
+        //#region delete
 
-        // GET: Challenges/Delete/5
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //GET: Challenges/Delete/5
+        //[Authorize(Roles = "Company")]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var challenge = await _repository.GetAll()
-                .Include(c => c.Company)
-                .FirstOrDefaultAsync(m => m.C_Id == id);
-            if (challenge == null)
-            {
-                return NotFound();
-            }
+        //    var challenge = await _repository.GetAll()
+        //        .Include(c => c.Company)
+        //        .FirstOrDefaultAsync(m => m.C_Id == id);
+        //    if (challenge == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(challenge);
-        }
+        //    return View(challenge);
+        //}
 
         // POST: Challenges/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Company")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Company")]
+        //public async Task<IActionResult> DeleteConfirmed(string id)
+        //{
 
-            var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-            challenge = await _repository.DeleteAsync(challenge);
-            return RedirectToAction(nameof(Index));
-        }
-        #endregion
+        //    var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
+        //    challenge = await _repository.DeleteAsync(challenge);
+        //    return RedirectToAction(nameof(Index));
+        //}
+        //#endregion
 
 
         private bool ChallengeExists(string id)

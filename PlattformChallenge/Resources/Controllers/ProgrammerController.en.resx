@@ -120,20 +120,29 @@
   <data name="Cancel" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Dear {0} ,&lt;/p&gt;
-    &lt;p&gt;Your have successfully cancel the challenge {1} &lt;/p&gt;
+    &lt;p&gt;Your have successfully canceled the challenge {1} &lt;/p&gt;
     &lt;p&gt;&lt;/p&gt;
-    &lt;p&gt;Kind regards&lt;/p&gt;
+    &lt;p&gt;Kind regards,&lt;/p&gt;
      &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
+  </data>
+  <data name="CancelTitle" xml:space="preserve">
+    <value>Successfully Canceled Challenge {0}</value>
   </data>
   <data name="Upload" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Dear {0} ,&lt;/p&gt;
-   &lt;p&gt;Your Solution for {1} has successfully uploaded&lt;/p&gt;
-   &lt;p&gt;The solution id is {2}&lt;/p&gt;
+   &lt;p&gt;Your Solution for {1} has been successfully uploaded.&lt;/p&gt;
+   &lt;p&gt;The solution id is {2} &lt;/p&gt;
    &lt;p&gt;&lt;/p&gt;
-    &lt;p&gt;Kind regards&lt;/p&gt;
+    &lt;p&gt;Kind regards,&lt;/p&gt;
     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
+  </data>
+  <data name="UploadTitle" xml:space="preserve">
+    <value>Your Solution for {0} has been successfully uploaded</value>
+  </data>
+  <data name="WrongFileType" xml:space="preserve">
+    <value>Type of the file is wrong. Only .zip is allowed.</value>
   </data>
 </root>

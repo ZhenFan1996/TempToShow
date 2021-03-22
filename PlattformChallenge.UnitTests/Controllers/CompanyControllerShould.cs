@@ -159,7 +159,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             //Assert.Equal("You can't rate solution anymore because this challenge is already closed", ex.Message);
             var result = await _sut.RateSolution(vm);
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("You can not rate solution anymore because this challenge is already closed", _sut.ViewBag.Message);
+            _mockLocal.Verify(l => l["NoRateAfterClosing"], Times.Once);
         }
 
         /// <summary>
@@ -215,8 +215,8 @@ namespace PlattformChallenge.UnitTest.Controllers
               );
 
             var result = await _sut.CloseChallenge("cC");
-            Assert.IsType<ViewResult>(result);
-            Assert.Equal("You already closed this challenge", _sut.ViewBag.Message);
+            Assert.IsType<ViewResult>(result);      
+            _mockLocal.Verify(l => l["AlreadyClosed"], Times.Once);
         }
 
 
@@ -234,8 +234,7 @@ namespace PlattformChallenge.UnitTest.Controllers
 
             var result = await _sut.CloseChallenge("c2");
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("There is at least one challenge you did not rate, therefore you can not close this challenge yet. " +
-                            "Please rate all solutions before closing a challenge", _sut.ViewBag.Message);
+            _mockLocal.Verify(l => l["MustRateAllSolutions"], Times.Once);      
 
         }
 
@@ -252,8 +251,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockCRepo.Setup(c => c.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).ReturnsAsync(challenges.ElementAt(0));
             var result = await _sut.CloseChallenge("c4");
             Assert.IsType<ViewResult>(result);
-            Assert.Equal("There are at least two solutions with same score. Only one solution can have the best score. " +
-                            "Please rate them with different scores and then close the challenge", _sut.ViewBag.Message);
+            _mockLocal.Verify(l => l["TwoSolutionSameScore"], Times.Once);
         }
 
         private List<Participation> GetAllBuildParticipation()

@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmedLogIn" xml:space="preserve">
+    <value>You have confirmed the email. Please log in.</value>
+  </data>
+  <data name="ConfirmEmailTitle" xml:space="preserve">
+    <value>Confirmation of your account on Programming Challenge Platform</value>
+  </data>
+  <data name="CurrentUserWrong" xml:space="preserve">
+    <value>The current user is wrong.</value>
+  </data>
   <data name="EmailConfirm" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Dear {0} ,&lt;/p&gt;
-   &lt;p&gt;Please confirm your account &lt;/p&gt;
+   &lt;p&gt;Please confirm your account. &lt;/p&gt;
    &lt;p&gt;click this link {1} &lt;/p&gt;
    &lt;p&gt;&lt;/p&gt;
-   &lt;p&gt;Kind regards&lt;/p&gt; 
+   &lt;p&gt;Kind regards,&lt;/p&gt; 
     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
   </data>
@@ -131,9 +140,21 @@
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
    &lt;p&gt;Dear {0} ,&lt;/p&gt;
    &lt;p&gt;Click this link {1} &lt;/p&gt;
-   &lt;p&gt;to reset your password&lt;/p&gt;
-   &lt;p&gt;Kind regards&lt;/p&gt;
+   &lt;p&gt;to reset your password.&lt;/p&gt;
+   &lt;p&gt;Kind regards,&lt;/p&gt;
    &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
 &lt;/div&gt;</value>
+  </data>
+  <data name="ForgotPasswordTitle" xml:space="preserve">
+    <value>Set your new password on Programming Challenge Platform</value>
+  </data>
+  <data name="OriginPasswordWrong" xml:space="preserve">
+    <value>The origin password is not correct.</value>
+  </data>
+  <data name="SentConfirmEmail" xml:space="preserve">
+    <value>We have send the confirmation email. Please check your email and click the confirmation link in it.</value>
+  </data>
+  <data name="SentPasswordEmail" xml:space="preserve">
+    <value>We have sent a password reset Email. Please check your emailbox.</value>
   </data>
 </root>

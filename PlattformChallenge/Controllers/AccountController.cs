@@ -73,12 +73,12 @@ namespace PlattformChallenge.Controllers
                         }, Request.Scheme);
                         logger.Log(LogLevel.Warning, confirmationLink);
 
-                        string subject = "Confirm Email";
+                        string subject = localizer["ConfirmEmailTitle"];
                         string body =
                          localizer["EmailConfirm",user.Name, confirmationLink];
 
                         await _sender.SendEmailAsync(user.Email, subject, body);
-                        ViewBag.Message = "We have send the email. Please check your email";
+                        ViewBag.Message = localizer["SentConfirmEmail"]; 
                         return View("ActivateUserEmail");
                     }                                                         
                     else
@@ -187,16 +187,16 @@ namespace PlattformChallenge.Controllers
 
                     logger.Log(LogLevel.Warning, confirmationLink);
 
-                    string subject = "Confirm Email";
+                    string subject = localizer["ConfirmEmailTitle"];
 
                     string body = localizer["EmailConfirm", user.Name, confirmationLink];
 
                     await _sender.SendEmailAsync(user.Email, subject, body);
-                    ViewBag.Message = "We have the email sendet. Please confirm the email";
+                    ViewBag.Message = localizer["SentConfirmEmail"];
                     return View();
                 }
                 else {
-                    ViewBag.Message = "You have confirmed the email. Please log in";
+                    ViewBag.Message = localizer["ConfirmedLogIn"];
                     return View();
                 }
                 }
@@ -223,12 +223,12 @@ namespace PlattformChallenge.Controllers
                     var passwordResetLink = Url.Action("ResetPassword", "Account",
                             new { email = model.Email, token = token }, Request.Scheme);
 
-                    string subject = "Password Forgot";
+                    string subject = localizer["ForgotPasswordTitle"]; 
 
                     string body = localizer["ForgotPassword", user.Name, passwordResetLink];                      
 
                     await _sender.SendEmailAsync(user.Email, subject, body);
-                    ViewBag.Message = "We have sent the reset Email";
+                    ViewBag.Message = localizer["SentPasswordEmail"];
                     return View("ForgotPasswordConfirmation");
                 }
 
@@ -322,7 +322,7 @@ namespace PlattformChallenge.Controllers
             if (!cur.Email.Equals(email)) 
             {
                 ErrorViewModel errorViewModel = new ErrorViewModel();
-                errorViewModel.RequestId = "The current user is false";
+                errorViewModel.RequestId = localizer["CurrentUserWrong"];
                 return View("Error", errorViewModel);
             }
             return View();
@@ -340,7 +340,7 @@ namespace PlattformChallenge.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var checkOk= await _userManager.CheckPasswordAsync(user,model.Original);
                 if (!checkOk) {
-                    ModelState.AddModelError("","please check the orgin password");
+                    ModelState.AddModelError("", localizer["OriginPasswordWrong"]);
                     return View();
                 }
                 if (user != null)

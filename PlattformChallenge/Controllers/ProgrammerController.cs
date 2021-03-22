@@ -141,7 +141,7 @@ namespace PlattformChallenge.Controllers
             {
                 var par = p.FirstOrDefault();
                 await _pRepository.DeleteAsync(par);
-                string subject = $"Successfuly Cancel for {par.Challenge.Title} ";
+                string subject = localizer["CancelTitle",par.Challenge.Title];
                 string body = localizer["Cancel", _currUser.Name, par.Challenge.Title];
                 await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 if (par.Solution != null)
@@ -183,11 +183,11 @@ namespace PlattformChallenge.Controllers
             {              
                 var par = (await _pRepository.GetAll().Where(p => p.C_Id == model.C_Id && p.P_Id == _currUser.Id).Include(p => p.Solution).AsNoTracking().ToListAsync()).FirstOrDefault();
                 var c = await _cRepository.FirstOrDefaultAsync(x => x.C_Id == model.C_Id);
-                string fileName = c.Title + "_" + _currUser.Name + ".zip";
+                string fileName = c.Title + "_" + _currUser.Email + ".zip";
 
                 if (model.SolutionFile==null||(!model.SolutionFile.ContentType.Equals("application/zip")&&!model.SolutionFile.ContentType.Equals("application/x-zip-compressed")))
                 {
-                    ModelState.AddModelError("","The type is false");
+                    ModelState.AddModelError("", localizer["WrongFileType"]);
                     model.IsVaild = c.Deadline >= DateTime.UtcNow;
                     model.Challenge = c;
                     model.Programmer = _currUser;
@@ -227,7 +227,7 @@ namespace PlattformChallenge.Controllers
                 model.Participation = par;
                 model.Programmer = _currUser;
                 model.IsVaild = c.Deadline >= DateTime.UtcNow;
-                string subject = $"Your Solution for {c.Title} has successfully uploaded";
+                string subject = localizer["UploadTitle", c.Title];
                 string body = localizer["Upload", _currUser.Name, c.Title, par.S_Id];
                 await _sender.SendEmailAsync(_currUser.Email, subject, body);
                 return View(model);
@@ -281,7 +281,7 @@ namespace PlattformChallenge.Controllers
             }
             else {
 
-                throw new Exception("The setting failed");
+                throw new Exception("The profile setting failed");
             }
         }
 

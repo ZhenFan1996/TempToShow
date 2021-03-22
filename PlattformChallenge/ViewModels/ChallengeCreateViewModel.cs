@@ -17,7 +17,8 @@ namespace PlattformChallenge.ViewModels
         [Required]
         public string Title { get; set; }
         [Required]
-        [RegularExpression(@"^([1-9][0-9]*)$")]
+        [RegularExpression(@"^([1-9][0-9]*)$",
+         ErrorMessage = "Only numbers greater than 0 are allowed.")]
         public int Bonus { get; set; }
 
         [Required]
@@ -32,7 +33,8 @@ namespace PlattformChallenge.ViewModels
         public DateTime Deadline { get; set; }
 
         [Required]
-        [RegularExpression(@"^([1-9][0-9]*)$")]
+        [RegularExpression(@"^([1-9][0-9]*)$",
+         ErrorMessage = "Only numbers greater than 0 are allowed.")]
         public int Max_Participant { get; set; }
 
         public List<Language> Languages { get; set; }

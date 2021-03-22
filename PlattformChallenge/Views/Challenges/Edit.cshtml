@@ -42,18 +42,18 @@
             }
             else
             {
-                <input type="hidden" asp-for="Release_Date" />
+                <input type="hidden" asp-for="Challenge.Release_Date" />
                 <div class="form-group">
-                    <label asp-for="Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
-                    <input asp-for="Release_Date" id="rn" disabled />
+                    <label asp-for="Challenge.Release_Date" class="control-label">@Localizer["ReleaseDate"]</label>
+                    <input asp-for="Challenge.Release_Date" id="rn" disabled />
                     <div>
                         <span>@Localizer["NoEditInfo"]</span>
                     </div>
                 </div>
-                <input type="hidden" asp-for="Deadline" />
+                <input type="hidden" asp-for="Challenge.Deadline" />
                 <div class="form-group">
-                    <label asp-for="Deadline" class="control-label">@Localizer["Deadline"]</label>
-                    <input asp-for="Deadline" id="dn" disabled />
+                    <label asp-for="Challenge.Deadline" class="control-label">@Localizer["Deadline"]</label>
+                    <input asp-for="Challenge.Deadline" id="dn" disabled />
                     <div><span>@Localizer["NoEditInfo"]</span></div>
                 </div>
 

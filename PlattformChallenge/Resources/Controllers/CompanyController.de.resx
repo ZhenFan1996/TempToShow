@@ -117,22 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AlreadyClosed" xml:space="preserve">
+    <value>Sie haben dieses Challenge bereits geschlossen.</value>
+  </data>
+  <data name="CannotFoundCID" xml:space="preserve">
+    <value>Das Challenge mit Id {0} kann nicht gefunden werden.</value>
+  </data>
   <data name="Closed" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-   &lt;p&gt;Liebe {0} ,&lt;/p&gt;
-   &lt;p&gt; Dein Challenge {1} ist gescholssen. Du kannst die Ergebnisse in deinem Portal sehen&lt;/p&gt;
+   &lt;p&gt;Liebe(r) {0} ,&lt;/p&gt;
+   &lt;p&gt; Ihr Challenge {1} ist geschlossen. Sie können die Ergebnisse in Ihrem Portal ansehen.&lt;/p&gt;
+   &lt;p&gt;Klicken Sie &lt;a href="https://tes-webapp.azurewebsites.net/Programmer"&gt;here&lt;/a&gt; um Ihr Ergebnis zu anzusehen! &lt;/p&gt; 
     &lt;p&gt;&lt;/p&gt;
     &lt;p&gt;Viele Grüße&lt;/p&gt;
     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
      &lt;/div&gt;</value>
   </data>
+  <data name="EmptyCID" xml:space="preserve">
+    <value>Ungültiger leerer Challenge-ID-Wert!</value>
+  </data>
+  <data name="MustRateAllSolutions" xml:space="preserve">
+    <value>Es gibt mindestens eine Loesung, die Sie nicht bewertet haben. Daher koennen Sie dieses Challenge noch nicht schliessen. Bitte bewerten Sie alle Loesungen, bevor Sie eine Challenge abschliessen.</value>
+  </data>
+  <data name="NoAccessOtherCom" xml:space="preserve">
+    <value>Sie haben keinen Zugang zu Challenges anderer Unternehmen!</value>
+  </data>
+  <data name="NoCloseBeforeDeadline" xml:space="preserve">
+    <value>Sie koennen das Challenge NICHT vor Abgabefrist schliessen!</value>
+  </data>
+  <data name="NoRateAfterClosing" xml:space="preserve">
+    <value>Sie können die Lösung nicht mehr bewerten, da dieses Challenge bereits abgeschlossen ist.</value>
+  </data>
   <data name="Noted" xml:space="preserve">
     <value>&lt;div style='font: 14px/20px Times New Roman, sans-serif;' &gt;
-    &lt;p&gt;Liebe {0}&lt;/p&gt;
-    &lt;p&gt;Dein Challenge {1} wurde notiert&lt;/p&gt;
-     &lt;p&gt;Das Punkt ist :&lt;strong&gt;{2}&lt;/strong&gt;&lt;/p&gt;
+    &lt;p&gt;Liebe(r) {0}&lt;/p&gt;
+    &lt;p&gt;Dein Challenge {1} wurde bewertet&lt;/p&gt;
+     &lt;p&gt;Der Punkt ist :&lt;strong&gt;{2}&lt;/strong&gt;&lt;/p&gt;
      &lt;p&gt; &lt;/p&gt;
      &lt;p&gt;Viele Grüße&lt;/p&gt;
      &lt;p&gt;TES-Challenge Teams&lt;/p&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="NotedTitle" xml:space="preserve">
+    <value>Dein Challenge {0} ist bewertet!</value>
+  </data>
+  <data name="TwoSolutionSameScore" xml:space="preserve">
+    <value>Es gibt mindestens zwei Lösungen mit derselben Punktzahl. Nur eine Lösung kann die beste Punktzahl erzielen. Bitte bewerten Sie sie mit unterschiedlichen Punktzahlen und schließen Sie das Challenge erneut</value>
   </data>
 </root>
