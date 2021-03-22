@@ -248,7 +248,12 @@ namespace PlattformChallenge.Controllers
                
             return RedirectToAction("Index");
         }
-
+        /// <summary>
+        /// Show a company profile
+        /// </summary>
+        /// <param name="c_id">Id of a company user</param>
+        /// <returns>Requested company profile view if succeed; 
+        /// NotFound view if the given id parameter is not correct</returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Profile(string c_id)
@@ -281,7 +286,10 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// HttpGeT - Load information setting site for profile
+        /// </summary>
+        /// <returns>HttpPost Formular</returns>
         [HttpGet]
         public IActionResult ProfileSetting()
         {
@@ -299,7 +307,11 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// HttpPost - Set received profile update information to database
+        /// </summary>
+        /// <param name="model">ProfileSettingViewModel with given parameters from user input</param>
+        /// <returns>The same site if succeed or Error info site if failed</returns>
         [HttpPost]
         public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
         {
@@ -375,7 +387,11 @@ namespace PlattformChallenge.Controllers
 
             return null;
         }
-
+        /// <summary>
+        /// Download submitted Solution
+        /// </summary>
+        /// <param name="s_id">Solution Id</param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<FileResult> DownloadSolution(string s_id)
         {

@@ -246,14 +246,13 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-      
-        /// Create a new challenge. Post the create form.
-        //    This method is only authorized to company user.
+
+        /// <summary>
+        /// Create a new challenge and put it into database.
+        /// This method is only authorized to company user.
         /// </summary>
-        /// <param name="model">A ChallengeCreateViewModel</param>
-        /// <returns>A view with all the given details at creating challenge, if the given information passed validation check.
-        ///   A view with error message, if the given information didn't pass validation check.
-        /// <summary></returns>
+        /// <param name="model">ChallengeCreateViewModel with all required information for a challenge</param>
+        /// <returns>Details View of this new challenge if create succeed. Else the same view with model error info</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -537,41 +536,6 @@ namespace PlattformChallenge.Controllers
         }
 
         #endregion
-
-        //#region delete
-
-        //GET: Challenges/Delete/5
-        //[Authorize(Roles = "Company")]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var challenge = await _repository.GetAll()
-        //        .Include(c => c.Company)
-        //        .FirstOrDefaultAsync(m => m.C_Id == id);
-        //    if (challenge == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(challenge);
-        //}
-
-        // POST: Challenges/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Company")]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-
-        //    var challenge = await _repository.FirstOrDefaultAsync(c => c.C_Id == id);
-        //    challenge = await _repository.DeleteAsync(challenge);
-        //    return RedirectToAction(nameof(Index));
-        //}
-        //#endregion
 
 
         private bool ChallengeExists(string id)

@@ -78,6 +78,12 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
+        /// <summary>
+        ///  Show a programmer profile
+        /// </summary>
+        /// <param name="p_id">Id of a programmer user</param>
+        /// <returns>Requested programmerprofile view if succeed; 
+        /// NotFound view if the given id parameter is not correct</returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Profile(string p_id) {
@@ -105,7 +111,10 @@ namespace PlattformChallenge.Controllers
 
             return View(model);
         }
-
+        /// <summary>
+        /// Show all won challenges and the total bonus of current programmer user
+        /// </summary>
+        /// <returns>WonChallenges View</returns>
         public async Task<IActionResult> WonChallenges()
         {
             var challenges = await  _cRepository.GetAll().Include(c => c.Company)
@@ -123,13 +132,13 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-            /// <summary>
-            /// Exit the currently selected challenge
-            /// </summary>
-            /// <param name="id"></param> the challenge id
-            /// <returns>View index</returns>
+        /// <summary>
+        /// Exit the currently selected challenge
+        /// </summary>
+        /// <param name="id"> the challenge id</param>
+        /// <returns>View index</returns>
 
-            public async Task<IActionResult> Cancel(string id) {
+        public async Task<IActionResult> Cancel(string id) {
             var p = await (from pc in _pRepository.GetAll().Include(p =>p.Solution).Include(p => p.Challenge)
                     where pc.C_Id == id && pc.P_Id == _currUser.Id
                     select pc).ToListAsync();
@@ -153,7 +162,11 @@ namespace PlattformChallenge.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// HttpGet - Load solution upload site
+        /// </summary>
+        /// <param name="c_id">The currently selected challenge to upload a solution</param>
+        /// <returns>UploadSolution View</returns>
         [HttpGet]
         public  async Task<IActionResult> UploadSolution(string c_id) {
             var par = await _pRepository.GetAll()
@@ -176,7 +189,11 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        
+        /// <summary>
+        /// HttpPost - Upload a selected solution
+        /// </summary>
+        /// <param name="model">UploadSolutionViewModel with all default info and solution file</param>
+        /// <returns>UploadSolution View</returns>
         [HttpPost]
         public async Task<IActionResult> UploadSolution(UploadSolutionViewModel model) {
             if (ModelState.IsValid)
@@ -238,7 +255,10 @@ namespace PlattformChallenge.Controllers
         }
 
 
-        
+        /// <summary>
+        /// HttpGeT - Load information setting site for profile
+        /// </summary>
+        /// <returns>HttpPost Formular</returns>
         [HttpGet]
         public  IActionResult ProfileSetting() {
             DateTime defaultTime = _currUser.Birthday.Equals(DateTime.MinValue) ? DateTime.UtcNow.Date.AddYears(-20) : _currUser.Birthday;
@@ -256,7 +276,11 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-        
+        /// <summary>
+        /// HttpPost - Set received profile update information to database
+        /// </summary>
+        /// <param name="model">ProfileSettingViewModel with given parameters from user input</param>
+        /// <returns>The same site if succeed or Error info site if failed</returns>
         [HttpPost]
         public async Task<IActionResult> ProfileSetting(ProfileSettingViewModel model)
         {
