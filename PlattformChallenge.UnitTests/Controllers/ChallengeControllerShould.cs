@@ -648,6 +648,246 @@ namespace PlattformChallenge.UnitTest.Controllers
             ViewResult value = (ViewResult)result;
             Assert.Equal("Error", value.ViewName);
         }
+
+        [Fact]
+        public async Task EditWhenIdIsNull() {
+
+            var result =await _sut.Edit((string)null);
+
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("NotFound", value.ViewName);
+        }
+
+
+        [Fact]
+        public async Task EditWhenChallengeNotFound()
+        {
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+             new List<Challenge>()
+           {  new Challenge()
+                {
+                   C_Id = "egal",
+                    Title = "egal",
+                    Bonus = 60,
+                    Content = "egal",
+                    Com_ID = "egal"
+                }
+           }.AsQueryable().BuildMockDbSet().Object
+           );
+            var result = await _sut.Edit("notEgal");
+
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("NotFound", value.ViewName);
+        }
+
+        [Fact]
+        public async Task EditWhenChallengeIsClose() {
+
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+            new List<Challenge>()
+          {  new Challenge()
+                {
+                   C_Id = "egal",
+                    Title = "egal",
+                    Bonus = 60,
+                    Content = "egal",
+                    Com_ID = "1",
+                    Release_Date =DateTime.UtcNow.AddDays(2),
+                    IsClose =true
+                }
+          }.AsQueryable().BuildMockDbSet().Object
+          ) ;
+            var result = await _sut.Edit("egal");
+
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("Error", value.ViewName);
+
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildGetEdit()
+        {
+
+            Challenge totest = new Challenge()
+            {
+                C_Id = "egal",
+                Title = "egal",
+                Bonus = 60,
+                Content = "egal",
+                Com_ID = "1",
+                Release_Date = DateTime.UtcNow.AddDays(2),
+                LanguageChallenges = new List<LanguageChallenge>() {
+                    new LanguageChallenge(){
+                        C_Id ="egal",
+                        Language_Id ="1"
+                    },
+
+                     new LanguageChallenge(){
+                        C_Id ="egal",
+                        Language_Id ="2"
+                    },
+
+                      new LanguageChallenge(){
+                        C_Id ="egal",
+                        Language_Id ="3"
+                    },
+                }
+            };
+
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+            new List<Challenge>()
+          { totest
+                }
+          .AsQueryable().BuildMockDbSet().Object
+          );
+            var result = await _sut.Edit("egal");
+
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            ChallengeEditViewModel model = (ChallengeEditViewModel)value.Model;
+            Assert.Equal(model.Challenge, totest);
+
+        }
+
+
+        [Fact]
+        public async Task PostEditInValidModelState() {
+            var toTest = TestModel();
+            _sut.ModelState.AddModelError(string.Empty, "failed to edit the challenge, please try again");
+            var result = await _sut.Edit(toTest);
+
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            var model = value.Model;
+            Assert.Equal(toTest, model);
+        }
+
+        [Fact]
+        public async Task PostEditValidModelState()
+        {
+            var toTest = TestModel();
+            GetAllBuildChallenge();
+            var result = await _sut.Edit(toTest);           
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            var model = value.Model;
+            Assert.Equal(toTest, model);
+        }
+
+
+
+        private List<Challenge> GetAllBuildChallenge()
+        {
+            var challenges = new List<Challenge>() {
+               new Challenge(){
+                C_Id = "c1",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.UtcNow,
+                Max_Participant = 8,
+                Com_ID = "1",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                 },
+                 Participations = new List<Participation>(){
+
+                         new Participation(){
+                             C_Id = "c1",
+                             P_Id ="test"
+                         }
+                     }
+            },
+                new Challenge(){
+                C_Id = "c2",
+                Title = "test title 2",
+                Bonus = 200,
+                Content = "test content 2",
+                Release_Date = DateTime.UtcNow,
+                Max_Participant = 8,
+                Com_ID = "1",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                 },
+                 Participations = new List<Participation>(){
+                         new Participation(){
+                             C_Id = "cC",
+                             P_Id ="test"
+                         }
+                     }
+            },
+                  new Challenge(){
+                C_Id = "c3",
+                Title = "test title 3",
+                Bonus = 200,
+                Content = "test content 3",
+                Release_Date = DateTime.UtcNow,
+                Max_Participant = 8,
+                Com_ID = "1",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                 },
+                Winner_Id = "Winner"
+            },
+                new Challenge(){
+                C_Id = "c4",
+                Title = "test title 4",
+                Com_ID = "test-company",
+
+            }
+            };
+
+            var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
+            var mockPar = new List<Participation>() {
+                new Participation(){
+                    C_Id="c1",
+                    P_Id="test-programmer"
+                },
+                  new Participation(){
+                    C_Id="c2",
+                    P_Id="test-programmer"
+                }
+            }.AsQueryable().BuildMockDbSet();
+
+            var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
+            _mockPRepo.Setup(p => p.GetAll()).Returns(mockPar.Object);
+
+            _mockRepository.Setup(c => c.GetAll()).Returns(mockChallenges.Object);
+
+            return challenges;
+        }
+
+
+
+        private  ChallengeEditViewModel TestModel() {
+
+            return new ChallengeEditViewModel()
+            {
+                Challenge = new Challenge()
+                {
+
+                    C_Id = "c1",
+                    Title = "test c1",
+                    Bonus = 250,
+                    Content = "egal",
+                    Com_ID = "1",
+                    Release_Date = DateTime.UtcNow.AddDays(2)
+
+                },
+                Languages =  _mockLRepository.Object.GetAllListAsync().Result,
+                IsSelected = new bool[] { true, true, false },
+                AllowEditDate = true,
+                Zone = "Europa/Berlin",
+                Release_Date = DateTime.UtcNow.AddDays(-1),
+                Deadline = DateTime.UtcNow.AddDays(10)
+            };
+
+        }
+
     }
 }
 

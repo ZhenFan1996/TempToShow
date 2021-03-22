@@ -18,12 +18,19 @@ namespace PlattformChallenge.IntegrationTests
     : WebApplicationFactory<TStartup> where TStartup : class
     {
 
-     
+        protected override IHostBuilder CreateHostBuilder() =>
+          Host.CreateDefaultBuilder().ConfigureAppConfiguration((context, config) => {
+
+          }
+          ).ConfigureWebHostDefaults(webBuilder => {
+
+              webBuilder.UseStartup<Startup>();
+          });
+        
+       
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            
-
+        {  
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(

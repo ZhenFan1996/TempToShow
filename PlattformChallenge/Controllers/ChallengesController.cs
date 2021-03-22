@@ -390,6 +390,7 @@ namespace PlattformChallenge.Controllers
         public async Task<IActionResult> Edit(ChallengeEditViewModel model)
         {
 
+
             if (ModelState.IsValid)
             {
                 List<Language> languages = await _lRepository.GetAllListAsync();

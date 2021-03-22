@@ -22,20 +22,20 @@ namespace PlattformChallenge.IntegrationTests.IntegrationTests
         private HttpClient _client;
         private readonly CustomWebApplicationFactory<PlattformChallenge.Startup> _factory;
                                                                                           
-
+       
         public ChallengesControllerIntegrationTests(CustomWebApplicationFactory<PlattformChallenge.Startup> factory)
         {
             _factory = factory;
-
-
-            _client = factory.CreateClient(new WebApplicationFactoryClientOptions
+            _client = factory. CreateClient(new WebApplicationFactoryClientOptions()
             {
                 AllowAutoRedirect = false
             }) ;
+
         }
 
-       
+        [Fact]
         public async Task Get_IndexPage() {
+
             var indexPage = await _client.GetAsync("/Challenges");
             var content = await HtmlHelpers.GetDocumentAsync(indexPage);
             
