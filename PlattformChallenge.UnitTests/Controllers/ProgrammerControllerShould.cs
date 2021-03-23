@@ -239,6 +239,71 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(2, model.InvolvedChallengeNumber);
         }
 
+
+        [Fact]
+        public void ReturnViewProfileSetting() {
+
+            var result = _sut.ProfileSetting();
+            Assert.IsType<ViewResult>(result);
+
+        }
+
+        [Fact]
+        public async Task PostProfileSetting()
+        {
+            var model = new ProfileSettingViewModel()
+            {
+                Name = "test_name",
+                Address = "test_address",
+                Bio = "test_bio",
+                Phone = "test_phone",
+                Birthday = new DateTime(1996, 3, 25),
+                Hobby ="test_hobby",
+                Logo = mockFormFile().Object
+
+            };
+
+            _mockUseerManager.Setup(m => m.UpdateAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Success);
+            var result = await  _sut.ProfileSetting(model);
+            Assert.IsType<RedirectToActionResult>(result);
+
+        }
+
+
+        [Fact]
+        public async Task PostProfileSettingFailed()
+        {
+            var model = new ProfileSettingViewModel()
+            {
+                Name = "test_name",
+                Address = "test_address",
+                Bio = "test_bio",
+                Phone = "test_phone",
+                Birthday = new DateTime(1996, 3, 25),
+                Hobby = "test_hobby",
+                Logo = mockFormFile().Object
+
+            };
+
+            _mockUseerManager.Setup(m => m.UpdateAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Failed());
+            var ex =await Assert.ThrowsAsync<Exception>(() => _sut.ProfileSetting(model));
+            Assert.Equal("The profile setting failed",ex.Message);
+        }
+
+        [Fact]
+        public async Task ReturnViewWonChallenges() {
+
+           var challenges = GetAllBuild();
+           var result = await _sut.WonChallenges();
+           Assert.IsType<ViewResult>(result);
+            var value = (ViewResult)result;
+            var model = (WonChallengeViewModel)value.Model;
+            Assert.Equal(challenges.ElementAt(0),model.Challenges.ElementAt(0));
+        }
+
+
+     
+
         private Mock<IFormFile> mockFormFile() {
 
             var fileMock = new Mock<IFormFile>();
@@ -268,7 +333,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Com_ID = "1111",
                 Company = new PlatformUser(){
                     Id = "test1.com"
-                 }
+                 },
+                Winner_Id ="test-programmer"
             },
                 new Challenge(){
                 C_Id = "c2",
@@ -280,7 +346,8 @@ namespace PlattformChallenge.UnitTest.Controllers
                 Com_ID = "1111",
                 Company = new PlatformUser(){
                     Id = "test1.com"
-                 }
+                 },
+                Winner_Id ="test-programmer1"
             },
                   new Challenge(){
                 C_Id = "c3",

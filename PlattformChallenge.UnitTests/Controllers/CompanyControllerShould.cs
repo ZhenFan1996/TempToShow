@@ -25,6 +25,7 @@ using PlattformChallenge.Infrastructure;
 using PlattformChallenge.Models;
 using PlattformChallenge.Services;
 using Microsoft.Extensions.Localization;
+using System.IO;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -254,6 +255,85 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["TwoSolutionSameScore"], Times.Once);
         }
 
+
+        [Fact]
+        public void ReturnViewProfileSetting()
+        {
+
+            var result = _sut.ProfileSetting();
+            Assert.IsType<ViewResult>(result);
+
+        }
+
+        [Fact]
+        public async Task PostProfileSetting()
+        {
+            var model = new ProfileSettingViewModel()
+            {
+                Name = "test_name",
+                Address = "test_address",
+                Bio = "test_bio",
+                Phone = "test_phone",
+                Birthday = new DateTime(1996, 3, 25),
+                Hobby = "test_hobby",
+                Logo = mockFormFile().Object
+
+            };
+
+            _mockUserManager.Setup(m => m.UpdateAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Success);
+            var result = await _sut.ProfileSetting(model);
+            Assert.IsType<RedirectToActionResult>(result);
+
+        }
+
+
+        [Fact]
+        public async Task PostProfileSettingFailed()
+        {
+            var model = new ProfileSettingViewModel()
+            {
+                Name = "test_name",
+                Address = "test_address",
+                Bio = "test_bio",
+                Phone = "test_phone",
+                Birthday = new DateTime(1996, 3, 25),
+                Hobby = "test_hobby",
+                Logo = mockFormFile().Object
+
+            };
+
+            _mockUserManager.Setup(m => m.UpdateAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Failed());
+            var ex = await Assert.ThrowsAsync<Exception>(() => _sut.ProfileSetting(model));
+            Assert.Equal("The setting failed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ProfileGet()
+        {
+            GetAllBuildChallenge();
+            GetAllBuildParticipation();
+            _mockUserManager.Setup(_ => _.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser
+            {
+                Id = "test-programmer",
+                Name = "Zhen",
+                Email = "ubumh@student.kit.edu",
+                Address = "test address",
+                Bio = "test bio",
+                Hobby = "test Hobby",
+                Birthday = DateTime.UtcNow
+            });
+
+            var result = await _sut.Profile("test-programmer");
+            var vr = result as ViewResult;
+            var model = (ProfileViewModel)vr.Model;
+            Assert.Equal("test address", model.Address);
+            Assert.Equal("Zhen", model.Name);
+            Assert.Equal("ubumh@student.kit.edu", model.Email);
+            Assert.Equal("test bio", model.Bio);
+            Assert.Equal("test Hobby", model.Hobby);
+        }
+
+
         private List<Participation> GetAllBuildParticipation()
         {
             var participations = new List<Participation>() {
@@ -435,6 +515,23 @@ namespace PlattformChallenge.UnitTest.Controllers
             mgr.Setup(x => x.DeleteAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Success);
             mgr.Setup(x => x.UpdateAsync(It.IsAny<PlatformUser>())).ReturnsAsync(IdentityResult.Success);
             return mgr;
+        }
+        private Mock<IFormFile> mockFormFile()
+        {
+
+            var fileMock = new Mock<IFormFile>();
+            var content = "Hello World from a Fake File";
+            var fileName = "test.zip";
+            var ms = new MemoryStream();
+            var writer = new StreamWriter(ms);
+            writer.Write(content);
+            writer.Flush();
+            ms.Position = 0;
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.FileName).Returns(fileName);
+            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            fileMock.Setup(_ => _.ContentType).Returns("application/zip");
+            return fileMock;
         }
     }
 }
