@@ -21,6 +21,8 @@ using PlattformChallenge.Controllers;
 using Microsoft.Extensions.Logging;
 using PlattformChallenge.Services;
 using Microsoft.Extensions.Localization;
+using TimeZoneConverter;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -193,6 +195,51 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockRepository.Verify(l => l.InsertAsync(It.IsAny<Challenge>()), Times.Never);
             _mockLCRepository.Verify(l => l.InsertAsync(It.IsAny<LanguageChallenge>()), Times.Never);
         }
+
+
+        [Fact]
+        public async Task FailedCreateReleaseDateInPast()
+        {
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 2, 12, 00, 00, DateTimeKind.Unspecified),
+                Deadline = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day +2, 12, 00, 00, DateTimeKind.Unspecified),
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true },
+                Zone = "Europe/Berlin"
+            };
+            var result = await _sut.Create(challenge);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal(challenge, value.Model);
+            _mockLocal.Verify(l => l["OnlyReleaseInFuture"], Times.Once);
+        }
+
+        [Fact]
+        public async Task FailedCreateReleasBeforeDeadline ()
+        {
+            var challenge = new ChallengeCreateViewModel()
+            {
+                Title = "aaaa",
+                Bonus = 2,
+                Content = "wuwuwuwuwu",
+                Release_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day+1 , 12, 00, 00, DateTimeKind.Unspecified),
+                Deadline = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 2, 12, 00, 00, DateTimeKind.Unspecified),
+                Max_Participant = 8,
+                IsSelected = new bool[] { true, false, true },
+                Zone = "Europe/Berlin"
+            };
+            var result = await _sut.Create(challenge);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal(challenge, value.Model);
+            _mockLocal.Verify(l => l["DeadlineAfterRelease"], Times.Once);
+        }
+
+
         //
         // Summary:
         //    [TestCase-ID: 10-1]
@@ -578,6 +625,54 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("1", toCheck.P_Id);
         }
 
+
+        [Fact]
+        public async Task ReturnInVaildParticipation()
+        {
+            Participation toCheck = null;
+            _mockRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<Challenge, bool>>>())).Returns(
+                Task.FromResult(new Challenge()
+                {
+                    C_Id = "mock_challenge_RVP",
+                    Title = "title_mock_challenge_RVP",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge_RVP",
+                    Max_Participant = 11,
+                    Deadline = DateTime.UtcNow.AddDays(-3)
+                }
+                ));
+
+            _mockRepository.Setup(m => m.GetAll()).Returns(
+                new List<Challenge>()
+                {  new Challenge()
+                {
+                   C_Id = "mock_challenge_RVP",
+                    Title = "title_mock_challenge_RVP",
+                    Bonus = 100,
+                    Content = "Content_mock_challenge_RVP",
+                    Max_Participant = 11,
+                    Deadline = DateTime.UtcNow.AddDays(-3)
+                }
+                }.AsQueryable().BuildMockDbSet().Object
+                );
+
+            _mockPRpository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<PlatformUser, bool>>>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "test@kit.edu",
+                Name = "test"
+
+            });
+            _mockPaRepository.Setup(m => m.GetAllList(It.IsAny<Expression<Func<Participation, bool>>>())).Returns(new List<Participation>()
+            {
+            });
+            var result = await _sut.ParticipateChallenge("mock_challenge_RVP");
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["NoAllowParticipation"], Times.Once);
+        }
+
+
+
         //
         // Summary:
         //    [TestCase-ID: 51-2]
@@ -767,18 +862,327 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(toTest, model);
         }
 
+
         [Fact]
-        public async Task PostEditValidModelState()
+        public async Task PostEditValidModelStateNotDeleteLanguage()
         {
             var toTest = TestModel();
             GetAllBuildChallenge();
-            var result = await _sut.Edit(toTest);           
-            Assert.IsType<ViewResult>(result);
-            ViewResult value = (ViewResult)result;
-            var model = value.Model;
-            Assert.Equal(toTest, model);
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<RedirectToActionResult>(result);
+            RedirectToActionResult value = (RedirectToActionResult)result;
+            Assert.Equal("Details", value.ActionName);
+            Assert.Equal(toTest.Challenge.C_Id, toCheck.C_Id);
+            Assert.Equal(toTest.Challenge.Title, toCheck.Title);
+            Assert.Equal(toTest.Challenge.Bonus, toCheck.Bonus);
         }
 
+        [Fact]
+        public async Task PostEditValidModelThrowDBException()
+        {
+            var toTest = TestModel();
+            GetAllBuildChallenge();
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ThrowsAsync(new DbUpdateConcurrencyException());
+            await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => _sut.Edit(toTest));
+           
+        }
+
+        [Fact]
+        public async Task PostEditValidModelStateDelteLanguage()
+        {
+            var toTest = TestModel();
+            GetAllBuildChallenge();
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            _mockLCRepository.Setup(m => m.FirstOrDefaultAsync(It.IsAny<Expression<Func<LanguageChallenge, bool>>>())).ReturnsAsync(new LanguageChallenge()
+            {
+                C_Id = "c1",
+                Language_Id = "2"
+            });
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<RedirectToActionResult>(result);
+            RedirectToActionResult value = (RedirectToActionResult)result;
+            Assert.Equal("Details", value.ActionName);
+            Assert.Equal(toTest.Challenge.C_Id, toCheck.C_Id);
+            Assert.Equal(toTest.Challenge.Title, toCheck.Title);
+            Assert.Equal(toTest.Challenge.Bonus, toCheck.Bonus);
+        }
+
+
+        [Fact]
+        public async Task PostEdiFailedNotAllow()
+        {
+            var toTest = TestModel();
+            toTest.AllowEditDate = false;
+            toTest.Challenge.Bonus =10;
+            GetAllBuildChallenge();
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["CannotReduceBonus"], Times.Once);
+        }
+
+
+        [Fact]
+        public async Task PostEdiFailedReduceParNumber()
+        {
+            var toTest = TestModel();
+            toTest.Challenge.Max_Participant = 1;
+            GetAllBuildChallenge();
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["CannotReduceParNumber"], Times.Once);
+        }
+
+        [Fact]
+        public async Task PostEdiFailedNotReleaseInFutrue()
+        {
+            var toTest = TestModel();
+            toTest.Release_Date = new DateTime(2020, 12, 25, 12, 00, 00, DateTimeKind.Unspecified);
+            GetAllBuildChallenge();
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["OnlyReleaseInFuture"], Times.Once);
+        }
+
+
+        [Fact]
+        public async Task PostEdiFailedDeadlineAfterRelease()
+        {
+            var toTest = TestModel();
+            toTest.Release_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 2, 12, 00, 00, DateTimeKind.Unspecified);
+            toTest.Deadline = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 2, 12, 00, 00, DateTimeKind.Unspecified);
+            GetAllBuildChallenge();
+            Challenge toCheck = null;
+            _mockRepository.Setup(m => m.UpdateAsync(It.IsAny<Challenge>())).ReturnsAsync(toTest.Challenge).Callback<Challenge>(x => toCheck = x);
+            var result = await _sut.Edit(toTest);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["DeadlineAfterRelease"], Times.Once);
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildIndexFilterLangugae()
+        {
+            var lc = new List<LanguageChallenge>() {
+                new LanguageChallenge(){
+                    Language_Id = "1",
+                    C_Id = "1abc"
+                },
+                 new LanguageChallenge(){
+                    Language_Id = "2",
+                    C_Id = "2cde"
+                }
+            };
+            _mockLCRepository.Setup(m => m.GetAll()).Returns(lc.AsQueryable().BuildMockDbSet().Object);
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, null, null, new bool[3] { false,true,false}, null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildIndexForPast()
+        {
+            var l = GetAllBuildForIndex();
+            l.ElementAt(0).Deadline= l.ElementAt(0).Deadline.AddDays(-40);
+            l.ElementAt(1).Deadline = l.ElementAt(1).Deadline.AddDays(-40);
+            l.ElementAt(0).Release_Date = l.ElementAt(0).Release_Date.AddDays(-40);
+            l.ElementAt(1).Release_Date = l.ElementAt(1).Release_Date.AddDays(-40);
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, null, null, new bool[0], 1);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(1).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(1).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(1).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
+        }
+
+        [Fact]
+        public async Task ReturnVaildIndexForFuture()
+        {
+            var l = GetAllBuildForIndex();
+            l.ElementAt(0).Release_Date=l.ElementAt(0).Release_Date.AddDays(30);
+            l.ElementAt(1).Release_Date = l.ElementAt(0).Release_Date.AddDays(30);
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, null, null, new bool[0], 2);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(1).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(1).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(1).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);           
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildIndexSortBonus()
+        {
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "Bonus", null, new bool[0], null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
+        }
+
+        [Fact]
+        public async Task ReturnVaildIndexSortQuota()
+        {
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "Quota", null, new bool[0], null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
+        }
+
+        [Fact]
+        public async Task ReturnVaildIndexSortDates()
+        {
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "Date", null, new bool[0], null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
+        }
+
+        [Fact]
+        public async Task ReturnVaildIndexSortDeadline()
+        {
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "Deadline", null, new bool[0], null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(0).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(0).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(0).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildIndexSortDeadlineDesc()
+        {
+            var l = GetAllBuildForIndex();
+            var query = l.AsQueryable().BuildMockDbSet();
+            _mockRepository
+                .Setup(m => m.GetAll())
+                .Returns(query.Object);
+            var result = await _sut.Index(null, "deadline_desc", null, new bool[0], null);
+            Assert.IsType<ViewResult>(result);
+            var value = result as ViewResult;
+            var model = value.Model as ChallengeIndexViewModel;
+            Assert.Equal("test title 1", model.Challenges.ElementAt<Challenge>(1).Title);
+            Assert.Equal("1111", model.Challenges.ElementAt<Challenge>(1).Com_ID);
+            Assert.Equal(200, model.Challenges.ElementAt<Challenge>(1).Bonus);
+            Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
+            Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
+        }
+
+
+        [Fact]
+        public async Task ReturnVaildDetails() {
+            GetAllBuildChallenge();
+            var result=  await _sut.Details("c1");
+            Assert.IsType<ViewResult>(result);
+
+        }
+
+
+
+        private List<Challenge> GetAllBuildForIndex() {
+
+            var l = new List<Challenge>() {
+                 new Challenge(){
+                C_Id = "1abc",
+                Title = "test title 1",
+                Bonus = 200,
+                Content = "test content 1",
+                Release_Date = DateTime.UtcNow.AddDays(-20),
+                Deadline = DateTime.UtcNow.AddDays(20),
+                Max_Participant = 8,
+                Com_ID = "1111",
+                Company = new PlatformUser(){
+                    Id = "test1.com"
+                }
+                },
+                   new Challenge(){
+                C_Id = "2cde",
+                Title = "test title 2",
+                Bonus = 400,
+                Content = "test content 2",
+                Release_Date = DateTime.UtcNow.AddDays(-10),
+                Deadline = DateTime.UtcNow.AddDays(30),
+                Max_Participant = 18,
+                Com_ID = "2222",
+                Company = new PlatformUser(){
+                    Id = "test2.com"
+                }
+                }
+            };
+           
+
+            return l;
+
+        }
 
 
         private List<Challenge> GetAllBuildChallenge()
@@ -787,9 +1191,10 @@ namespace PlattformChallenge.UnitTest.Controllers
                new Challenge(){
                 C_Id = "c1",
                 Title = "test title 1",
-                Bonus = 200,
+                Bonus = 50,
                 Content = "test content 1",
-                Release_Date = DateTime.UtcNow,
+                Release_Date = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day-3,12,00,00,DateTimeKind.Unspecified),
+               Deadline = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day+3,12,00,00,DateTimeKind.Unspecified),
                 Max_Participant = 8,
                 Com_ID = "1",
                 Company = new PlatformUser(){
@@ -799,9 +1204,11 @@ namespace PlattformChallenge.UnitTest.Controllers
 
                          new Participation(){
                              C_Id = "c1",
-                             P_Id ="test"
+                             P_Id ="1"
                          }
-                     }
+                     },
+                 Winner_Id = "test"
+                 
             },
                 new Challenge(){
                 C_Id = "c2",
@@ -843,21 +1250,57 @@ namespace PlattformChallenge.UnitTest.Controllers
             };
 
             var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
-            var mockPar = new List<Participation>() {
+
+            var par = new List<Participation>() {
                 new Participation(){
                     C_Id="c1",
-                    P_Id="test-programmer"
+                    P_Id="1"
                 },
                   new Participation(){
                     C_Id="c2",
                     P_Id="test-programmer"
                 }
-            }.AsQueryable().BuildMockDbSet();
+            };
 
-            var mockChallenges = challenges.AsQueryable().BuildMockDbSet();
-            _mockPRepo.Setup(p => p.GetAll()).Returns(mockPar.Object);
+            var lc = new List<LanguageChallenge>() {
+                new LanguageChallenge(){
+                    Language_Id = "1",
+                    C_Id = "c1"
+                },
+                 new LanguageChallenge(){
+                    Language_Id = "2",
+                    C_Id = "c1"
+                },
+                  new LanguageChallenge(){
+                    Language_Id = "1",
+                    C_Id = "c2"
+                }
+            };
+            _mockLCRepository.Setup(m => m.GetAll()).Returns(lc.AsQueryable().BuildMockDbSet().Object);
+
+
+            var users = new List<PlatformUser>() { new PlatformUser() {
+                Id ="1",
+                Name = "test",
+                Participations = new List<Participation>(){
+
+                    new Participation(){
+                        C_Id = "c1",
+                        P_Id ="1"
+                    }
+                }
+
+            } };
+
+            _mockPRpository.Setup(m => m.GetAll()).Returns(users.AsQueryable().BuildMockDbSet().Object);
+
+
+            var mockPar = par.AsQueryable().BuildMockDbSet();
+
+            _mockPaRepository.Setup(p => p.GetAllList(It.IsAny<Expression<Func<Participation,bool>>>())).Returns(par);
 
             _mockRepository.Setup(c => c.GetAll()).Returns(mockChallenges.Object);
+
 
             return challenges;
         }
@@ -868,6 +1311,8 @@ namespace PlattformChallenge.UnitTest.Controllers
 
             return new ChallengeEditViewModel()
             {
+
+
                 Challenge = new Challenge()
                 {
 
@@ -876,17 +1321,18 @@ namespace PlattformChallenge.UnitTest.Controllers
                     Bonus = 250,
                     Content = "egal",
                     Com_ID = "1",
-                    Release_Date = DateTime.UtcNow.AddDays(2)
+                    Release_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 2, 12, 00, 00, DateTimeKind.Unspecified),
+                    Max_Participant = 10
 
                 },
-                Languages =  _mockLRepository.Object.GetAllListAsync().Result,
-                IsSelected = new bool[] { true, true, false },
-                AllowEditDate = true,
-                Zone = "Europa/Berlin",
-                Release_Date = DateTime.UtcNow.AddDays(-1),
-                Deadline = DateTime.UtcNow.AddDays(10)
-            };
+                Languages = _mockLRepository.Object.GetAllListAsync().Result,
 
+                IsSelected = new bool[] { true, false, false },
+                AllowEditDate = true,
+                Zone = "Europe/Berlin",
+                Release_Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 2, 12, 00, 00, DateTimeKind.Unspecified),
+                Deadline = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 5, 12, 00, 00, DateTimeKind.Unspecified)
+            };
         }
 
     }

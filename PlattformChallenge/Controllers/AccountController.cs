@@ -104,7 +104,7 @@ namespace PlattformChallenge.Controllers
 
             if (userId == null || token == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("Index", "Home");
             }
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -335,7 +335,7 @@ namespace PlattformChallenge.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) 
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var checkOk= await _userManager.CheckPasswordAsync(user,model.Original);

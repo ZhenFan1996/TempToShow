@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using PlattformChallenge.Services;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Security.Claims;
 
 namespace PlattformChallenge.UnitTest.Controllers
 {
@@ -38,6 +39,8 @@ namespace PlattformChallenge.UnitTest.Controllers
             _signInManager = MockSignInManager(_userManager);
             _mockLocal = new Mock<IStringLocalizer<AccountController>>();
             _mockLocal.SetupGet(m => m[It.IsAny<string>(),It.IsAny<string[]>()]).Returns(new LocalizedString("name","value"));
+            _mockLocal.SetupGet(m => m[It.IsAny<string>()]).Returns(new LocalizedString("name", "value"));
+
             var logger = new Mock<ILogger<AccountController>>();
             _mockSender = new Mock<IEmailSender>();
             _mockSender.Setup(m => m.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -47,7 +50,7 @@ namespace PlattformChallenge.UnitTest.Controllers
             request.Setup(x => x.PathBase).Returns(PathString.FromUriComponent("/api"));
 
             var httpContext = Mock.Of<HttpContext>(_ =>
-                _.Request == request.Object
+                _.Request == request.Object&& _.Response.StatusCode == It.IsAny<int>()&&_.User.FindFirst(ClaimTypes.NameIdentifier)==new Claim(ClaimTypes.NameIdentifier, "test")
             );
 
             //Controller needs a controller context 
@@ -326,6 +329,512 @@ namespace PlattformChallenge.UnitTest.Controllers
             RedirectToActionResult value = result as RedirectToActionResult;
             Assert.Equal("Index", value.ActionName);
             Assert.Equal("Home", value.ControllerName);
+        }
+
+        [Fact]
+        public async Task ReturnViewConfirmEmail() {
+
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser() {
+                Id ="test",
+                Email ="ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            string checkToken = null;
+            PlatformUser checkUser = null;
+            _userManager.Setup(u => u.ConfirmEmailAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success)
+                .Callback<PlatformUser,string>((x,y)=> {
+                    checkUser = x;
+                    checkToken = y;
+                });
+            var result = await _sut.ConfirmEmail("test", "test-token");
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("test", checkUser.Id);
+            Assert.Equal("ubumh@student.kit.edu", checkUser.Email);
+            Assert.Equal("test-token", checkToken);
+
+        }
+
+
+
+        [Fact]
+        public  void ReturnViewLogIn()
+        {
+            var result =  _sut.LogIn();
+            Assert.IsType<ViewResult>(result);
+
+        }
+
+        [Fact]
+        public async Task ReturnViewConfirmEmailInputNull()
+        {         
+            var result = await _sut.ConfirmEmail(null, "test-token");
+            Assert.IsType<RedirectToActionResult>(result);
+            var value = (RedirectToActionResult)result;
+            Assert.Equal("Index", value.ActionName);
+            Assert.Equal("Home", value.ControllerName);
+
+        }
+
+
+        [Fact]
+        public async Task ReturnViewConfirmEmailUserNotFind()
+        {
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync((PlatformUser)null);
+            var result = await _sut.ConfirmEmail("t", "test-token");
+            Assert.IsType<ViewResult>(result);
+            var value = (ViewResult)result;
+            Assert.Equal("NotFound", value.ViewName);         
+        }
+
+        [Fact]
+        public async Task ReturnViewFailedConfirmEmail()
+        {
+
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.ConfirmEmailAsync(It.IsAny<PlatformUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed());
+            var result = await _sut.ConfirmEmail("test", "test-token");
+            Assert.IsType<ViewResult>(result);
+            var value = (ViewResult)result;
+            Assert.Equal("Error", value.ViewName);
+
+        }
+
+
+        [Fact]
+        public async Task ReturnViewActivateUserEmail()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>())).ReturnsAsync(false);
+            var result =await _sut.ActivateUserEmail("ubumh@student.kit.edu");
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["SentConfirmEmail"], Times.Once);
+
+        }
+
+        [Fact]
+        public async Task ReturnViewActivateUserEmailtConfirmed()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>())).ReturnsAsync(true);
+            var result = await _sut.ActivateUserEmail("ubumh@student.kit.edu");
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["ConfirmedLogIn"], Times.Once);
+
+        }
+
+
+
+        [Fact]
+        public async Task ReturnViewActivateUserEmailtUserNotFound()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((PlatformUser)null);
+            var ex= await Assert.ThrowsAsync<Exception>(() => _sut.ActivateUserEmail("ubumh@student.kit.edu"));
+            Assert.Equal("The Email is invaild", ex.Message);
+
+        }
+
+
+        [Fact]
+        public void ReturnViewForgotPassword()
+        {
+            var result =  _sut.ForgotPassword();
+        }
+
+
+        [Fact]
+        public async Task ReturnViewForgotEmail()
+        {
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>())).ReturnsAsync(true);
+            var model = new ForgotPasswordViewModel()
+            {
+                Email = "ubumh@student.kit.edu"
+
+            };
+            _userManager.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<PlatformUser>())).ReturnsAsync("");
+            var result = await _sut.ForgotPassword(model);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["SentPasswordEmail"], Times.Once);
+        }
+
+        [Fact]
+        public async Task ReturnViewForgotEmailNotFound()
+        {
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((PlatformUser)null);
+
+            _userManager.Setup(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>())).ReturnsAsync(false);
+            var model = new ForgotPasswordViewModel()
+            {
+                Email = "ubumh@student.kit.edu"
+
+            };
+            _userManager.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<PlatformUser>())).ReturnsAsync("");
+            var result = await _sut.ForgotPassword(model);
+            Assert.IsType<ViewResult>(result);
+            _mockLocal.Verify(l => l["SentPasswordEmail"], Times.Never);
+        }
+
+        [Fact]
+        public async Task ReturnViewForgotEmailInvaildModelState()
+        {
+
+            _sut.ModelState.AddModelError(string.Empty, "invaild email");
+
+            var model = new ForgotPasswordViewModel()
+            {
+                Email = "ubumh@student.kit.edu"
+
+            };
+            var result = await _sut.ForgotPassword(model);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal(model, value.Model);
+            _mockLocal.Verify(l => l["SentPasswordEmail"], Times.Never);
+            _userManager.Verify(u => u.FindByEmailAsync(It.IsAny<string>()), Times.Never);
+            _userManager.Verify(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>()), Times.Never);
+        }
+
+        [Fact]
+        public void ReturnViewResetPassword()
+        {
+           var result= _sut.ResetPassword("ubumh@student.kit.edu","test-token");
+            Assert.IsType<ViewResult>(result);
+        }
+
+        [Fact]
+        public void ReturnViewResetPasswordInvaild()
+        {
+            var result = _sut.ResetPassword("ubumh@student.kit.edu", null);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("Invaild Token", allErrors.ElementAt(0).ErrorMessage);
+            Assert.IsType<ViewResult>(result);
+        }
+
+        [Fact]
+        public async Task PostResetPasswordValid()
+        {
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.ResetPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            var model = new ResetPasswordViewModel() {
+                Password = "test",
+                ConfirmPassword ="test",
+                Token = "test_token"
+
+            };
+
+            var result = await _sut.ResetPassword(model);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult) result;
+            Assert.Equal("ChangePasswordConfirm",value.ViewName);
+
+        }
+
+        [Fact]
+        public async Task PostResetPasswordInValidModelState()
+        {
+
+            _sut.ModelState.AddModelError(string.Empty,"test error");
+            var model = new ResetPasswordViewModel()
+            {
+                Password = "test",
+                ConfirmPassword = "test",
+                Token = "test_token"
+
+            };
+         
+            var result = await _sut.ResetPassword(model);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal(model, value.Model);
+            _userManager.Verify(u => u.FindByEmailAsync(It.IsAny<string>()), Times.Never);
+            _userManager.Verify(u => u.ResetPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+
+        }
+
+
+
+        [Fact]
+        public async Task PostResetPasswordUserNotFound()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((PlatformUser) null);
+      
+            var model = new ResetPasswordViewModel()
+            {
+                Password = "test",
+                ConfirmPassword = "test",
+                Token = "test_token"
+
+            };
+
+            var result = await _sut.ResetPassword(model);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            Assert.Equal("Invalid user email", _sut.ViewBag.ErrorMessage);
+            Assert.Equal("NotFound", value.ViewName);
+            
+
+        }
+
+
+        [Fact]
+        public async Task PostResetPasswordFailed()
+        {
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.ResetPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed(new IdentityError[] {
+                            new IdentityError(){
+                                Description = "test error1" },
+                            new IdentityError(){
+                                Description = "test error2"}
+        }));
+
+            var model = new ResetPasswordViewModel()
+            {
+                Password = "test",
+                ConfirmPassword = "test",
+                Token = "test_token"
+
+            };
+            var result = await _sut.ResetPassword(model);
+            Assert.IsType<ViewResult>(result);
+            ViewResult value = (ViewResult)result;
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("test error1", allErrors.ElementAt(0).ErrorMessage);
+            Assert.Equal("test error2", allErrors.ElementAt(1).ErrorMessage);
+
+        }
+
+
+        [Fact]
+        public async Task ReturnViewChangePassword() {
+
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser() {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            var result = await _sut.ChangePassword("ubumh@student.kit.edu");
+            Assert.IsType<ViewResult>(result);
+
+        }
+
+        [Fact]
+        public async Task ReturnViewChangePasswordNotCur()
+        {
+
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "test@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            var result = await _sut.ChangePassword("ubumh@student.kit.edu");
+            Assert.IsType<ViewResult>(result);
+            var value = (ViewResult) result;
+            Assert.Equal("Error", value.ViewName);
+            _mockLocal.Verify(l => l["CurrentUserWrong"], Times.Once);
+
+
+        }
+
+        [Fact]
+        public async Task ReturnViewChangePasswordEmailNull()
+        {
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "test@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+            var result = await _sut.ChangePassword((string)null);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("no email", allErrors.ElementAt(0).ErrorMessage);
+            Assert.IsType<ViewResult>(result);
+            var value = (ViewResult)result;
+            Assert.Equal("Error", value.ViewName);
+            _mockLocal.Verify(l => l["CurrentUserWrong"], Times.Once);
+        }
+
+
+        [Fact]
+        public async Task PostChangePasswordEmailValid()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.CheckPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>())).ReturnsAsync(true);
+            _userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            var model = new ChangePasswordViewModel()
+            {
+
+                Email ="ubumh@student.kit.edu",
+                Original = "ori",
+                Password = "test",
+                ConfirmPassword = "test",
+               
+
+            };
+
+            var result = await _sut.ChangePassword(model);
+            Assert.IsType<RedirectToActionResult>(result);
+            RedirectToActionResult value = (RedirectToActionResult)result;
+            Assert.Equal("Index", value.ActionName);
+        }
+
+
+        [Fact]
+        public async Task PostChangePasswordEmailInValid()
+        {
+          
+
+            var model = new ChangePasswordViewModel()
+            {
+
+                Email = "ubumh@student.kit.edu",
+                Original = "ori",
+                Password = "test",
+                ConfirmPassword = "test",
+
+            };
+
+            var result = await _sut.ChangePassword(model);
+            Assert.IsType<ViewResult>(result);
+         
+        }
+
+        [Fact]
+        public async Task PostChangePasswordEmailOriginalFalse()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.CheckPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>())).ReturnsAsync(false);
+            _userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            var model = new ChangePasswordViewModel()
+            {
+
+                Email = "ubumh@student.kit.edu",
+                Original = "ori",
+                Password = "test",
+                ConfirmPassword = "test",
+
+            };
+
+            var result = await _sut.ChangePassword(model);
+            _mockLocal.Verify(l => l["OriginPasswordWrong"], Times.Once);
+            Assert.IsType<ViewResult>(result);
+          
+        }
+
+
+        [Fact]
+        public async Task PostChangePasswordEmailFailed()
+        {
+
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new PlatformUser()
+            {
+                Id = "test",
+                Email = "ubumh@student.kit.edu",
+                UserName = "ubumh@student.kit.edu"
+
+            });
+
+            _userManager.Setup(u => u.CheckPasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>())).ReturnsAsync(true);
+            _userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<PlatformUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed(new IdentityError[] {
+                            new IdentityError(){
+                                Description = "test error1" },
+                            new IdentityError(){
+                                Description = "test error2"}
+        }));
+
+            var model = new ChangePasswordViewModel()
+            {
+
+                Email = "ubumh@student.kit.edu",
+                Original = "ori",
+                Password = "test",
+                ConfirmPassword = "test",
+
+
+            };
+
+            var result = await _sut.ChangePassword(model);
+            Assert.IsType<ViewResult>(result);
+            IEnumerable<ModelError> allErrors = _sut.ModelState.Values.SelectMany(v => v.Errors);
+            Assert.Equal("test error1", allErrors.ElementAt(0).ErrorMessage);
+            Assert.Equal("test error2", allErrors.ElementAt(1).ErrorMessage);
         }
 
         private static Mock<UserManager<PlatformUser>> MockUserManager<TUser>()
