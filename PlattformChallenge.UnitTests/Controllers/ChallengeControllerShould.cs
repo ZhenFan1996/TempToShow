@@ -745,6 +745,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("Error", value.ViewName);
         }
 
+        //
+        // Summary:
+        //    [TestCase-ID: 11-2]
+        //    Test if edit method returns error view if parameter id is null
+        //
         [Fact]
         public async Task EditWhenIdIsNull() {
 
@@ -756,6 +761,11 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
+        /// <summary>
+        /// [TestCase-ID: 11-3]
+        /// Test if edit method returns error view if the challenge is not founded
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task EditWhenChallengeNotFound()
         {
@@ -777,7 +787,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             ViewResult value = (ViewResult)result;
             Assert.Equal("NotFound", value.ViewName);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 11-4]
+        /// Test if edit method returns error view if the challenge is closed
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task EditWhenChallengeIsClose() {
 
@@ -803,7 +817,11 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 11-5]
+        ///  Test if edit method returns ,when the parameter is right
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildGetEdit()
         {
@@ -850,6 +868,11 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
+        /// <summary>
+        /// [TestCase-ID: 11-6]
+        ///  Test if edit method (post),when the modelstate ist error
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEditInValidModelState() {
             var toTest = TestModel();
@@ -862,7 +885,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(toTest, model);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 11-7]
+        ///  Test if edit method (post),when the selected Sprache does not reduce
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEditValidModelStateNotDeleteLanguage()
         {
@@ -879,6 +906,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(toTest.Challenge.Bonus, toCheck.Bonus);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 11-8]
+        ///  Test if edit method (post),when the updateasync throwsDbUpdateConcurrencyException
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEditValidModelThrowDBException()
         {
@@ -889,6 +921,11 @@ namespace PlattformChallenge.UnitTest.Controllers
            
         }
 
+        /// <summary>
+        /// [TestCase-ID: 11-8]
+        ///  Test if edit method (post),when the updateasync throwsDbUpdateConcurrencyException
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEditValidModelStateDelteLanguage()
         {
@@ -910,7 +947,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(toTest.Challenge.Bonus, toCheck.Bonus);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 11-9]
+        ///  Test if edit method (post),when the edit is not allowed
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEdiFailedNotAllow()
         {
@@ -925,7 +966,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["CannotReduceBonus"], Times.Once);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 11-10]
+        ///  Test if edit method (post),when the max_participant is reduced by edit
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEdiFailedReduceParNumber()
         {
@@ -939,6 +984,12 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["CannotReduceParNumber"], Times.Once);
         }
 
+
+        /// <summary>
+        /// [TestCase-ID: 11-11]
+        ///  Test if edit method (post),when the release_date is edited to the date in the past
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEdiFailedNotReleaseInFutrue()
         {
@@ -952,7 +1003,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["OnlyReleaseInFuture"], Times.Once);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 11-12]
+        ///  Test if edit method (post),when the release_date is edited after deadline
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task PostEdiFailedDeadlineAfterRelease()
         {
@@ -967,7 +1022,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["DeadlineAfterRelease"], Times.Once);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 54-1]
+        ///  Test the method index, filter by languages
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexFilterLangugae()
         {
@@ -996,6 +1055,11 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
+        /// <summary>
+        /// [TestCase-ID: 54-2]
+        ///  Test the method index,  get the challenges in the past
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexForPast()
         {
@@ -1018,7 +1082,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(0).C_Id);
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 54-3]
+        ///  Test the method index,  get the challenges in the future
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexForFuture()
         {
@@ -1040,7 +1108,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);           
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 54-4]
+        ///  Test the method index,  challenge sort by bonus
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexSortBonus()
         {
@@ -1059,7 +1131,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 54-5]
+        ///  Test the method index,  challenge sort by quota
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexSortQuota()
         {
@@ -1078,7 +1154,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 54-6]
+        ///  Test the method index,  challenge sort by date
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexSortDates()
         {
@@ -1097,7 +1177,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("2cde", model.Challenges.ElementAt<Challenge>(1).C_Id);
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 54-7]
+        ///  Test the method index,  challenge sort by deadline
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexSortDeadline()
         {
@@ -1117,7 +1201,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(1).Max_Participant);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 54-8]
+        ///  Test the method index,  challenge sort by deadline desc
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildIndexSortDeadlineDesc()
         {
@@ -1137,7 +1225,11 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal(18, model.Challenges.ElementAt<Challenge>(0).Max_Participant);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 13-1]
+        ///  Test the method details, when the challenge exists
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ReturnVaildDetails() {
             GetAllBuildChallenge();

@@ -331,6 +331,10 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("Home", value.ControllerName);
         }
 
+
+        /// <summary>
+        /// [TestCase-ID: 42-1] Test the funktion of confirmEmail
+        /// </summary>
         [Fact]
         public async Task ReturnViewConfirmEmail() {
 
@@ -358,7 +362,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
-
+        /// <summary>
+        /// [TestCase-ID: 2-2] Test the get function login
+        /// </summary>
         [Fact]
         public  void ReturnViewLogIn()
         {
@@ -366,7 +372,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 42-2] Test the function confirmEmail, when the userid is null
+        /// </summary>
         [Fact]
         public async Task ReturnViewConfirmEmailInputNull()
         {         
@@ -378,7 +386,9 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 42-3] Test the function confirmEmail, when the user is not found
+        /// </summary>
         [Fact]
         public async Task ReturnViewConfirmEmailUserNotFind()
         {
@@ -388,7 +398,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             var value = (ViewResult)result;
             Assert.Equal("NotFound", value.ViewName);         
         }
-
+        /// <summary>
+        /// [TestCase-ID: 42-4] Test the function confirmEmail, when this function failed 
+        /// </summary>
         [Fact]
         public async Task ReturnViewFailedConfirmEmail()
         {
@@ -410,7 +422,9 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 51-1] Test the function ActivateUserEmail, when this function is valid
+        /// </summary>
         [Fact]
         public async Task ReturnViewActivateUserEmail()
         {
@@ -430,6 +444,9 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
+        /// <summary>
+        /// [TestCase-ID: 51-2] Test the function ActivateUserEmail, when this account is confirmed
+        /// </summary>
         [Fact]
         public async Task ReturnViewActivateUserEmailtConfirmed()
         {
@@ -450,7 +467,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
-
+        /// <summary>
+        /// [TestCase-ID: 51-3] Test the function ActivateUserEmail, when the user is not found
+        /// </summary>
         [Fact]
         public async Task ReturnViewActivateUserEmailtUserNotFound()
         {
@@ -461,14 +480,18 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 45-1] Test the get function of forgotpassword
+        /// </summary>
         [Fact]
         public void ReturnViewForgotPassword()
         {
             var result =  _sut.ForgotPassword();
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 45-2] Test the  function of forgotpassword(post),when the input is right
+        /// </summary>
         [Fact]
         public async Task ReturnViewForgotEmail()
         {
@@ -492,6 +515,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["SentPasswordEmail"], Times.Once);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 45-3] Test the  function of forgotpassword(post),when the email is not in database found
+        /// </summary>
         [Fact]
         public async Task ReturnViewForgotEmailNotFound()
         {
@@ -508,7 +534,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
             _mockLocal.Verify(l => l["SentPasswordEmail"], Times.Never);
         }
-
+        /// <summary>
+        /// [TestCase-ID: 45-4] Test the  function of forgotpassword(post),when the modelstate is invalid
+        /// </summary>
         [Fact]
         public async Task ReturnViewForgotEmailInvaildModelState()
         {
@@ -529,6 +557,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             _userManager.Verify(u => u.IsEmailConfirmedAsync(It.IsAny<PlatformUser>()), Times.Never);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 58-1] Test the  function of ResetPassword(get)
+        /// </summary>
         [Fact]
         public void ReturnViewResetPassword()
         {
@@ -536,6 +567,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 58-2] Test the  function of ResetPassword(get),when the token is null
+        /// </summary>
         [Fact]
         public void ReturnViewResetPasswordInvaild()
         {
@@ -545,6 +579,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
         }
 
+        /// <summary>
+        /// [TestCase-ID: 58-3] Test the  function of ResetPassword(post),when all the input are right
+        /// </summary>
         [Fact]
         public async Task PostResetPasswordValid()
         {
@@ -573,6 +610,10 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
+        /// <summary>
+        /// [TestCase-ID: 58-4] Test the  function of ResetPassword(post),when the modelstate is invalid
+        /// </summary>
+
         [Fact]
         public async Task PostResetPasswordInValidModelState()
         {
@@ -596,7 +637,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
-
+        /// <summary>
+        /// [TestCase-ID: 58-5] Test the  function of ResetPassword(post),when the user is not found
+        /// </summary>
         [Fact]
         public async Task PostResetPasswordUserNotFound()
         {
@@ -621,6 +664,9 @@ namespace PlattformChallenge.UnitTest.Controllers
         }
 
 
+        /// <summary>
+        /// [TestCase-ID: 58-6] Test the  function of ResetPassword(post),when the ResetPasswordAsync failed.
+        /// </summary>
         [Fact]
         public async Task PostResetPasswordFailed()
         {
@@ -656,7 +702,9 @@ namespace PlattformChallenge.UnitTest.Controllers
 
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 44-1] Test the  function of ChangePassword(get)
+        /// </summary>
         [Fact]
         public async Task ReturnViewChangePassword() {
 
@@ -671,7 +719,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 44-2] Test the  function of ChangePassword(get), but the user is not the current user
+        /// </summary>
         [Fact]
         public async Task ReturnViewChangePasswordNotCur()
         {
@@ -692,7 +742,9 @@ namespace PlattformChallenge.UnitTest.Controllers
 
 
         }
-
+        /// <summary>
+        /// [TestCase-ID: 44-3] Test the  function of ChangePassword(get), but the input is null
+        /// </summary>
         [Fact]
         public async Task ReturnViewChangePasswordEmailNull()
         {
@@ -712,7 +764,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             _mockLocal.Verify(l => l["CurrentUserWrong"], Times.Once);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 44-4] Test the  function of ChangePassword(post) and all inputs are valid.
+        /// </summary>
         [Fact]
         public async Task PostChangePasswordEmailValid()
         {
@@ -745,7 +799,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.Equal("Index", value.ActionName);
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 44-5] Test the  function of ChangePassword(post) aber the email is invalid
+        /// </summary>
         [Fact]
         public async Task PostChangePasswordEmailInValid()
         {
@@ -765,7 +821,9 @@ namespace PlattformChallenge.UnitTest.Controllers
             Assert.IsType<ViewResult>(result);
          
         }
-
+        /// <summary>
+        /// [TestCase-ID: 44-6] Test the  function of ChangePassword(post) aber the original Password is false
+        /// </summary>
         [Fact]
         public async Task PostChangePasswordEmailOriginalFalse()
         {
@@ -797,7 +855,9 @@ namespace PlattformChallenge.UnitTest.Controllers
           
         }
 
-
+        /// <summary>
+        /// [TestCase-ID: 44-7] Test the  function of ChangePassword(post) aber the function ChangePasswordAsync failed
+        /// </summary>
         [Fact]
         public async Task PostChangePasswordEmailFailed()
         {
