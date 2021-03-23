@@ -28,12 +28,14 @@ namespace PlattformChallenge.Controllers
             return View();
         }
 
-        //
-        // Summary:
-        //    Get the list of solutions of the selected challenge and return the best solution with highest point
-        //    default situation is return the challenges, which descending sorted by point
-        // Returns:
-        //    A view with list of solutions and best solution
+        /// <summary>
+        /// Get the list of solutions of the selected challenge and return the best solution with highest point
+        ///    default situation is return the challenges, which descending sorted by point
+        /// </summary>
+        /// <param name="pageNumber">Which page to show</param>
+        /// <param name="sortOrder">According to which parameter to sort</param>
+        /// <param name="c_Id">Challenge ID to which this list belongs</param>
+        /// <returns>A view with list of solutions and best solution</returns>
         public async Task<IActionResult> List(int? pageNumber, string sortOrder,string c_Id)
         {
             ViewData["PointSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Point" : "";
@@ -106,47 +108,9 @@ namespace PlattformChallenge.Controllers
                 bSolution.Best_URL = "";
                 bSolution.S_ID = null;
             }
-            //if (bestSolution != null && bestSolution.Point!=null)
-            //{
-            //    bSolution = new BestSolutionViewModel()
-            //    {
-            //        Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
-            //        C_ID = c_Id,
-            //        Best_Name = bestSolution.Participation.Programmer.Name,
-            //        Best_Point = bestSolution.Point,
-            //        Best_URL = bestSolution.URL,
-            //        S_ID = bestSolution.S_Id,
-            //        Winner_ID = winner,
-            //        Visible = visible,
-            //    };
-            //}
-            //else
-            //{
-            //    bSolution = new BestSolutionViewModel()
-            //    {
-            //        Solutions = await PaginatedList<Solution>.CreateAsync(solutions.AsNoTracking(), pageNumber ?? 1, pageSize),
-            //        C_ID = c_Id,
-            //        Best_Name = "",
-            //        Best_Point = null,
-            //        Best_URL = "",
-            //        S_ID = null,
-            //        Winner_ID = winner,
-            //        Visible = visible,
-            //    };
-            //}
 
             return View(bSolution);
         }
-    
-
-        public void Delete()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ChangeStatus()
-        {
-            throw new System.NotImplementedException();
-        }
+   
     }
 }

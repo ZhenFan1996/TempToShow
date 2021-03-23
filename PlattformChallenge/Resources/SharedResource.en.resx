@@ -144,6 +144,9 @@
   <data name="E-mail" xml:space="preserve">
     <value>E-mail</value>
   </data>
+  <data name="EmailConfirmed" xml:space="preserve">
+    <value>Your email is confirmed. You can now log in.</value>
+  </data>
   <data name="FoundationDate" xml:space="preserve">
     <value>Foundation date</value>
   </data>

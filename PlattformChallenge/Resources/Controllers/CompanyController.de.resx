@@ -133,6 +133,9 @@
     &lt;p&gt;TES-Challenge Teams&lt;/p&gt;
      &lt;/div&gt;</value>
   </data>
+  <data name="ClosedTitle" xml:space="preserve">
+    <value>Ihr teilgenommes Challenge {0} ist beendet und das Ergebnis ist raus!</value>
+  </data>
   <data name="EmptyCID" xml:space="preserve">
     <value>Ungültiger leerer Challenge-ID-Wert!</value>
   </data>

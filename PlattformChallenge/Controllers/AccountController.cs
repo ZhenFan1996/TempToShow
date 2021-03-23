@@ -24,6 +24,15 @@ namespace PlattformChallenge.Controllers
         private readonly IStringLocalizer<AccountController> localizer;
         private SignInManager<PlatformUser> _signInManager;
 
+        /// <summary>
+        /// Constructor of AccountController
+        /// </summary>
+        /// <param name="userManager">Instance of UserManager provided by Identity. Generic type is PlatformUser</param>
+        /// <param name="signInManager">Instance of signInManager provided by Identity. Generic type is PlatformUser</param>
+        /// <param name="roleManager">Instance of roleManager provided by Identity. Generic type is IdentityRole</param>
+        /// <param name="logger">Instance of log. Generic type is AccountController</param>
+        /// <param name="sender">Instance of Email sender.</param>
+        /// <param name="localizer">Instance of StringLocalizer</param>
         public AccountController(UserManager<PlatformUser> userManager, SignInManager<PlatformUser> signInManager, RoleManager<IdentityRole> roleManager,ILogger<AccountController> logger, IEmailSender sender
             , IStringLocalizer<AccountController> localizer)
         {
@@ -98,7 +107,12 @@ namespace PlattformChallenge.Controllers
 
         }
 
-
+        /// <summary>
+        /// Confirm user email after register.
+        /// </summary>
+        /// <param name="userId">current user Id</param>
+        /// <param name="token">token which has been sent to user's email</param>
+        /// <returns>Successful or Error View</returns>
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId,string token) {
 
@@ -129,7 +143,7 @@ namespace PlattformChallenge.Controllers
 
         #region login
         /// <summary>
-        /// Enter  the page of login
+        /// Enter the page of login
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -170,6 +184,11 @@ namespace PlattformChallenge.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// If an email still has not been confirmed, use this function to try to active it.
+        /// </summary>
+        /// <param name="email">Email address of current user</param>
+        /// <returns>ActiveUserEmail with given ViewBag.Message</returns>
         [HttpGet]
         public async Task<IActionResult> ActivateUserEmail(string email)
         {
@@ -203,13 +222,21 @@ namespace PlattformChallenge.Controllers
             throw new Exception("The Email is invaild");
          
         }
-
+        /// <summary>
+        /// HttpGet - Load the site in situation of forgotting password
+        /// </summary>
+        /// <returns>ForgotPassword View</returns>
         [HttpGet]
         public IActionResult ForgotPassword() {
 
             return View();
         }
 
+        /// <summary>
+        /// HttpPost - Send a confirmation email to the given email adress in order to reset the password
+        /// </summary>
+        /// <param name="model">ForgotPasswordViewModel with given email adress</param>
+        /// <returns>Returns ForgotPasswordConfirmation View if succeed. Else show the formular (ForgotPasswordViewModel) again</returns>
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model) {
             if (ModelState.IsValid)
@@ -239,6 +266,12 @@ namespace PlattformChallenge.Controllers
 
         }
 
+        /// <summary>
+        /// HttpGet - Load the site of resetting password
+        /// </summary>
+        /// <param name="token">random generated token (sent to email)</param>
+        /// <param name="email">current user's email</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult ResetPassword(string token, string email) {
 
@@ -246,10 +279,15 @@ namespace PlattformChallenge.Controllers
                 ModelState.AddModelError("", "Invaild Token");
 
             }
-
             return View();
         }
 
+        /// <summary>
+        /// HttpPost - Set the new password of current user in database
+        /// </summary>
+        /// <param name="model">ResetPasswordViewModel with email, new password, confirmed password and token</param>
+        /// <returns>ChangePasswordConfirm View if succeed; Notfound View if user email is invalid; 
+        /// View with model error message if other failure</returns>
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model) {
             if (ModelState.IsValid) {

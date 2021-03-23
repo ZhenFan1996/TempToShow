@@ -1,18 +1,22 @@
-<h<div class="card bg-white  box-shadow col-md-12 col-sm-12">
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+
+<div class="card bg-white  box-shadow col-md-12 col-sm-12">
     <div class="container">
-    <div class="row">
-        <div class="col-md-12  flex-sm-row">
-            <ul class="list-unstyled">
-                <li class="media">
-                    <img class="mr-3 mt-2" src="~/images/undraw_done_a34v.png" alt="Generic placeholder image" width="65" height="65">
-                    <div class="media-body">
-                        <div class="mt-4">
-                        <strong>"Your Email is confiremd. You can now log in."</strong>
-                        </div>                                             
-                    </div>
-                </li>
-            </ul>
+        <div class="row">
+            <div class="col-md-12  flex-sm-row">
+                <ul class="list-unstyled">
+                    <li class="media">
+                        <img class="mr-3 mt-2" src="~/images/undraw_done_a34v.png" alt="Generic placeholder image" width="65" height="65">
+                        <div class="media-body">
+                            <div class="mt-4">
+                                <strong> @SharedLocalizer["EmailConfirmed"]
+                                </strong>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-        </div>
 </div>

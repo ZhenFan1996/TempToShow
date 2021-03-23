@@ -246,14 +246,13 @@ namespace PlattformChallenge.Controllers
             return View(model);
         }
 
-      
-        /// Create a new challenge. Post the create form.
-        //    This method is only authorized to company user.
+
+        /// <summary>
+        /// Create a new challenge and put it into database.
+        /// This method is only authorized to company user.
         /// </summary>
-        /// <param name="model">A ChallengeCreateViewModel</param>
-        /// <returns>A view with all the given details at creating challenge, if the given information passed validation check.
-        ///   A view with error message, if the given information didn't pass validation check.
-        /// <summary></returns>
+        /// <param name="model">ChallengeCreateViewModel with all required information for a challenge</param>
+        /// <returns>Details View of this new challenge if create succeed. Else the same view with model error info</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Company")]
@@ -538,7 +537,6 @@ namespace PlattformChallenge.Controllers
         }
 
         #endregion
-
 
 
         private bool ChallengeExists(string id)
