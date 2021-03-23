@@ -9,20 +9,21 @@
         @ViewBag.ErrorMessage
     </h5>
 </div>
+<div class="row">
+    <div class="col-md-3">
+        <a asp-controller="home" asp-action="index" class="btn btn-outline-success"
+           style="width:auto">@Localizer["ClickBackToHome"]</a>
+        </div>
+    <div class="col-md-3">
+        @if (ViewContext.HttpContext.User.IsInRole("Company"))
+        {
+            <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
+        }
+        @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
+        {
+            <div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
+        }
+    </div>
 
-<a asp-controller="home" asp-action="index" class="btn btn-outline-success"
-   style="width:auto">@Localizer["ClickBackToHome"]</a>
-
-<div>
-    @if (ViewContext.HttpContext.User.IsInRole("Company"))
-    {
-        <div class="btn-group btn-group-justified">    <a asp-controller="Company" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
-    }
-</div>
-
-<div>
-    @if (ViewContext.HttpContext.User.IsInRole("Programmer"))
-    {
-        <div class="btn-group btn-group-justified">    <a asp-controller="Programmer" asp-action="Index" class="btn btn-primary ">@Localizer["GoToMyPortal"]</a></div>
-    }
-</div>
+       
+    </div>
